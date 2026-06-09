@@ -1322,20 +1322,26 @@ function renderHome(){
       '</div></div>';
   }
 
-  /* — Lista compacta de próximos partidos — */
+  /* — Lista compacta de próximos partidos (próximos 2 días con partidos) — */
+  var _upcoming = DATA.matches.filter(function(m){ return !m.result; })
+    .sort(function(a,b){ return (a.date+(a.time||'00:00')).localeCompare(b.date+(b.time||'00:00')); });
+  var _nextDates = [];
+  _upcoming.forEach(function(m){ if(_nextDates.indexOf(m.date)<0 && _nextDates.length<2) _nextDates.push(m.date); });
+  var sortedM = _upcoming.filter(function(m){ return _nextDates.indexOf(m.date)>=0; });
   var mListHTML = '';
-  var sortedM = DATA.matches.slice().sort(function(a,b){
-    return new Date(a.date+'T'+a.time)-new Date(b.date+'T'+b.time);
-  });
-  sortedM.forEach(function(m){
-    mListHTML +=
-      '<div class="home-mrow" onclick="openModal('+m.id+')" onmouseenter="showHover('+m.id+',this)" onmouseleave="schedClose()">'+
-      '<span class="home-mrow-grp">G'+m.group+'</span>'+
-      '<span class="home-mrow-date">'+fdate(m.date)+'</span>'+
-      '<span class="home-mrow-teams">'+esc(m.home)+' — '+esc(m.away)+'</span>'+
-      '<span class="home-mrow-mod">'+bestQuiniela(m).score+'</span>'+
-      '</div>';
-  });
+  if(sortedM.length===0){
+    mListHTML = '<div style="padding:20px;text-align:center;color:var(--mutl);font-size:12px;grid-column:1/-1">Sin partidos programados próximamente</div>';
+  } else {
+    sortedM.forEach(function(m){
+      mListHTML +=
+        '<div class="home-mrow" onclick="openModal('+m.id+')" onmouseenter="showHover('+m.id+',this)" onmouseleave="schedClose()">'+
+        '<span class="home-mrow-grp">'+(m.group?'G'+m.group:m.phase)+'</span>'+
+        '<span class="home-mrow-date">'+fdate(m.date)+'</span>'+
+        '<span class="home-mrow-teams">'+esc(m.home)+' — '+esc(m.away)+'</span>'+
+        '<span class="home-mrow-mod">'+bestQuiniela(m).score+'</span>'+
+        '</div>';
+    });
+  }
 
   el.innerHTML =
     '<div class="cd">'+
@@ -1370,7 +1376,7 @@ function renderHome(){
     '<div style="background:var(--pan);border:1px solid var(--brd);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--ssm)">'+
     '<div style="background:var(--teal);padding:10px 14px;display:flex;align-items:center;justify-content:space-between">'+
     '<span style="font-family:var(--fc);font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:white">Próximos Partidos</span>'+
-    '<span style="font-size:10px;color:rgba(255,255,255,.85)">'+matches.length+' partidos · EV prom. '+(totalEv/matches.length).toFixed(3)+'</span>'+
+    '<span style="font-size:10px;color:rgba(255,255,255,.85)">'+(_nextDates.length>0?_nextDates.join(' · '):'sin partidos')+'</span>'+
     '</div>'+
     '<div style="display:grid;grid-template-columns:repeat(2,1fr)">'+mListHTML+'</div>'+
     '<div style="padding:6px 10px;background:var(--pan2);border-top:1px solid var(--brd);font-size:9px;color:var(--mutl);display:flex;align-items:center;justify-content:space-between">'+
@@ -1380,12 +1386,7 @@ function renderHome(){
 
     '</div>'+
 
-    /* === MODELOS EN COMPARACIÓN AMIGOS === */
-    '<div class="sdiv" style="margin-top:20px"><div class="sdiv-t">Comparar modelos en Amigos</div><div class="sdiv-l"></div></div>'+
-    '<div class="home-fr-sel">'+
-    '<div class="home-fr-sel-t"><span>Selecciona los modelos que quieres ver en el ranking de amigos</span>'+
-    '<span class="home-fr-sel-lnk" onclick="showSec(\'amigos\')">Ver ranking Amigos →</span></div>'+
-    '<div class="fr-sel-grid" id="home-fr-sel-chips">'+buildFrChips()+'</div></div>';
+    '';
 
   startCountdown();
 }
@@ -1758,12 +1759,11 @@ function toggleFrModel(modelId){
   if(idx>=0) curr.splice(idx,1); else curr.push(modelId);
   setFrModels(curr);
   renderAmigos();
-  renderHomeFrSel(); // actualiza chips en Inicio también
 }
 
 /* Calcula ranking de amigos + modelos seleccionados */
 function buildFriendsRank(){
-  var friends   = DATA.friends || [];
+  var friends   = (DATA.friends || []).filter(function(f){ return Object.keys(f.picks||{}).length>0; });
   var selModels = getFrModels();
   var played    = DATA.matches.filter(function(m){ return m.result!==null; });
   var participants = [];
@@ -1827,7 +1827,8 @@ function buildFrChips(){
 function renderAmigos(){
   var el = document.getElementById('sec-amigos');
   if(!el) return;
-  var friends = DATA.friends || [];
+  var friendsRaw = DATA.friends || [];
+  var friends = friendsRaw.filter(function(f){ return Object.keys(f.picks||{}).length>0; });
   var played  = DATA.matches.filter(function(m){ return m.result!==null; });
   var rank    = buildFriendsRank();
   var maxPts  = played.length*5 || 1;
@@ -1837,16 +1838,18 @@ function renderAmigos(){
   /* ── KPIs ── */
   var kpis =
     '<div class="krow">'
-    +'<div class="kpi"><div class="kpi-l">Participantes</div><div class="kpi-v">'+friends.length+'</div></div>'
+    +'<div class="kpi"><div class="kpi-l">Con picks</div><div class="kpi-v">'+friends.length+'</div></div>'
+    +'<div class="kpi"><div class="kpi-l">Sin picks</div><div class="kpi-v">'+( friendsRaw.length - friends.length)+'</div></div>'
     +'<div class="kpi"><div class="kpi-l">Con modelo</div><div class="kpi-v t">'+selMods.length+'</div></div>'
     +'<div class="kpi"><div class="kpi-l">Partidos jugados</div><div class="kpi-v">'+played.length+'</div></div>'
-    +'<div class="kpi"><div class="kpi-l">Total partidos</div><div class="kpi-v">'+DATA.matches.length+'</div></div>'
     +'</div>';
 
-  /* ── Aviso si no hay participantes ── */
-  var warn = friends.length===0
-    ? '<div class="warnbox">ℹ️ &nbsp;Crea un CSV por participante en <code>curated_inputs/quinielas/</code> (ver TEMPLATE.csv), luego corre <code>python scripts/build_friends_quinielas.py</code> y regenera el dashboard.</div>'
-    : '';
+  /* ── Aviso si no hay participantes con picks ── */
+  var warn = friendsRaw.length===0
+    ? '<div class="warnbox">ℹ️ &nbsp;Conecta la hoja de Google Sheets y corre <code>python scripts/build_friends_quinielas.py</code>.</div>'
+    : friends.length===0
+      ? '<div class="warnbox">ℹ️ &nbsp;Ningún participante ha registrado pronósticos aún. Cuando alguien llene la hoja, aparecerá aquí automáticamente.</div>'
+      : '';
 
   /* ── Selector de modelos ── */
   var selBlock =
@@ -1889,15 +1892,14 @@ function renderAmigos(){
     +'</div>';
 
   /* ── Tabla de picks ── */
-  var allFriends = DATA.friends || [];
   var allModels  = DATA.matches[0] ? DATA.matches[0].models : [];
   var selModObjs = selMods.map(function(mid){ return allModels.find(function(m){ return m.id===mid; }); }).filter(Boolean);
 
-  var thFriends = allFriends.map(function(f){ return '<th class="fr-th-friend">'+esc(f.name)+'</th>'; }).join('');
+  var thFriends = friends.map(function(f){ return '<th class="fr-th-friend">'+esc(f.name)+'</th>'; }).join('');
   var thModels  = selModObjs.map(function(m){ return '<th class="fr-th-model">'+esc(m.id.replace(/_/g,' '))+'</th>'; }).join('');
 
   var tRows = DATA.matches.map(function(m){
-    var friendCells = allFriends.map(function(f){
+    var friendCells = friends.map(function(f){
       var pick = (f.picks||{})[String(m.id)];
       if(!pick) return '<td class="fr-pnd">—</td>';
       if(!m.result) return '<td>'+esc(pick)+'</td>';
@@ -1927,7 +1929,7 @@ function renderAmigos(){
       +'</tr>';
   }).join('');
 
-  var tblBlock = (allFriends.length>0||selModObjs.length>0)
+  var tblBlock = (friends.length>0||selModObjs.length>0)
     ? '<div class="sdiv"><div class="sdiv-t">Pronósticos por partido</div><div class="sdiv-l"></div></div>'
       +'<div class="fr-tbl-wrap"><table class="fr-tbl"><thead><tr>'
       +'<th style="min-width:160px;position:sticky;left:0;z-index:3;background:var(--nav)">Partido</th>'
@@ -1937,7 +1939,7 @@ function renderAmigos(){
 
   el.innerHTML =
     '<div class="pg-hd"><div class="pg-title">Quiniela Amigos</div>'
-    +'<div class="pg-sub">'+friends.length+' participante'+(friends.length!==1?'s':'')+' · '+played.length+' partido'+(played.length!==1?'s':'')+' jugado'+(played.length!==1?'s':'')+'</div></div>'
+    +'<div class="pg-sub">'+friends.length+' con picks · '+friendsRaw.length+' total · '+played.length+' partido'+(played.length!==1?'s':'')+' jugado'+(played.length!==1?'s':'')+'</div></div>'
     +kpis+warn+selBlock+rankBlock+tblBlock;
 }
 
@@ -2120,6 +2122,82 @@ function _sonSim(match, modelIds, allowDraw){
   else if(out==='D'){var avg=Math.ceil((hg+ag)/2);hg=avg;ag=avg;}
   return {hg:hg,ag:ag,out:out};
 }
+/* Simulación solo con picks de amigo — sin fallback de modelo.
+   Devuelve {standings, results, thirds, champion, incomplete}.
+   incomplete=true si los grupos no están completos y no se puede resolver eliminatoria. */
+function runSonFriendSimulation(friendPickMap){
+  var results={}, standings={}, teamStats={};
+  DATA.matches.filter(function(m){return m.phase==='group';}).forEach(function(m){
+    ['home','away'].forEach(function(s){
+      if(!teamStats[m[s]]) teamStats[m[s]]={team:m[s],pts:0,gf:0,ga:0,gd:0,group:m.group,played:0};
+    });
+    var pickStr=friendPickMap[String(m.id)]||friendPickMap[String(m.num)];
+    if(!pickStr) return; // partido no pronosticado: no cuenta
+    var pp=pickStr.split('-');
+    var hg=parseInt(pp[0],10)||0, ag=parseInt(pp[1],10)||0;
+    var out=hg>ag?'H':hg<ag?'A':'D';
+    results[m.id]={hg:hg,ag:ag,out:out};
+    var h=teamStats[m.home],a=teamStats[m.away];
+    h.gf+=hg;h.ga+=ag;h.gd+=hg-ag;h.played++;
+    a.gf+=ag;a.ga+=hg;a.gd+=ag-hg;a.played++;
+    if(out==='H'){h.pts+=3;}else if(out==='D'){h.pts++;a.pts++;}else{a.pts+=3;}
+  });
+  // Só incluir grupos con al menos 1 partido pronosticado
+  Object.values(teamStats).forEach(function(t){
+    if(!standings[t.group]) standings[t.group]=[];
+    standings[t.group].push(t);
+  });
+  Object.keys(standings).forEach(function(g){
+    standings[g].sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);});
+  });
+  // Verificar si todos los grupos tienen los 3 partidos de cada equipo completos
+  var allGroups=12;
+  var complete=Object.keys(standings).length===allGroups&&
+    Object.values(standings).every(function(grp){
+      return grp.length===4&&grp.every(function(t){return t.played===3;});
+    });
+  var thirds=[], usedT={};
+  if(complete){
+    thirds=Object.keys(standings).map(function(g){
+      return Object.assign({},standings[g][2],{group:g});
+    }).sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);}).slice(0,8);
+    function resolve2(name){
+      if(!name) return '?';
+      var m2;
+      m2=name.match(/^Winner Group ([A-L])$/);
+      if(m2) return ((standings[m2[1]]||[])[0]||{}).team||name;
+      m2=name.match(/^Runner-up Group ([A-L])$/);
+      if(m2) return ((standings[m2[1]]||[])[1]||{}).team||name;
+      m2=name.match(/^3rd Group (.+)$/);
+      if(m2){
+        var eligible=m2[1].split('/');
+        for(var i=0;i<thirds.length;i++){
+          if(eligible.indexOf(thirds[i].group)>=0&&!usedT[thirds[i].team]){
+            usedT[thirds[i].team]=true; return thirds[i].team;
+          }
+        }
+        return name;
+      }
+      m2=name.match(/^Winner Match (\d+)$/);
+      if(m2){var r2=results[+m2[1]];return r2?r2.winner||name:name;}
+      return name;
+    }
+    // Usar el mejor modelo disponible para elimineatorias (amigo no tiene picks de esa fase)
+    var bestMod=[_cachedBestModelId()];
+    ['r32','r16','qf','sf','third','final'].forEach(function(phase){
+      DATA.matches.filter(function(m){return m.phase===phase;}).forEach(function(m){
+        var ht=resolve2(m.home),at=resolve2(m.away);
+        var r=_sonSim(m,bestMod,false);
+        r.homeTeam=ht;r.awayTeam=at;r.winner=r.out==='H'?ht:at;
+        results[m.id]=r;
+      });
+    });
+  }
+  var fin=DATA.matches.find(function(m){return m.phase==='final';});
+  return {standings:standings,results:results,thirds:thirds,
+          champion:fin&&results[fin.id]?results[fin.id].winner:'?',
+          incomplete:!complete};
+}
 function _sonSimHybrid(match, modelIds, allowDraw, friendPickMap){
   var pickStr=(friendPickMap||{})[String(match.id)]||(friendPickMap||{})[String(match.num)];
   if(pickStr){
@@ -2223,8 +2301,9 @@ function renderSonadora(){
       label+'</button>';
   }).join('');
   var friendSection='';
-  if(DATA.friends&&DATA.friends.length){
-    var fchips=DATA.friends.map(function(f){
+  var friendsWithPicks=(DATA.friends||[]).filter(function(f){return Object.keys(f.picks||{}).length>0;});
+  if(friendsWithPicks.length){
+    var fchips=friendsWithPicks.map(function(f){
       var n=Object.keys(f.picks||{}).length;
       return '<button class="son-chip son-chip-friend" data-fid="'+f.id+'" onclick="_sonToggle(this)" title="'+esc(f.name)+' ('+n+' picks)">'+
         esc(f.name)+' <span style="font-size:9px;opacity:.7">'+n+'p</span></button>';
@@ -2261,12 +2340,27 @@ function _sonRender(){
       if(f&&f.picks) Object.keys(f.picks).forEach(function(k){if(!friendPickMap[k]) friendPickMap[k]=f.picks[k];});
     });
   }
-  var sim=runSonSimulation(selModels,friendPickMap);
-  var html='<div class="son-champion"><div class="son-champ-label">🏆 Campeón Simulado</div><div class="son-champ-name">'+esc(sim.champion)+'</div></div>';
+  var friendOnlyMode=(selModels.length===0&&selFriends.length>0);
+  var sim;
+  if(friendOnlyMode){
+    var totalPicks=Object.keys(friendPickMap).length;
+    if(totalPicks===0){
+      el.innerHTML='<div class="son-empty">'+
+        (selFriends.length===1?'Este amigo':'Estos amigos')+
+        ' aún no ha registrado ningún pronóstico.</div>';
+      return;
+    }
+    sim=runSonFriendSimulation(friendPickMap);
+  } else {
+    sim=runSonSimulation(selModels,friendPickMap);
+  }
+  var html=sim.incomplete?'':'<div class="son-champion"><div class="son-champ-label">🏆 Campeón Simulado</div><div class="son-champ-name">'+esc(sim.champion)+'</div></div>';
   // Grupos
+  var groupKeys=Object.keys(sim.standings).sort();
+  if(groupKeys.length){
   html+='<div class="sdiv"><div class="sdiv-t">Fase de Grupos</div><div class="sdiv-l"></div></div>';
   html+='<div class="son-groups">';
-  Object.keys(sim.standings).sort().forEach(function(g){
+  groupKeys.forEach(function(g){
     html+='<div class="son-group"><div class="son-g-hd">GRUPO '+g+'</div>';
     sim.standings[g].forEach(function(t,i){
       var isT3=sim.thirds.findIndex(function(q){return q.team===t.team;})>=0;
@@ -2281,27 +2375,34 @@ function _sonRender(){
     html+='</div>';
   });
   html+='</div>';
+  } // end groupKeys.length
   // Eliminatorias
-  [{id:'r32',label:'Dieciseisavos de Final'},{id:'r16',label:'Octavos de Final'},
-   {id:'qf',label:'Cuartos de Final'},{id:'sf',label:'Semifinales'},
-   {id:'third',label:'Tercer Puesto'},{id:'final',label:'FINAL'}
-  ].forEach(function(ph){
-    var pms=DATA.matches.filter(function(m){return m.phase===ph.id;});
-    if(!pms.length) return;
-    html+='<div class="sdiv" style="margin-top:16px"><div class="sdiv-t">'+ph.label+'</div><div class="sdiv-l"></div></div>';
-    html+='<div class="son-bracket">';
-    pms.forEach(function(m){
-      var r=sim.results[m.id]; if(!r) return;
-      var hw=r.out==='H',aw=r.out==='A';
-      html+='<div class="son-match">'+
-        '<span class="son-m-n">'+m.num+'</span>'+
-        '<span class="son-m-t'+(hw?' win':'')+'">'+esc(r.homeTeam||m.home)+'</span>'+
-        '<span class="son-m-sc">'+r.hg+'-'+r.ag+'</span>'+
-        '<span class="son-m-t r'+(aw?' win':'')+'">'+esc(r.awayTeam||m.away)+'</span>'+
-        '</div>';
+  if(sim.incomplete){
+    html+='<div style="margin-top:16px;padding:12px 16px;background:var(--pan2);border:1px solid var(--brd);border-radius:var(--rmd);font-size:12px;color:var(--mutl)">'+
+      'ℹ️ &nbsp;Las fases eliminatorias no están disponibles hasta que se completen los pronósticos de toda la fase de grupos ('+
+      Object.keys(sim.standings).length+'/12 grupos con datos).</div>';
+  } else {
+    [{id:'r32',label:'Dieciseisavos de Final'},{id:'r16',label:'Octavos de Final'},
+     {id:'qf',label:'Cuartos de Final'},{id:'sf',label:'Semifinales'},
+     {id:'third',label:'Tercer Puesto'},{id:'final',label:'FINAL'}
+    ].forEach(function(ph){
+      var pms=DATA.matches.filter(function(m){return m.phase===ph.id;});
+      if(!pms.length) return;
+      html+='<div class="sdiv" style="margin-top:16px"><div class="sdiv-t">'+ph.label+'</div><div class="sdiv-l"></div></div>';
+      html+='<div class="son-bracket">';
+      pms.forEach(function(m){
+        var r=sim.results[m.id]; if(!r) return;
+        var hw=r.out==='H',aw=r.out==='A';
+        html+='<div class="son-match">'+
+          '<span class="son-m-n">'+m.num+'</span>'+
+          '<span class="son-m-t'+(hw?' win':'')+'">'+esc(r.homeTeam||m.home)+'</span>'+
+          '<span class="son-m-sc">'+r.hg+'-'+r.ag+'</span>'+
+          '<span class="son-m-t r'+(aw?' win':'')+'">'+esc(r.awayTeam||m.away)+'</span>'+
+          '</div>';
+      });
+      html+='</div>';
     });
-    html+='</div>';
-  });
+  }
   el.innerHTML=html;
 }
 </script>

@@ -886,10 +886,11 @@ function updatePickCmp(matchId){
   var m = matchById(matchId);
   var pick = getPick(matchId);
   if(!pick || !m){ el.textContent=''; return; }
-  if(pick === m.quiniela.score)
-    el.innerHTML = '<span style="color:rgba(255,255,255,.9)">✓ Coincide con el modelo ('+m.quiniela.score+')</span>';
+  var bq = bestQuiniela(m);
+  if(pick === bq.score)
+    el.innerHTML = '<span style="color:rgba(255,255,255,.9)">✓ Coincide con el modelo ('+bq.score+')</span>';
   else
-    el.innerHTML = '<span style="color:var(--gold)">Modelo recomienda <strong>'+m.quiniela.score+'</strong> · Top: '+m.quiniela.top+'</span>';
+    el.innerHTML = '<span style="color:var(--gold)">Modelo recomienda <strong>'+bq.score+'</strong> · Top: '+bq.top+'</span>';
 }
 
 /* ══════════════════ NAVIGATION ══════════════════ */
@@ -916,17 +917,17 @@ function currentBestModelId(){
   });
   return ranked.length ? ranked[0].id : 'weighted_points_ensemble';
 }
-function currentBestPick(m){
-  var playedCount = DATA.matches.filter(function(item){ return item.result!==null; }).length;
-  var preferredId = currentBestModelId();
-  var mod = modelPredictionFor(m, preferredId) || modelPredictionFor(m, 'weighted_points_ensemble') || (m.models||[])[0] || null;
-  return {
-    id: mod ? mod.id : preferredId,
-    score: mod ? mod.score : '--',
-    top: mod ? mod.top : '--',
-    ev: mod ? mod.ev : 0,
-    mode: playedCount===0 ? 'fallback max puntos' : 'ranking torneo'
-  };
+var _bestModelIdCache = null;
+function _cachedBestModelId(){
+  if(_bestModelIdCache !== null) return _bestModelIdCache;
+  _bestModelIdCache = currentBestModelId();
+  return _bestModelIdCache;
+}
+function bestQuiniela(m){
+  var bestId = _cachedBestModelId();
+  var mod = modelPredictionFor(m, bestId) || modelPredictionFor(m, 'weighted_points_ensemble') || (m.models||[])[0] || null;
+  if(!mod) return m.quiniela;
+  return { model: mod.id, score: mod.score, top: mod.top, ev: mod.ev, prob: mod.conf };
 }
 
 function showHover(matchId, triggerEl){
@@ -937,13 +938,12 @@ function showHover(matchId, triggerEl){
   if(!m) return;
   document.getElementById('hp-title').textContent = m.home+' vs '+m.away;
   document.getElementById('hp-sub').textContent = 'Partido '+m.num+' · Grupo '+m.group+' · '+fdateFull(m.date)+' '+m.time+' · '+m.venue;
-  document.getElementById('hp-score').textContent = m.quiniela.score;
-  var bestPick = currentBestPick(m);
+  var bq = bestQuiniela(m);
+  document.getElementById('hp-score').textContent = bq.score;
   document.getElementById('hp-qmeta').innerHTML =
-    '<strong style="font-size:13px">EV: '+m.quiniela.ev.toFixed(3)+'</strong><br>'+
-    'Top: '+m.quiniela.top+' ('+pct(m.quiniela.prob)+')<br>'+
-    'Modelo: '+m.quiniela.model+'<br>'+
-    '<span style="color:var(--gold)">Mejor actual ('+bestPick.mode+'): <strong>'+modelDisplayName(bestPick.id)+'</strong> -> '+bestPick.score+'</span>'+
+    '<strong style="font-size:13px">EV: '+bq.ev.toFixed(3)+'</strong><br>'+
+    'Top: '+bq.top+' ('+pct(bq.prob)+')<br>'+
+    'Modelo: '+modelDisplayName(bq.model)+
     (m.frozen ? '<br><span style="opacity:.9">🔒 Congelado</span>' : '');
   document.getElementById('hp-pick-input').value = getPick(matchId);
   document.getElementById('hp-stats-sheet').innerHTML = buildStatsSheet(m);
@@ -1005,14 +1005,13 @@ function openModal(matchId){
     '<div class="m-ib"><div class="m-ib-l">Sede</div><div class="m-ib-v">'+esc(m.venue)+'</div></div>'+
     '<div class="m-ib"><div class="m-ib-l">Grupo / Ronda</div><div class="m-ib-v">'+m.group+'</div></div>';
   var myPick = getPick(matchId);
-  var bestPick = currentBestPick(m);
+  var bq = bestQuiniela(m);
   document.getElementById('m-qpan').innerHTML =
     '<div class="m-qt">Quiniela (Modelo)</div>'+
-    '<div class="m-qs">'+m.quiniela.score+'</div>'+
-    '<div class="m-qd"><strong>EV: '+m.quiniela.ev.toFixed(6)+'</strong>'+
-    'Top: '+m.quiniela.top+' ('+pct(m.quiniela.prob)+')<br>'+
-    'Modelo: '+m.quiniela.model+'<br>'+
-    '<span style="color:var(--gold)">Mejor actual ('+bestPick.mode+'): <strong>'+modelDisplayName(bestPick.id)+'</strong> -> '+bestPick.score+'</span><br>'+
+    '<div class="m-qs">'+bq.score+'</div>'+
+    '<div class="m-qd"><strong>EV: '+bq.ev.toFixed(6)+'</strong>'+
+    'Top: '+bq.top+' ('+pct(bq.prob)+')<br>'+
+    'Modelo: '+modelDisplayName(bq.model)+'<br>'+
     'Congelado: '+(m.frozen ? 'sí 🔒' : 'no')+'</div>'+
     '<div class="m-pick-row">'+
     '<div class="m-pick-label">Mi Pick</div>'+
@@ -1213,7 +1212,7 @@ function closeValHover(){ document.getElementById('val-hover').classList.remove(
 function renderHome(){
   var el = document.getElementById('sec-home');
   var matches = DATA.matches;
-  var totalEv = matches.reduce(function(s,m){ return s+m.quiniela.ev; },0);
+  var totalEv = matches.reduce(function(s,m){ return s+bestQuiniela(m).ev; },0);
 
   /* — Ranking torneo actual — */
   var rankData = buildCurrentRankData();
@@ -1317,7 +1316,7 @@ function renderHome(){
       '<span class="home-mrow-grp">G'+m.group+'</span>'+
       '<span class="home-mrow-date">'+fdate(m.date)+'</span>'+
       '<span class="home-mrow-teams">'+esc(m.home)+' — '+esc(m.away)+'</span>'+
-      '<span class="home-mrow-mod">'+m.quiniela.score+'</span>'+
+      '<span class="home-mrow-mod">'+bestQuiniela(m).score+'</span>'+
       (pick ? '<span class="home-mrow-pick">'+esc(pick)+'</span>' : '')+
       '</div>';
   });
@@ -1388,9 +1387,9 @@ function renderMatchCard(m){
     '<span class="sbadge '+sCls(m.status)+'">'+sLabel(m.status)+'</span>'+
     '<span>'+esc(m.venue)+', '+esc(m.city)+'</span></div></div>'+
     '<div class="mc-foot">'+
-    '<span class="mc-ev">EV '+m.quiniela.ev.toFixed(3)+' · Top '+m.quiniela.top+'</span>'+
+    '<span class="mc-ev">EV '+bestQuiniela(m).ev.toFixed(3)+' · Top '+bestQuiniela(m).top+'</span>'+
     '<div class="mc-pick">'+
-    '<span class="mc-pickl">Modelo</span><span class="mc-pickv">'+m.quiniela.score+'</span>'+
+    '<span class="mc-pickl">Modelo</span><span class="mc-pickv">'+bestQuiniela(m).score+'</span>'+
     '<span class="mc-mypick" id="mypick-'+m.id+'" style="'+(pick?'display:inline':'display:none')+'">'+esc(pick)+'</span>'+
     (m.frozen ? '<span style="font-size:13px" title="Congelado">🔒</span>' : '')+
     '</div></div></div>';
@@ -1427,7 +1426,7 @@ function renderGroupCard(g){
     mRows += '<div class="gmr" onclick="openModal('+m.id+')" onmouseenter="showHover('+m.id+',this)" onmouseleave="schedClose()">'+
       '<span class="gm-n">'+m.num+'</span><span class="gm-d">'+fdate(m.date)+'</span>'+
       '<span class="gm-ta">'+esc(m.home)+'</span><span class="gm-sc">'+(m.result||m.time)+'</span>'+
-      '<span class="gm-tb">'+esc(m.away)+'</span><span class="gm-pk">'+m.quiniela.score+'</span></div>';
+      '<span class="gm-tb">'+esc(m.away)+'</span><span class="gm-pk">'+bestQuiniela(m).score+'</span></div>';
   });
   return '<div class="gc"><div class="gc-hd"><span class="gc-title">Grupo '+g.id+'</span><span class="gc-phase">Jornada 1</span></div>'+
     '<table class="st"><thead><tr><th>Equipo</th><th>J</th><th>G</th><th>E</th><th>P</th><th>GD</th><th>Pts</th></tr></thead>'+
@@ -1444,7 +1443,7 @@ function renderCenterPanel(){
       '<span class="cmr-n">'+m.num+'</span>'+
       '<span class="cmr-t">'+esc(m.home)+'<span>vs</span>'+esc(m.away)+'</span>'+
       '<span class="cmr-res">'+(m.result||'—')+'</span>'+
-      '<span class="cmr-pk">'+m.quiniela.score+'</span>'+
+      '<span class="cmr-pk">'+bestQuiniela(m).score+'</span>'+
       '<span class="cmr-tm">'+m.time+'</span></div>';
   });
   return '<div class="ccard"><div class="ccard-hd">Todos los Partidos</div><div class="ccard-bd">'+rows+'</div></div>';

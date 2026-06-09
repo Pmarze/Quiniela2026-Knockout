@@ -477,6 +477,8 @@ main{margin-top:var(--navh);}
 .son-chip{background:var(--pan2);border:1px solid var(--brd);color:var(--mutl);padding:4px 11px;border-radius:16px;font-size:11px;cursor:pointer;font-family:var(--fc);transition:all .15s;}
 .son-chip:hover{border-color:var(--teal);color:var(--teal);}
 .son-chip.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700;}
+.son-chip-friend:hover{border-color:#d4a017;color:#d4a017;}
+.son-chip-friend.active{background:#d4a017;border-color:#d4a017;color:#fff;font-weight:700;}
 .son-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;}
 .son-champion{background:linear-gradient(120deg,var(--burg),#7a4c00 50%,#c49a1e);border-radius:10px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;margin-bottom:4px;}
 .son-champ-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7);}
@@ -2118,14 +2120,30 @@ function _sonSim(match, modelIds, allowDraw){
   else if(out==='D'){var avg=Math.ceil((hg+ag)/2);hg=avg;ag=avg;}
   return {hg:hg,ag:ag,out:out};
 }
-function runSonSimulation(modelIds){
+function _sonSimHybrid(match, modelIds, allowDraw, friendPickMap){
+  var pickStr=(friendPickMap||{})[String(match.id)]||(friendPickMap||{})[String(match.num)];
+  if(pickStr){
+    var pp=pickStr.split('-');
+    var hg=parseInt(pp[0],10)||0,ag=parseInt(pp[1],10)||0;
+    var out=hg>ag?'H':hg<ag?'A':'D';
+    if(!allowDraw&&out==='D'){
+      var av=_sonAvg(match,modelIds.length?modelIds:['weighted_points_ensemble']);
+      out=av.p1>=av.p2?'H':'A';
+    }
+    return {hg:hg,ag:ag,out:out};
+  }
+  return _sonSim(match,modelIds.length?modelIds:['weighted_points_ensemble'],allowDraw);
+}
+function runSonSimulation(modelIds, friendPickMap){
+  friendPickMap=friendPickMap||{};
+  var effectiveModels=modelIds.length?modelIds:['weighted_points_ensemble'];
   var results={},standings={},teamStats={};
   // Fase de grupos
   DATA.matches.filter(function(m){return m.phase==='group';}).forEach(function(m){
     ['home','away'].forEach(function(s){
       if(!teamStats[m[s]]) teamStats[m[s]]={team:m[s],pts:0,gf:0,ga:0,gd:0,group:m.group};
     });
-    var r=_sonSim(m,modelIds,true); results[m.id]=r;
+    var r=_sonSimHybrid(m,effectiveModels,true,friendPickMap); results[m.id]=r;
     var h=teamStats[m.home],a=teamStats[m.away];
     h.gf+=r.hg;h.ga+=r.ag;h.gd+=r.hg-r.ag;
     a.gf+=r.ag;a.ga+=r.hg;a.gd+=r.ag-r.hg;
@@ -2166,10 +2184,10 @@ function runSonSimulation(modelIds){
     return name;
   }
   // Fases eliminatorias
-  ['r32','r16','qf','sf','final'].forEach(function(phase){
+  ['r32','r16','qf','sf','third','final'].forEach(function(phase){
     DATA.matches.filter(function(m){return m.phase===phase;}).forEach(function(m){
       var ht=resolve(m.home),at=resolve(m.away);
-      var r=_sonSim(m,modelIds,false);
+      var r=_sonSimHybrid(m,effectiveModels,false,friendPickMap);
       r.homeTeam=ht; r.awayTeam=at;
       r.winner=r.out==='H'?ht:at;
       results[m.id]=r;
@@ -2204,24 +2222,46 @@ function renderSonadora(){
     return '<button class="son-chip" data-mid="'+mod.id+'" onclick="_sonToggle(this)" title="'+mod.id+'">'+
       label+'</button>';
   }).join('');
+  var friendSection='';
+  if(DATA.friends&&DATA.friends.length){
+    var fchips=DATA.friends.map(function(f){
+      var n=Object.keys(f.picks||{}).length;
+      return '<button class="son-chip son-chip-friend" data-fid="'+f.id+'" onclick="_sonToggle(this)" title="'+esc(f.name)+' ('+n+' picks)">'+
+        esc(f.name)+' <span style="font-size:9px;opacity:.7">'+n+'p</span></button>';
+    }).join('');
+    friendSection=
+      '<div style="margin-top:12px;font-size:10px;color:var(--mutl);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Amigos</div>'+
+      '<div class="son-chips">'+fchips+'</div>';
+  }
   el.innerHTML=
     '<div style="padding:20px 20px 0">'+
     '<div class="sdiv"><div class="sdiv-t">Soñadora · Simulación del Torneo</div><div class="sdiv-l"></div></div>'+
     '<div style="font-size:12px;color:var(--mutl);margin:6px 0 10px">'+
-    'Selecciona uno o más modelos para simular clasificados y resultados hasta el campeón. '+
-    'Con varios modelos se promedian sus probabilidades en partes iguales.</div>'+
-    '<div class="son-chips">'+chips+'</div></div>'+
-    '<div id="son-result" style="padding:8px 20px 28px"><div class="son-empty">Selecciona al menos un modelo para ver la simulación.</div></div>';
+    'Selecciona modelos y/o amigos para simular el torneo. Los picks de amigos tienen prioridad; '+
+    'partidos sin pick usan el modelo de respaldo.</div>'+
+    '<div style="font-size:10px;color:var(--mutl);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Modelos</div>'+
+    '<div class="son-chips">'+chips+'</div>'+
+    friendSection+
+    '</div>'+
+    '<div id="son-result" style="padding:8px 20px 28px"><div class="son-empty">Selecciona al menos un modelo o amigo para ver la simulación.</div></div>';
 }
 function _sonToggle(btn){
   btn.classList.toggle('active');
   _sonRender();
 }
 function _sonRender(){
-  var sel=Array.from(document.querySelectorAll('.son-chip.active')).map(function(b){return b.dataset.mid;});
+  var selModels=Array.from(document.querySelectorAll('.son-chip[data-mid].active')).map(function(b){return b.dataset.mid;});
+  var selFriends=Array.from(document.querySelectorAll('.son-chip[data-fid].active')).map(function(b){return b.dataset.fid;});
   var el=document.getElementById('son-result');
-  if(!sel.length){el.innerHTML='<div class="son-empty">Selecciona al menos un modelo para ver la simulación.</div>';return;}
-  var sim=runSonSimulation(sel);
+  if(!selModels.length&&!selFriends.length){el.innerHTML='<div class="son-empty">Selecciona al menos un modelo o amigo para ver la simulación.</div>';return;}
+  var friendPickMap={};
+  if(selFriends.length&&DATA.friends){
+    selFriends.forEach(function(fid){
+      var f=DATA.friends.find(function(x){return x.id===fid;});
+      if(f&&f.picks) Object.keys(f.picks).forEach(function(k){if(!friendPickMap[k]) friendPickMap[k]=f.picks[k];});
+    });
+  }
+  var sim=runSonSimulation(selModels,friendPickMap);
   var html='<div class="son-champion"><div class="son-champ-label">🏆 Campeón Simulado</div><div class="son-champ-name">'+esc(sim.champion)+'</div></div>';
   // Grupos
   html+='<div class="sdiv"><div class="sdiv-t">Fase de Grupos</div><div class="sdiv-l"></div></div>';
@@ -2242,8 +2282,9 @@ function _sonRender(){
   });
   html+='</div>';
   // Eliminatorias
-  [{id:'r32',label:'Treintaidosavos (R32)'},{id:'r16',label:'Dieciseisavos (R16)'},
-   {id:'qf',label:'Cuartos de Final'},{id:'sf',label:'Semifinales'},{id:'final',label:'FINAL'}
+  [{id:'r32',label:'Dieciseisavos de Final'},{id:'r16',label:'Octavos de Final'},
+   {id:'qf',label:'Cuartos de Final'},{id:'sf',label:'Semifinales'},
+   {id:'third',label:'Tercer Puesto'},{id:'final',label:'FINAL'}
   ].forEach(function(ph){
     var pms=DATA.matches.filter(function(m){return m.phase===ph.id;});
     if(!pms.length) return;

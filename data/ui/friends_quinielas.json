@@ -1,22 +1,44 @@
 {
-  "generated_at": "2026-06-09T00:19:20.927490Z",
+  "generated_at": "2026-06-09T04:41:52.923103Z",
   "friends": [
     {
-      "id": "pablo-m",
-      "name": "Pablo M.",
+      "id": "pablo",
+      "name": "Pablo",
       "picks": {
-        "1": "2-1",
+        "1": "1-0",
         "2": "1-0",
-        "3": "0-0",
-        "4": "3-1",
-        "5": "1-2",
-        "6": "2-0",
+        "3": "1-0",
+        "4": "1-0",
+        "5": "1-1",
+        "6": "2-1",
         "7": "1-1",
-        "8": "2-1",
-        "9": "0-1",
-        "10": "1-0"
+        "8": "0-1"
       },
-      "source": "pablo.csv"
+      "source": "google_sheets"
+    },
+    {
+      "id": "amigo-2",
+      "name": "Amigo 2",
+      "picks": {},
+      "source": "google_sheets"
+    },
+    {
+      "id": "amigo-3",
+      "name": "Amigo 3",
+      "picks": {},
+      "source": "google_sheets"
+    },
+    {
+      "id": "amigo-4",
+      "name": "Amigo 4",
+      "picks": {},
+      "source": "google_sheets"
+    },
+    {
+      "id": "amigo-5",
+      "name": "Amigo 5",
+      "picks": {},
+      "source": "google_sheets"
     }
   ]
 }

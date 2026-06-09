@@ -2190,9 +2190,19 @@ function renderSonadora(){
         allModels.push({id:mod.id});
     });
   });
+  // Ordenar por rendimiento de backtest (pts desc), modelos sin backtest al final
+  var btMap={};
+  (DATA.backtest.metrics||[]).forEach(function(bm){btMap[bm.model]=bm.pts;});
+  allModels.sort(function(a,b){
+    var pa=btMap[a.id]!=null?btMap[a.id]:-1;
+    var pb=btMap[b.id]!=null?btMap[b.id]:-1;
+    return pb-pa;
+  });
   var chips=allModels.map(function(mod){
+    var pts=btMap[mod.id];
+    var label=modelDisplayName(mod.id)+(pts!=null?' <span style="font-size:9px;opacity:.7">'+pts+'p</span>':'');
     return '<button class="son-chip" data-mid="'+mod.id+'" onclick="_sonToggle(this)" title="'+mod.id+'">'+
-      modelDisplayName(mod.id)+'</button>';
+      label+'</button>';
   }).join('');
   el.innerHTML=
     '<div style="padding:20px 20px 0">'+

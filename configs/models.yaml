@@ -280,7 +280,7 @@
     },
     {
       "active": true,
-      "confidence_power": 0.4278,
+      "confidence_power": 0.4845,
       "default_weight": 1.0,
       "ensemble": true,
       "exclude_models": [
@@ -312,26 +312,26 @@
       "objective_label": "calibrated_scoreline_distribution",
       "optimization": {
         "backtest_run_id": "backtest_wc2018_2022_base_20260608T182120Z_8f2d0d44",
-        "exact_hits": 22,
-        "margin_or_draw_hits": 22,
+        "exact_hits": 24,
+        "margin_or_draw_hits": 21,
         "max_possible_points": 640.0,
         "method": "optuna_tpe_joint_calib",
-        "n_trials": 200,
+        "n_trials": 1,
         "objective": "points",
-        "score": 0.3234375,
+        "score": 0.3359375,
         "seed": 20260608,
-        "total_points": 207.0,
-        "winner_hits": 31
+        "total_points": 215.0,
+        "winner_hits": 32
       },
       "optimized_weights": {
-        "attack_defense_poisson": 0.055423,
-        "bayesian_monte_carlo_scoreline": 0.032245,
-        "bradley_terry_davidson": 0.043092,
-        "draw_specialist": 0.032408,
-        "elo_dixon_coles": 0.03253,
-        "elo_poisson": 0.025914,
-        "neural_hybrid_v2": 0.474827,
-        "neural_scoreline_mlp": 0.30356
+        "attack_defense_poisson": 0.036806,
+        "bayesian_monte_carlo_scoreline": 0.014136,
+        "bradley_terry_davidson": 0.014895,
+        "draw_specialist": 0.028219,
+        "elo_dixon_coles": 0.020266,
+        "elo_poisson": 0.014091,
+        "neural_hybrid_v2": 0.537922,
+        "neural_scoreline_mlp": 0.333664
       },
       "required": false,
       "scoreline_calibration": {
@@ -341,14 +341,14 @@
           "0-1"
         ],
         "enabled": true,
-        "high_goal_bonus": 0.1371,
-        "high_goal_min_total": 4,
-        "low_score_penalty": 0.347,
+        "high_goal_bonus": 0.1278,
+        "high_goal_min_total": 2,
+        "low_score_penalty": 0.376,
         "min_matches": 120,
         "min_year": 1974,
-        "model_power": 1.1611,
-        "prior_power": 0.1447,
-        "smoothing": 0.69,
+        "model_power": 1.1374,
+        "prior_power": 0.1951,
+        "smoothing": 0.4581,
         "world_cup_only": true
       },
       "weight_source": "optimized_backtest"

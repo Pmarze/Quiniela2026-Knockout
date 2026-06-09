@@ -75,7 +75,7 @@ def generate_dashboard(
     finally:
         store.close()
 
-    resolved_output = output_path or (project_root / "outputs" / "dashboard" / "index.html")
+    resolved_output = output_path or (project_root / "docs" / "index.html")
     resolved_output.parent.mkdir(parents=True, exist_ok=True)
     resolved_output.write_text(_render_html(payload), encoding="utf-8")
 

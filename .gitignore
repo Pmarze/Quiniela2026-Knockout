@@ -59,6 +59,7 @@ data/state/*
 !data/ui/
 data/ui/*
 !data/ui/.gitkeep
+!data/ui/friends_quinielas.json
 
 # Generated dashboards and reports. Rebuild with scripts/generate_*.py.
 outputs/*

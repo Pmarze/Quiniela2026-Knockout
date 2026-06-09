@@ -397,6 +397,62 @@ main{margin-top:var(--navh);}
 .mfam-row:last-child{border-bottom:none;}
 .warnbox{background:rgba(201,150,14,.08);border:1px solid rgba(201,150,14,.28);border-radius:var(--r);padding:10px 14px;margin-bottom:15px;font-size:12px;color:#8b6914;line-height:1.55;}
 
+/* AMIGOS */
+.fb-friend{color:var(--gold);border-color:var(--gold);background:var(--gd);}
+.fr-rank-panel{background:var(--pan);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;box-shadow:var(--ssm);}
+.fr-rank-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-bottom:1px solid var(--brd);background:var(--pan2);}
+.fr-rank-hd-l{font-family:var(--fc);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mut);}
+.fr-rank-hd-r{display:flex;gap:22px;font-family:var(--fc);font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--mut);text-transform:uppercase;}
+.fr-rankrow{display:flex;align-items:center;gap:10px;padding:8px 13px;border-bottom:1px solid var(--brd);cursor:default;transition:background .09s;}
+.fr-rankrow:hover{background:var(--pan2);}
+.fr-rankrow:last-child{border-bottom:none;}
+.fr-rn{font-family:var(--fc);font-size:12px;font-weight:700;color:var(--mutl);width:22px;text-align:right;flex-shrink:0;}
+.fr-rname{font-weight:600;font-size:13px;}
+.fr-rtag{font-size:10px;color:var(--mut);margin-left:6px;font-family:var(--fc);}
+.fr-rbar-bg{flex:1;max-width:100px;height:4px;background:var(--brd);border-radius:2px;overflow:hidden;margin-left:6px;}
+.fr-rbar{height:100%;background:var(--teal);border-radius:2px;}
+.fr-rstat{font-size:11px;color:var(--mut);font-family:var(--fc);width:112px;text-align:right;flex-shrink:0;}
+.fr-reff{font-size:11px;color:var(--mut);width:44px;text-align:right;flex-shrink:0;}
+.fr-rpts{font-family:var(--fc);font-size:20px;font-weight:700;color:var(--teal);width:44px;text-align:right;flex-shrink:0;}
+.fr-sel{background:var(--pan);border:1px solid var(--brd);border-radius:var(--r);padding:12px 14px;box-shadow:var(--ssm);margin-bottom:2px;}
+.fr-sel-t{font-family:var(--fc);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-bottom:8px;}
+.fr-sel-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.fr-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:1px solid var(--brd);font-size:11px;cursor:pointer;transition:all .12s;user-select:none;background:var(--pan2);}
+.fr-chip:hover{border-color:var(--teal);color:var(--teal);}
+.fr-chip.fr-sel-on{background:var(--td);border-color:var(--teal);color:var(--teal);font-weight:600;}
+.fr-tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--brd);background:var(--pan);}
+.fr-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.fr-tbl th{padding:6px 9px;background:var(--nav);color:rgba(255,255,255,.65);font-family:var(--fc);font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap;border-right:1px solid rgba(255,255,255,.06);}
+.fr-tbl th:first-child,.fr-tbl th:nth-child(2){text-align:left;}
+.fr-tbl th.fr-th-friend{background:#4a3c10;color:var(--gold);}
+.fr-tbl th.fr-th-model{background:#0d2922;}
+.fr-tbl td{padding:5px 9px;border-bottom:1px solid var(--brd);border-right:1px solid var(--brd);text-align:center;font-family:var(--fc);font-weight:600;white-space:nowrap;font-size:11px;}
+.fr-tbl td:first-child{text-align:left;background:var(--pan);position:sticky;left:0;z-index:1;font-family:var(--f);font-weight:500;border-right:2px solid var(--brds);}
+.fr-tbl tbody tr:hover td{background:var(--pan2);}
+.fr-tbl tbody tr:hover td:first-child{background:var(--pan2);}
+.fr-td-res{font-weight:700;color:var(--ink);background:rgba(0,0,0,.07)!important;border-right:2px solid var(--brds)!important;}
+.fr-p5{background:rgba(30,128,80,.18);color:var(--grn);}
+.fr-p3{background:rgba(26,158,122,.18);color:var(--teal);}
+.fr-p1{background:rgba(201,150,14,.18);color:#8b6914;}
+.fr-p0{background:rgba(201,77,47,.12);color:var(--cor);}
+.fr-pnd{color:var(--mutl);}
+#fr-hover{position:fixed;right:16px;top:70px;width:270px;background:var(--pan);border:1px solid var(--brds);border-radius:var(--rlg);box-shadow:var(--slg);z-index:500;display:none;max-height:80vh;overflow-y:auto;}
+.fr-hv-hd{background:var(--burg);padding:10px 13px;border-radius:var(--rlg) var(--rlg) 0 0;display:flex;align-items:center;justify-content:space-between;}
+.fr-hv-name{font-family:var(--fc);font-size:14px;font-weight:700;color:white;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fr-hv-pts{font-family:var(--fc);font-size:20px;font-weight:700;color:var(--gold);flex-shrink:0;margin-left:8px;}
+.fr-hv-stats{display:flex;gap:12px;padding:7px 12px;border-bottom:1px solid var(--brd);font-size:11px;color:var(--ink2);}
+.fr-hv-row{display:flex;align-items:center;gap:7px;padding:4px 11px;border-bottom:1px solid var(--brd);font-size:11px;}
+.fr-hv-row:last-child{border-bottom:none;}
+.fr-hv-match{flex:1;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fr-hv-pick{font-family:var(--fc);font-weight:700;width:30px;text-align:center;border-radius:3px;padding:1px 3px;}
+.fr-hv-res{font-family:var(--fc);color:var(--mut);width:26px;text-align:center;font-size:10px;}
+.fr-hv-pts-cell{font-family:var(--fc);font-weight:700;width:16px;text-align:right;font-size:11px;}
+/* model selector widget in home */
+.home-fr-sel{background:var(--pan);border:1px solid var(--brd);border-radius:var(--r);padding:12px 14px;box-shadow:var(--ssm);}
+.home-fr-sel-t{font-family:var(--fc);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.home-fr-sel-lnk{font-size:11px;text-transform:none;letter-spacing:0;color:var(--teal);cursor:pointer;font-weight:500;}
+.home-fr-sel-lnk:hover{text-decoration:underline;}
+
 /* DARK MODE TOGGLE */
 .dm-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
   color:rgba(255,255,255,.75);border-radius:var(--rsm);padding:5px 11px;cursor:pointer;font-size:12px;font-weight:600;
@@ -424,6 +480,7 @@ main{margin-top:var(--navh);}
   <button class="nlink active" id="nav-home"       onclick="showSec('home')">Inicio</button>
   <button class="nlink"        id="nav-quiniela"   onclick="showSec('quiniela')">Quiniela</button>
   <button class="nlink"        id="nav-validacion" onclick="showSec('validacion')">Validación</button>
+  <button class="nlink"        id="nav-amigos"     onclick="showSec('amigos')">Amigos</button>
   <button class="nlink"        id="nav-guia"       onclick="showSec('guia')">Guía</button>
   <div class="nmeta">
     <span class="npill npill-off" id="npill-live">LIVE: 0</span>
@@ -436,6 +493,7 @@ main{margin-top:var(--navh);}
   <div class="sec active" id="sec-home"></div>
   <div class="sec"        id="sec-quiniela"></div>
   <div class="sec"        id="sec-validacion"></div>
+  <div class="sec"        id="sec-amigos"></div>
   <div class="sec"        id="sec-guia"></div>
 </main>
 
@@ -514,6 +572,16 @@ main{margin-top:var(--navh);}
       <tbody id="vh-tbody"></tbody>
     </table>
   </div>
+</div>
+
+<!-- AMIGOS HOVER -->
+<div id="fr-hover">
+  <div class="fr-hv-hd">
+    <span class="fr-hv-name" id="fr-hv-name">—</span>
+    <span class="fr-hv-pts" id="fr-hv-pts"></span>
+  </div>
+  <div class="fr-hv-stats" id="fr-hv-stats"></div>
+  <div id="fr-hv-body"></div>
 </div>
 
 <script>
@@ -1295,7 +1363,14 @@ function renderHome(){
     '<span><span style="color:var(--teal);font-weight:700">■</span> Modelo &nbsp;<span style="color:var(--gold);font-weight:700">■</span> Mi Pick</span>'+
     '</div></div>'+
 
-    '</div>';
+    '</div>'+
+
+    /* === MODELOS EN COMPARACIÓN AMIGOS === */
+    '<div class="sdiv" style="margin-top:20px"><div class="sdiv-t">Comparar modelos en Amigos</div><div class="sdiv-l"></div></div>'+
+    '<div class="home-fr-sel">'+
+    '<div class="home-fr-sel-t"><span>Selecciona los modelos que quieres ver en el ranking de amigos</span>'+
+    '<span class="home-fr-sel-lnk" onclick="showSec(\'amigos\')">Ver ranking Amigos →</span></div>'+
+    '<div class="fr-sel-grid" id="home-fr-sel-chips">'+buildFrChips()+'</div></div>';
 
   startCountdown();
 }
@@ -1652,6 +1727,280 @@ function renderGuia(){
     '</div>';
 }
 
+/* ══════════════════ AMIGOS ══════════════════ */
+
+var _frHovTimer = null;
+var _frHovActive = false;
+
+function getFrModels(){
+  try{ return JSON.parse(localStorage.getItem('q2026_amigos_models')||'[]'); }
+  catch(e){ return []; }
+}
+function setFrModels(arr){ localStorage.setItem('q2026_amigos_models', JSON.stringify(arr)); }
+
+function toggleFrModel(modelId){
+  var curr = getFrModels();
+  var idx = curr.indexOf(modelId);
+  if(idx>=0) curr.splice(idx,1); else curr.push(modelId);
+  setFrModels(curr);
+  renderAmigos();
+  renderHomeFrSel(); // actualiza chips en Inicio también
+}
+
+/* Calcula ranking de amigos + modelos seleccionados */
+function buildFriendsRank(){
+  var friends   = DATA.friends || [];
+  var selModels = getFrModels();
+  var played    = DATA.matches.filter(function(m){ return m.result!==null; });
+  var participants = [];
+
+  friends.forEach(function(f){
+    var pts=0, exact=0, margin=0, winner=0;
+    played.forEach(function(m){
+      var pick = (f.picks||{})[String(m.id)];
+      if(!pick) return;
+      var p = calcMatchPoints(pick, m.result);
+      if(p===5){pts+=5;exact++;}
+      else if(p===3){pts+=3;margin++;}
+      else if(p===1){pts+=1;winner++;}
+    });
+    participants.push({
+      id:f.id, name:f.name, isModel:false, fb:'fb-friend', label:'Participante',
+      pts:pts, exact:exact, margin:margin, winner:winner,
+      total:Object.keys(f.picks||{}).length
+    });
+  });
+
+  selModels.forEach(function(modelId){
+    if(!DATA.matches[0]) return;
+    var modInfo = DATA.matches[0].models.find(function(m){ return m.id===modelId; });
+    if(!modInfo) return;
+    var pts=0, exact=0, margin=0, winner=0;
+    played.forEach(function(m){
+      var mod = m.models.find(function(md){ return md.id===modelId; });
+      if(!mod) return;
+      var p = calcMatchPoints(mod.score, m.result);
+      if(p===5){pts+=5;exact++;}
+      else if(p===3){pts+=3;margin++;}
+      else if(p===1){pts+=1;winner++;}
+    });
+    participants.push({
+      id:modelId, name:modelId.replace(/_/g,' '), isModel:true,
+      fb:modInfo.fb, label:modInfo.family,
+      pts:pts, exact:exact, margin:margin, winner:winner,
+      total:DATA.matches.length
+    });
+  });
+
+  participants.sort(function(a,b){
+    return (b.pts-a.pts)||(b.exact-a.exact)||(b.margin-a.margin);
+  });
+  return participants;
+}
+
+/* Chips de selección de modelos (reutilizado en home y en amigos) */
+function buildFrChips(){
+  var allModels = DATA.matches[0] ? DATA.matches[0].models : [];
+  var selModels = getFrModels();
+  return allModels.map(function(mod){
+    var isSel = selModels.indexOf(mod.id)>=0;
+    return '<span class="fr-chip'+(isSel?' fr-sel-on':'')+'" onclick="toggleFrModel(\''+esc(mod.id)+'\')">'
+         + '<span class="fb '+mod.fb+'" style="font-size:8px">'+esc(mod.label)+'</span>'
+         + esc(mod.id.replace(/_/g,' '))+'</span>';
+  }).join('');
+}
+
+function renderAmigos(){
+  var el = document.getElementById('sec-amigos');
+  if(!el) return;
+  var friends = DATA.friends || [];
+  var played  = DATA.matches.filter(function(m){ return m.result!==null; });
+  var rank    = buildFriendsRank();
+  var maxPts  = played.length*5 || 1;
+  var maxV    = rank.length>0 ? Math.max(1, rank[0].pts) : 1;
+  var selMods = getFrModels();
+
+  /* ── KPIs ── */
+  var kpis =
+    '<div class="krow">'
+    +'<div class="kpi"><div class="kpi-l">Participantes</div><div class="kpi-v">'+friends.length+'</div></div>'
+    +'<div class="kpi"><div class="kpi-l">Con modelo</div><div class="kpi-v t">'+selMods.length+'</div></div>'
+    +'<div class="kpi"><div class="kpi-l">Partidos jugados</div><div class="kpi-v">'+played.length+'</div></div>'
+    +'<div class="kpi"><div class="kpi-l">Total partidos</div><div class="kpi-v">'+DATA.matches.length+'</div></div>'
+    +'</div>';
+
+  /* ── Aviso si no hay participantes ── */
+  var warn = friends.length===0
+    ? '<div class="warnbox">ℹ️ &nbsp;Crea un CSV por participante en <code>curated_inputs/quinielas/</code> (ver TEMPLATE.csv), luego corre <code>python scripts/build_friends_quinielas.py</code> y regenera el dashboard.</div>'
+    : '';
+
+  /* ── Selector de modelos ── */
+  var selBlock =
+    '<div class="sdiv"><div class="sdiv-t">Comparar con modelos</div><div class="sdiv-l"></div></div>'
+    +'<div class="fr-sel"><div class="fr-sel-t">Selecciona modelos para añadir al ranking</div>'
+    +'<div class="fr-sel-grid" id="fr-chips-amigos">'+buildFrChips()+'</div></div>';
+
+  /* ── Ranking ── */
+  var rankRows = '';
+  if(rank.length===0){
+    rankRows = '<div style="padding:20px;text-align:center;color:var(--mut);font-size:13px">Sin participantes ni modelos seleccionados.</div>';
+  } else {
+    rank.forEach(function(p,i){
+      var barW = played.length>0 ? (p.pts/maxV*100).toFixed(1) : 0;
+      var eff  = played.length>0 ? (p.pts/maxPts*100).toFixed(1) : '—';
+      var ptsDisp = played.length>0 ? p.pts : '—';
+      var tag  = p.isModel
+        ? '<span class="fb '+p.fb+'" style="font-size:8px;flex-shrink:0">'+esc(p.label)+'</span>'
+        : '<span class="fr-rtag">👤</span>';
+      rankRows +=
+        '<div class="fr-rankrow" onmouseenter="showFrHover(\''+esc(p.id)+'\','+p.isModel+',this)" onmouseleave="schedFrClose()">'
+        +'<span class="fr-rn">'+(i+1)+'</span>'
+        +'<div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px">'
+        +'<span class="fr-rname">'+esc(p.name)+'</span>'+tag
+        +'<div class="fr-rbar-bg"><div class="fr-rbar" style="width:'+barW+'%"></div></div>'
+        +'</div>'
+        +'<span class="fr-rstat">'+p.exact+' ex · '+p.margin+' mg · '+p.winner+' gn</span>'
+        +'<span class="fr-reff">'+eff+'%</span>'
+        +'<span class="fr-rpts">'+ptsDisp+'</span>'
+        +'</div>';
+    });
+  }
+
+  var rankBlock =
+    '<div class="sdiv"><div class="sdiv-t">Ranking en vivo</div><div class="sdiv-l"></div></div>'
+    +'<div class="fr-rank-panel">'
+    +'<div class="fr-rank-hd"><span class="fr-rank-hd-l">Participante</span>'
+    +'<div class="fr-rank-hd-r"><span style="min-width:112px;text-align:right">Ex · Mg · Gn</span><span style="width:44px;text-align:right">Eff%</span><span style="width:44px;text-align:right">Pts</span></div></div>'
+    +rankRows
+    +'</div>';
+
+  /* ── Tabla de picks ── */
+  var allFriends = DATA.friends || [];
+  var allModels  = DATA.matches[0] ? DATA.matches[0].models : [];
+  var selModObjs = selMods.map(function(mid){ return allModels.find(function(m){ return m.id===mid; }); }).filter(Boolean);
+
+  var thFriends = allFriends.map(function(f){ return '<th class="fr-th-friend">'+esc(f.name)+'</th>'; }).join('');
+  var thModels  = selModObjs.map(function(m){ return '<th class="fr-th-model">'+esc(m.id.replace(/_/g,' '))+'</th>'; }).join('');
+
+  var tRows = DATA.matches.map(function(m){
+    var friendCells = allFriends.map(function(f){
+      var pick = (f.picks||{})[String(m.id)];
+      if(!pick) return '<td class="fr-pnd">—</td>';
+      if(!m.result) return '<td>'+esc(pick)+'</td>';
+      var p = calcMatchPoints(pick, m.result);
+      var cls = p===5?'fr-p5':p===3?'fr-p3':p===1?'fr-p1':'fr-p0';
+      return '<td class="'+cls+'">'+esc(pick)+'</td>';
+    }).join('');
+
+    var modCells = selModObjs.map(function(mod){
+      var modPred = m.models.find(function(md){ return md.id===mod.id; });
+      var pick = modPred ? modPred.score : null;
+      if(!pick) return '<td class="fr-pnd">—</td>';
+      if(!m.result) return '<td>'+esc(pick)+'</td>';
+      var p = calcMatchPoints(pick, m.result);
+      var cls = p===5?'fr-p5':p===3?'fr-p3':p===1?'fr-p1':'fr-p0';
+      return '<td class="'+cls+'">'+esc(pick)+'</td>';
+    }).join('');
+
+    var resDisp = m.result || (m.status==='live'?'🔴':'—');
+    return '<tr>'
+      +'<td style="min-width:160px"><span style="font-weight:600">'+esc(m.home)+'</span>'
+      +' <span style="color:var(--mut);font-size:9px">vs</span> '
+      +'<span style="font-weight:600">'+esc(m.away)+'</span>'
+      +'<br><span style="font-size:9px;color:var(--mut)">'+esc(m.date)+(m.group?' · '+esc(m.group):'')+'</span></td>'
+      +'<td class="fr-td-res">'+esc(resDisp)+'</td>'
+      +friendCells+modCells
+      +'</tr>';
+  }).join('');
+
+  var tblBlock = (allFriends.length>0||selModObjs.length>0)
+    ? '<div class="sdiv"><div class="sdiv-t">Pronósticos por partido</div><div class="sdiv-l"></div></div>'
+      +'<div class="fr-tbl-wrap"><table class="fr-tbl"><thead><tr>'
+      +'<th style="min-width:160px;position:sticky;left:0;z-index:3;background:var(--nav)">Partido</th>'
+      +'<th>Resultado</th>'+thFriends+thModels
+      +'</tr></thead><tbody>'+tRows+'</tbody></table></div>'
+    : '';
+
+  el.innerHTML =
+    '<div class="pg-hd"><div class="pg-title">Quiniela Amigos</div>'
+    +'<div class="pg-sub">'+friends.length+' participante'+(friends.length!==1?'s':'')+' · '+played.length+' partido'+(played.length!==1?'s':'')+' jugado'+(played.length!==1?'s':'')+'</div></div>'
+    +kpis+warn+selBlock+rankBlock+tblBlock;
+}
+
+/* ── Home: widget de selección de modelos para Amigos ── */
+function renderHomeFrSel(){
+  var el = document.getElementById('home-fr-sel-chips');
+  if(el) el.innerHTML = buildFrChips();
+}
+
+/* ── Friend / Model hover ── */
+function showFrHover(participantId, isModel, triggerEl){
+  clearTimeout(_frHovTimer);
+  var picks = {};
+  var name  = participantId;
+
+  if(!isModel){
+    var friend = (DATA.friends||[]).find(function(f){ return f.id===participantId; });
+    if(friend){ name=friend.name; picks=friend.picks||{}; }
+  } else {
+    name = participantId.replace(/_/g,' ');
+    DATA.matches.forEach(function(m){
+      var mod = m.models.find(function(md){ return md.id===participantId; });
+      if(mod) picks[String(m.id)] = mod.score;
+    });
+  }
+
+  var played = DATA.matches.filter(function(m){ return m.result!==null; });
+  var totalPts=0, exact=0, margin=0, winner=0;
+  played.forEach(function(m){
+    var pick = picks[String(m.id)];
+    if(!pick) return;
+    var p = calcMatchPoints(pick, m.result);
+    if(p===5){totalPts+=5;exact++;}
+    else if(p===3){totalPts+=3;margin++;}
+    else if(p===1){totalPts+=1;winner++;}
+  });
+
+  var rows = DATA.matches.filter(function(m){
+    return picks[String(m.id)];
+  }).map(function(m){
+    var pick = picks[String(m.id)];
+    var pts  = m.result ? calcMatchPoints(pick, m.result) : null;
+    var cls  = pts===5?'fr-p5':pts===3?'fr-p3':pts===1?'fr-p1':pts===0?'fr-p0':'fr-pnd';
+    var pDisp = pts!==null ? String(pts) : '';
+    return '<div class="fr-hv-row">'
+      +'<span class="fr-hv-match">'+esc(m.home)+' - '+esc(m.away)+'</span>'
+      +'<span class="fr-hv-pick '+cls+'">'+esc(pick)+'</span>'
+      +'<span class="fr-hv-res">'+(m.result||'—')+'</span>'
+      +'<span class="fr-hv-pts-cell '+cls+'">'+pDisp+'</span>'
+      +'</div>';
+  }).join('');
+
+  document.getElementById('fr-hv-name').textContent = name;
+  document.getElementById('fr-hv-pts').textContent  = played.length>0 ? totalPts+' pts' : '';
+  document.getElementById('fr-hv-stats').innerHTML  =
+    '<span>✅ '+exact+' exactos</span>'
+    +'<span>〰 '+margin+' margen</span>'
+    +'<span>🎯 '+winner+' ganador</span>';
+  document.getElementById('fr-hv-body').innerHTML = rows || '<div style="padding:14px;color:var(--mut);font-size:12px;text-align:center">Sin pronósticos registrados</div>';
+
+  var hp = document.getElementById('fr-hover');
+  hp.style.display = 'block';
+  _frHovActive = true;
+
+  if(triggerEl){
+    var rect = triggerEl.getBoundingClientRect();
+    hp.style.top = Math.min(rect.top, window.innerHeight-420)+'px';
+  }
+}
+
+function schedFrClose(){
+  _frHovActive = false;
+  _frHovTimer = setTimeout(function(){
+    if(!_frHovActive) document.getElementById('fr-hover').style.display='none';
+  }, 220);
+}
+
 /* ══════════════════ COUNTDOWN ══════════════════ */
 function startCountdown(){
   var target = new Date('2026-06-11T13:00:00-06:00');
@@ -1707,8 +2056,14 @@ document.addEventListener('DOMContentLoaded', function(){
   renderHome();
   renderQuiniela();
   renderValidacion();
+  renderAmigos();
   renderGuia();
   setTimeout(filterPreds, 50);
+
+  // Keepalive for fr-hover
+  var fh = document.getElementById('fr-hover');
+  fh.addEventListener('mouseenter', function(){ _frHovActive=true; clearTimeout(_frHovTimer); });
+  fh.addEventListener('mouseleave', schedFrClose);
 
   // Keepalive for hover panels
   var hp = document.getElementById('hover-panel');

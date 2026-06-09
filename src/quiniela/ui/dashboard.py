@@ -59,6 +59,7 @@ def generate_dashboard(
     project_root: Path,
     output_path: Path | None = None,
     predictions_path: Path | None = None,
+    friends_path: Path | None = None,
 ) -> DashboardResult:
     store = SQLiteStore(db_path)
     store.initialize()
@@ -69,7 +70,8 @@ def generate_dashboard(
         group_tables = _load_group_tables(conn)
         predictions  = _load_prediction_overrides(predictions_path)
         backtest     = _load_backtest_data(conn)
-        payload      = _build_unified_payload(state, matches, group_tables, predictions, backtest)
+        friends      = _load_friends_quinielas(friends_path)
+        payload      = _build_unified_payload(state, matches, group_tables, predictions, backtest, friends)
     finally:
         store.close()
 
@@ -133,6 +135,16 @@ def _load_prediction_overrides(predictions_path: Path | None) -> dict[str, Any]:
     if predictions_path is None or not predictions_path.exists():
         return {"matches": {}}
     return json.loads(predictions_path.read_text(encoding="utf-8"))
+
+
+def _load_friends_quinielas(friends_path: Path | None) -> list[dict[str, Any]]:
+    if friends_path is None or not friends_path.exists():
+        return []
+    try:
+        data = json.loads(friends_path.read_text(encoding="utf-8"))
+        return data.get("friends", [])
+    except Exception:
+        return []
 
 
 def _load_backtest_data(conn: sqlite3.Connection) -> dict[str, Any] | None:
@@ -248,6 +260,7 @@ def _build_unified_payload(
     group_tables: list[dict[str, Any]],
     predictions_overrides: dict[str, Any],
     backtest_data: dict[str, Any] | None,
+    friends: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     pred_matches = predictions_overrides.get("matches", {})
 
@@ -371,6 +384,7 @@ def _build_unified_payload(
         "groups":   groups,
         "matches":  unified_matches,
         "backtest": backtest,
+        "friends":  friends or [],
     }
 
 

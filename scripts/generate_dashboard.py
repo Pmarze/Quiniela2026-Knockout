@@ -32,17 +32,24 @@ def parse_args() -> argparse.Namespace:
         default=str(PROJECT_ROOT / "data" / "ui" / "prediction_overrides.json"),
         help="JSON opcional con pronosticos y picks por match_id.",
     )
+    parser.add_argument(
+        "--friends",
+        default=str(PROJECT_ROOT / "data" / "ui" / "friends_quinielas.json"),
+        help="JSON con quinielas de amigos generado por scripts/build_friends_quinielas.py.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     predictions_path = Path(args.predictions)
+    friends_path = Path(args.friends)
     result = generate_dashboard(
         db_path=Path(args.db),
         project_root=PROJECT_ROOT,
         output_path=Path(args.output),
         predictions_path=predictions_path if predictions_path.exists() else None,
+        friends_path=friends_path if friends_path.exists() else None,
     )
     print(f"dashboard: {result.output_path}")
     print(f"state_id: {result.state_id}")

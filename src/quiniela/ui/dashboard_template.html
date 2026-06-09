@@ -473,6 +473,33 @@ main{margin-top:var(--navh);}
 .home-mrow-teams{flex:1;font-size:11px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
 .home-mrow-mod{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--teal);background:var(--td);padding:1px 5px;border-radius:var(--rsm);flex-shrink:0;}
 .home-mrow-pick{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--gold);background:var(--gd);padding:1px 5px;border-radius:var(--rsm);flex-shrink:0;}
+/* === SOÑADORA === */
+.son-chip{background:var(--pan2);border:1px solid var(--brd);color:var(--mutl);padding:4px 11px;border-radius:16px;font-size:11px;cursor:pointer;font-family:var(--fc);transition:all .15s;}
+.son-chip:hover{border-color:var(--teal);color:var(--teal);}
+.son-chip.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700;}
+.son-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;}
+.son-champion{background:linear-gradient(120deg,var(--burg),#7a4c00 50%,#c49a1e);border-radius:10px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;margin-bottom:4px;}
+.son-champ-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7);}
+.son-champ-name{font-family:var(--fc);font-size:28px;font-weight:800;color:#fff;}
+.son-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:10px;}
+.son-group{background:var(--pan2);border:1px solid var(--brd);border-radius:7px;overflow:hidden;}
+.son-g-hd{background:var(--nav);color:#fff;padding:4px 10px;font-size:10px;font-weight:800;letter-spacing:.5px;}
+.son-g-row{display:flex;align-items:center;gap:5px;padding:3px 8px;font-size:11px;border-top:1px solid var(--brd);}
+.son-g-row.q{background:rgba(8,126,139,.07);}
+.son-g-row.t3{background:rgba(201,150,14,.05);}
+.son-g-row.out{opacity:.38;}
+.son-g-pos{width:14px;text-align:center;flex-shrink:0;font-size:10px;}
+.son-g-team{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-size:10px;}
+.son-g-pts{font-family:var(--fc);font-weight:700;color:var(--teal);font-size:10px;flex-shrink:0;margin-left:2px;}
+.son-g-gd{font-family:var(--fc);font-size:9px;color:var(--mutl);flex-shrink:0;min-width:22px;text-align:right;}
+.son-bracket{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:6px;margin-top:8px;}
+.son-match{display:flex;align-items:center;gap:8px;background:var(--pan2);border:1px solid var(--brd);border-radius:6px;padding:7px 10px;}
+.son-m-n{font-family:var(--fc);font-size:9px;color:var(--mutl);width:20px;text-align:center;flex-shrink:0;}
+.son-m-t{flex:1;font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.son-m-t.r{text-align:right;}
+.son-m-t.win{color:var(--teal);font-weight:700;}
+.son-m-sc{font-family:var(--fc);font-size:13px;font-weight:700;color:var(--ink);flex-shrink:0;min-width:28px;text-align:center;}
+.son-empty{color:var(--mutl);text-align:center;padding:40px 0;font-size:13px;}
 </style>
 </head>
 <body>
@@ -481,11 +508,12 @@ main{margin-top:var(--navh);}
   <a class="nlogo" href="#" onclick="showSec('home');return false">
     <span class="nlogo-icon">⚽</span><span>QUINIELA <em>2026</em></span>
   </a>
-  <button class="nlink active" id="nav-home"       onclick="showSec('home')">Inicio</button>
-  <button class="nlink"        id="nav-quiniela"   onclick="showSec('quiniela')">Quiniela</button>
+  <button class="nlink active" id="nav-home"      onclick="showSec('home')">Inicio</button>
+  <button class="nlink"        id="nav-quiniela"  onclick="showSec('quiniela')">Quiniela</button>
+  <button class="nlink"        id="nav-amigos"    onclick="showSec('amigos')">Amigos</button>
+  <button class="nlink"        id="nav-sonadora"  onclick="showSec('sonadora')">Soñadora</button>
+  <button class="nlink"        id="nav-guia"      onclick="showSec('guia')">Guía</button>
   <button class="nlink"        id="nav-validacion" onclick="showSec('validacion')">Validación</button>
-  <button class="nlink"        id="nav-amigos"     onclick="showSec('amigos')">Amigos</button>
-  <button class="nlink"        id="nav-guia"       onclick="showSec('guia')">Guía</button>
   <div class="nmeta">
     <span class="npill npill-off" id="npill-live">LIVE: 0</span>
     <span class="ndate" id="ndate"></span>
@@ -496,9 +524,10 @@ main{margin-top:var(--navh);}
 <main>
   <div class="sec active" id="sec-home"></div>
   <div class="sec"        id="sec-quiniela"></div>
-  <div class="sec"        id="sec-validacion"></div>
   <div class="sec"        id="sec-amigos"></div>
+  <div class="sec"        id="sec-sonadora"></div>
   <div class="sec"        id="sec-guia"></div>
+  <div class="sec"        id="sec-validacion"></div>
 </main>
 
 <!-- HOVER PANEL -->
@@ -2038,9 +2067,10 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   renderHome();
   renderQuiniela();
-  renderValidacion();
   renderAmigos();
+  renderSonadora();
   renderGuia();
+  renderValidacion();
   setTimeout(filterPreds, 50);
 
   // Keepalive for fr-hover
@@ -2061,6 +2091,168 @@ document.addEventListener('DOMContentLoaded', function(){
     if(e.key==='Escape'){ closeModal(); closeHover(); closeValHover(); }
   });
 });
+
+/* ══════════════════ SOÑADORA: SIMULACIÓN ══════════════════ */
+function _sonAvg(match, modelIds){
+  var preds=(match.models||[]).filter(function(m){return modelIds.indexOf(m.id)>=0;});
+  if(!preds.length) preds=match.models||[];
+  if(!preds.length) return {p1:.34,px:.33,p2:.33,preds:[]};
+  var p1=0,px=0,p2=0;
+  preds.forEach(function(m){p1+=m.p1||0;px+=m.px||0;p2+=m.p2||0;});
+  return {p1:p1/preds.length,px:px/preds.length,p2:p2/preds.length,preds:preds};
+}
+function _sonSim(match, modelIds, allowDraw){
+  var a=_sonAvg(match,modelIds);
+  var out=allowDraw
+    ?(a.p1>=a.px&&a.p1>=a.p2?'H':a.px>=a.p1&&a.px>=a.p2?'D':'A')
+    :(a.p1>=a.p2?'H':'A');
+  var best=a.preds.filter(function(m){
+    var p=m.score.split('-'),h=+p[0],g=+p[1];
+    return (h>g?'H':h<g?'A':'D')===out;
+  }).sort(function(a,b){return b.conf-a.conf;})[0]
+   ||a.preds.sort(function(a,b){return b.conf-a.conf;})[0];
+  var pts=(best?best.score:(out==='H'?'1-0':out==='D'?'0-0':'0-1')).split('-');
+  var hg=+pts[0]||0,ag=+pts[1]||0;
+  if(out==='H'&&hg<=ag) hg=ag+1;
+  else if(out==='A'&&ag<=hg) ag=hg+1;
+  else if(out==='D'){var avg=Math.ceil((hg+ag)/2);hg=avg;ag=avg;}
+  return {hg:hg,ag:ag,out:out};
+}
+function runSonSimulation(modelIds){
+  var results={},standings={},teamStats={};
+  // Fase de grupos
+  DATA.matches.filter(function(m){return m.phase==='group';}).forEach(function(m){
+    ['home','away'].forEach(function(s){
+      if(!teamStats[m[s]]) teamStats[m[s]]={team:m[s],pts:0,gf:0,ga:0,gd:0,group:m.group};
+    });
+    var r=_sonSim(m,modelIds,true); results[m.id]=r;
+    var h=teamStats[m.home],a=teamStats[m.away];
+    h.gf+=r.hg;h.ga+=r.ag;h.gd+=r.hg-r.ag;
+    a.gf+=r.ag;a.ga+=r.hg;a.gd+=r.ag-r.hg;
+    if(r.out==='H'){h.pts+=3;}else if(r.out==='D'){h.pts++;a.pts++;}else{a.pts+=3;}
+  });
+  Object.values(teamStats).forEach(function(t){
+    if(!standings[t.group]) standings[t.group]=[];
+    standings[t.group].push(t);
+  });
+  Object.keys(standings).forEach(function(g){
+    standings[g].sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);});
+  });
+  // Top 8 terceros
+  var thirds=Object.keys(standings).map(function(g){
+    return Object.assign({},standings[g][2],{group:g});
+  }).sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);}).slice(0,8);
+  var usedT={};
+  // Resolver nombre de equipo
+  function resolve(name){
+    if(!name) return '?';
+    var m2;
+    m2=name.match(/^Winner Group ([A-L])$/);
+    if(m2) return ((standings[m2[1]]||[])[0]||{}).team||name;
+    m2=name.match(/^Runner-up Group ([A-L])$/);
+    if(m2) return ((standings[m2[1]]||[])[1]||{}).team||name;
+    m2=name.match(/^3rd Group (.+)$/);
+    if(m2){
+      var eligible=m2[1].split('/');
+      for(var i=0;i<thirds.length;i++){
+        if(eligible.indexOf(thirds[i].group)>=0&&!usedT[thirds[i].team]){
+          usedT[thirds[i].team]=true; return thirds[i].team;
+        }
+      }
+      return name;
+    }
+    m2=name.match(/^Winner Match (\d+)$/);
+    if(m2){var r2=results[+m2[1]];return r2?r2.winner||name:name;}
+    return name;
+  }
+  // Fases eliminatorias
+  ['r32','r16','qf','sf','final'].forEach(function(phase){
+    DATA.matches.filter(function(m){return m.phase===phase;}).forEach(function(m){
+      var ht=resolve(m.home),at=resolve(m.away);
+      var r=_sonSim(m,modelIds,false);
+      r.homeTeam=ht; r.awayTeam=at;
+      r.winner=r.out==='H'?ht:at;
+      results[m.id]=r;
+    });
+  });
+  var fin=DATA.matches.find(function(m){return m.phase==='final';});
+  return {standings:standings,results:results,thirds:thirds,
+          champion:fin&&results[fin.id]?results[fin.id].winner:'?'};
+}
+
+/* ══════════════════ RENDER: SOÑADORA ══════════════════ */
+function renderSonadora(){
+  var el=document.getElementById('sec-sonadora');
+  var allModels=[];
+  DATA.matches.forEach(function(m){
+    (m.models||[]).forEach(function(mod){
+      if(!allModels.find(function(x){return x.id===mod.id;}))
+        allModels.push({id:mod.id});
+    });
+  });
+  var chips=allModels.map(function(mod){
+    return '<button class="son-chip" data-mid="'+mod.id+'" onclick="_sonToggle(this)" title="'+mod.id+'">'+
+      modelDisplayName(mod.id)+'</button>';
+  }).join('');
+  el.innerHTML=
+    '<div style="padding:20px 20px 0">'+
+    '<div class="sdiv"><div class="sdiv-t">Soñadora · Simulación del Torneo</div><div class="sdiv-l"></div></div>'+
+    '<div style="font-size:12px;color:var(--mutl);margin:6px 0 10px">'+
+    'Selecciona uno o más modelos para simular clasificados y resultados hasta el campeón. '+
+    'Con varios modelos se promedian sus probabilidades en partes iguales.</div>'+
+    '<div class="son-chips">'+chips+'</div></div>'+
+    '<div id="son-result" style="padding:8px 20px 28px"><div class="son-empty">Selecciona al menos un modelo para ver la simulación.</div></div>';
+}
+function _sonToggle(btn){
+  btn.classList.toggle('active');
+  _sonRender();
+}
+function _sonRender(){
+  var sel=Array.from(document.querySelectorAll('.son-chip.active')).map(function(b){return b.dataset.mid;});
+  var el=document.getElementById('son-result');
+  if(!sel.length){el.innerHTML='<div class="son-empty">Selecciona al menos un modelo para ver la simulación.</div>';return;}
+  var sim=runSonSimulation(sel);
+  var html='<div class="son-champion"><div class="son-champ-label">🏆 Campeón Simulado</div><div class="son-champ-name">'+esc(sim.champion)+'</div></div>';
+  // Grupos
+  html+='<div class="sdiv"><div class="sdiv-t">Fase de Grupos</div><div class="sdiv-l"></div></div>';
+  html+='<div class="son-groups">';
+  Object.keys(sim.standings).sort().forEach(function(g){
+    html+='<div class="son-group"><div class="son-g-hd">GRUPO '+g+'</div>';
+    sim.standings[g].forEach(function(t,i){
+      var isT3=sim.thirds.findIndex(function(q){return q.team===t.team;})>=0;
+      var cls=i<2?'q':(isT3?'t3':'out');
+      var icon=i===0?'①':i===1?'②':(isT3?'✦':'·');
+      html+='<div class="son-g-row '+cls+'">'+
+        '<span class="son-g-pos">'+icon+'</span>'+
+        '<span class="son-g-team" title="'+esc(t.team)+'">'+esc(t.team)+'</span>'+
+        '<span class="son-g-pts">'+t.pts+'p</span>'+
+        '<span class="son-g-gd">'+(t.gd>=0?'+':'')+t.gd+'</span></div>';
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  // Eliminatorias
+  [{id:'r32',label:'Treintaidosavos (R32)'},{id:'r16',label:'Dieciseisavos (R16)'},
+   {id:'qf',label:'Cuartos de Final'},{id:'sf',label:'Semifinales'},{id:'final',label:'FINAL'}
+  ].forEach(function(ph){
+    var pms=DATA.matches.filter(function(m){return m.phase===ph.id;});
+    if(!pms.length) return;
+    html+='<div class="sdiv" style="margin-top:16px"><div class="sdiv-t">'+ph.label+'</div><div class="sdiv-l"></div></div>';
+    html+='<div class="son-bracket">';
+    pms.forEach(function(m){
+      var r=sim.results[m.id]; if(!r) return;
+      var hw=r.out==='H',aw=r.out==='A';
+      html+='<div class="son-match">'+
+        '<span class="son-m-n">'+m.num+'</span>'+
+        '<span class="son-m-t'+(hw?' win':'')+'">'+esc(r.homeTeam||m.home)+'</span>'+
+        '<span class="son-m-sc">'+r.hg+'-'+r.ag+'</span>'+
+        '<span class="son-m-t r'+(aw?' win':'')+'">'+esc(r.awayTeam||m.away)+'</span>'+
+        '</div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
 </script>
 </body>
 </html>

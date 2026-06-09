@@ -24,7 +24,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_PATH  = PROJECT_ROOT / "data" / "ui" / "friends_quinielas.json"
 
-SHEET_ID = "1QzkAnoYqD4_gfrgXFJ9KcRj-mBGT2ITS"
+SHEET_ID = "1YufsZRD1af2QcS6GvT403mwgsFNBRjMCJ83OEMh7r10"
 SHEET_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
 
 PICK_RE = re.compile(r"^\s*(\d+)\s*[-:]\s*(\d+)\s*$")

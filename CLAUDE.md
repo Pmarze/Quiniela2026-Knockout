@@ -1,110 +1,217 @@
-# CLAUDE.md — Instrucciones para agentes IA
+# CLAUDE.md - Instrucciones para agentes IA
 
-Este archivo es leído automáticamente por Claude Code y cualquier agente IA que trabaje en este repositorio.
-**Todas las reglas aquí son obligatorias.**
-
----
+Este archivo es leido automaticamente por Claude Code y cualquier agente IA que trabaje en este repositorio.
+Todas las reglas aqui son obligatorias.
 
 ## Rama de trabajo
 
-**REGLA CRÍTICA: Todo trabajo de IA se hace en `development`. NUNCA en `main`.**
+Regla critica: todo trabajo de IA se hace en `development`. No trabajar directo en `main`.
 
+```text
+Rama de desarrollo : development
+Rama de produccion : main
 ```
-Rama de desarrollo : development   ← todo push de IA va aquí
-Rama de producción : main          ← solo se toca con autorización explícita del usuario
+
+Al iniciar una sesion:
+
+```powershell
+git branch --show-current
+git checkout development
+git pull --rebase
+git lfs pull
 ```
 
-### Qué significa esto en la práctica
+Todos los commits normales van a `development`.
 
-- Al iniciar una sesión, verificar en qué rama estás: `git branch --show-current`
-- Si estás en `main`, cambiar a `development` antes de hacer cualquier cambio: `git checkout development`
-- Todos los commits y pushes van a `development`
-- **Nunca hacer `git push origin main`** a menos que el usuario lo pida con estas palabras exactas:
-  _"haz push a main"_ / _"merge a main"_ / _"promover a producción"_ / _"publicar en main"_
+Solo se puede empujar a `main` cuando el usuario lo pida explicitamente con frases como:
 
-### Cómo promover development → main (solo cuando el usuario lo solicita)
+- `haz push a main`
+- `merge a main`
+- `promover a produccion`
+- `publicar en main`
+- `deja la pagina en vivo`
 
-```bash
+Promocion segura a produccion:
+
+```powershell
 git checkout main
-git merge development
+git pull --ff-only origin main
+git merge --ff-only development
 git push origin main
-git checkout development   # volver a development inmediatamente
-```
-
-### Por qué esta regla existe
-
-`main` es la rama pública/estable. El dashboard de `docs/index.html` en `main` es el que se publica
-en GitHub Pages. Los cambios experimentales o en progreso no deben llegar a producción hasta que
-el usuario los revise y apruebe explícitamente.
-
----
-
-## Entorno Python
-
-```
-conda activate quiniela2026
-```
-
-No hardcodear rutas absolutas de Python. Desde la raiz del repo, usar `python ...`
-despues de activar el entorno.
-
----
-
-## Flujo de actualización diaria
-
-```bash
-# 1. Actualizar datos y correr modelos
-python scripts/run_daily.py         # o el script correspondiente
-
-# 2. Construir quinielas de amigos solo en entorno local/privado
-python scripts/build_friends_quinielas.py
-
-# 3. Regenerar dashboard publico con amigos
-python scripts/generate_dashboard.py
-# output: docs/index.html
-
-# Version sin amigos solo si se pide explicitamente:
-python scripts/generate_dashboard.py --exclude-friends
-
-# 4. Commit y push a development
-git add ...
-git commit -m "..."
+git checkout development
+git merge --ff-only main
 git push origin development
 ```
 
----
+Si `--ff-only` falla, detenerse, inspeccionar el conflicto y pedir confirmacion antes de resolver.
 
-## Estructura del proyecto
+## Entorno Python
 
-| Carpeta / Archivo | Rol |
-|---|---|
-| `src/quiniela/` | Código fuente principal |
-| `src/quiniela/ui/dashboard.py` | Generador Python del dashboard |
-| `src/quiniela/ui/dashboard_template.html` | Template HTML/CSS/JS del dashboard |
-| `scripts/generate_dashboard.py` | Entry point para generar el dashboard |
-| `scripts/build_friends_quinielas.py` | Procesa CSVs de amigos → JSON |
-| `curated_inputs/quinielas/` | CSVs de participantes (uno por amigo) |
-| `data/ui/prediction_overrides.json` | Predicciones y picks del sistema |
-| `data/ui/friends_quinielas.json` | JSON publicable de quinielas de amigos |
-| `docs/index.html` | Dashboard generado — se publica en GitHub Pages desde `main` |
-| `configs/models.yaml` | Configuración de modelos activos |
-| `data/quiniela.db` | Base SQLite — local, no se commitea (>100 MB) |
+Usar siempre el entorno Conda:
 
----
+```powershell
+conda activate quiniela2026
+```
 
-## Reglas de código
+No hardcodear rutas absolutas de Python en scripts o documentacion. Desde la raiz del repo, usar `python ...` despues de activar el entorno.
 
-- No agregar features, refactors ni abstracciones más allá de lo que pide el usuario.
-- No agregar comentarios salvo cuando el WHY no sea obvio.
-- El objetivo del sistema es maximizar **puntos de quiniela** (exact=5, margin=3, winner=1, miss=0),
-  no métricas de ML genéricas.
+## Dashboard publico
 
----
+La pagina publica vive en:
 
-## GitHub Pages
+```text
+https://pmarze.github.io/Quiniela2026/
+```
 
-El dashboard se publica automáticamente en:
-**`https://pmarze.github.io/Quiniela2026/`**
+El HTML publicado esta en:
 
-La GitHub Action en `.github/workflows/deploy-pages.yml` se dispara solo cuando hay push a `main`
-que modifique `docs/index.html`. Los pushes a `development` **no** disparan el deploy.
+```text
+docs/index.html
+```
+
+No editar `docs/index.html` a mano. Editar las fuentes:
+
+- `src/quiniela/ui/dashboard.py`
+- `src/quiniela/ui/dashboard_template.html`
+
+Luego regenerar:
+
+```powershell
+python scripts\generate_dashboard.py
+python scripts\check_public_dashboard.py docs\index.html
+```
+
+Por defecto el dashboard incluye amigos si existe:
+
+```text
+data/ui/friends_quinielas.json
+```
+
+Version sin amigos solo si el usuario lo pide explicitamente:
+
+```powershell
+python scripts\generate_dashboard.py --exclude-friends
+```
+
+## Actualizacion diaria local
+
+Cuando el usuario pida actualizar despues de partidos o al cierre del dia:
+
+```powershell
+conda activate quiniela2026
+python scripts\daily_update.py --skip-git
+python scripts\check_public_dashboard.py docs\index.html
+python scripts\security_scan_publish.py
+```
+
+Si tambien cambiaron quinielas de amigos en Google Sheets y el entorno local tiene `configs/friends_sheet.local.json` o variables `QUINIELA_FRIENDS_SHEET_*`:
+
+```powershell
+python scripts\build_friends_quinielas.py
+python scripts\generate_dashboard.py
+python scripts\check_public_dashboard.py docs\index.html
+```
+
+Commit normal:
+
+```powershell
+git status
+git add docs/index.html data/ui/prediction_overrides.json data/ui/friends_quinielas.json
+git commit -m "Daily public dashboard update"
+git push origin development
+```
+
+Si el usuario pidio publicar en vivo, promover despues a `main` con el flujo seguro de la seccion de ramas.
+
+## GitHub Pages y Actions
+
+GitHub Pages ya esta habilitado en el repositorio con `build_type=workflow`.
+
+Workflow de deploy:
+
+```text
+.github/workflows/deploy-pages.yml
+```
+
+Se dispara con push a `main` cuando cambia:
+
+- `docs/**`
+- `.github/workflows/deploy-pages.yml`
+
+Workflow de actualizacion automatica:
+
+```text
+.github/workflows/update-dashboard.yml
+```
+
+Corre manualmente con `workflow_dispatch` y por horario cada 30 minutos durante junio y julio. Reconstruye datos, corre modelos, regenera `docs/index.html`, valida y commitea cambios publicables.
+
+Para lanzarlo manualmente:
+
+```powershell
+gh workflow run update-dashboard.yml --ref main
+```
+
+Para revisar deploy:
+
+```powershell
+gh run list --workflow "Deploy Dashboard to GitHub Pages" --branch main --limit 3
+gh run watch <RUN_ID> --exit-status
+```
+
+Verificacion publica:
+
+```powershell
+$response = Invoke-WebRequest -Uri 'https://pmarze.github.io/Quiniela2026/' -UseBasicParsing
+$response.StatusCode
+```
+
+Esperado: `200`.
+
+## Secrets y datos privados
+
+Permitido publicar:
+
+- `docs/index.html`
+- `data/ui/prediction_overrides.json`
+- `data/ui/friends_quinielas.json`
+- modelos finales en `model_registry/`
+
+No publicar:
+
+- URL o ID de Google Sheets
+- `configs/friends_sheet.local.json`
+- `.env` o `.env.*`
+- `.claude/settings.local.json`
+- tokens, API keys, llaves privadas
+- rutas personales de Windows
+- archivos locales no solicitados, por ejemplo `curated_inputs/quiniela_template_mundial2026.xlsx`
+
+Secrets utiles para GitHub Actions:
+
+- `QUINIELA_FRIENDS_SHEET_ID`
+- `QUINIELA_FRIENDS_SHEET_GID` opcional
+- `QUINIELA_FRIENDS_SHEET_NAME` opcional
+
+Si esos secrets no existen, el workflow usa el JSON versionado de amigos.
+
+Antes de publicar:
+
+```powershell
+python scripts\check_public_dashboard.py docs\index.html
+python scripts\security_scan_publish.py
+```
+
+## Objetivo del sistema
+
+El objetivo no es solo acertar 1X2. El objetivo principal es maximizar puntos de quiniela:
+
+- marcador exacto
+- empate o mismo margen/diferencia
+- ganador correcto
+
+El modelo operativo por defecto sigue siendo:
+
+```text
+weighted_points_ensemble
+```

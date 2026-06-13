@@ -1,8 +1,8 @@
-# Preparacion del repositorio privado
+# Preparacion del repositorio publico
 
 ## Politica de versionamiento
 
-El repositorio esta pensado para guardar codigo, configuracion, documentacion y modelos finales publicados.
+El repositorio es publico y esta pensado para guardar codigo, configuracion, documentacion, dashboard publicado y modelos finales publicados.
 
 Se versiona:
 
@@ -109,12 +109,26 @@ Despues de clonar:
 git lfs pull
 ```
 
-## Crear el repositorio privado en GitHub
+## Crear el repositorio desde cero
+
+Estado actual: el repositorio ya existe como publico en GitHub.
+
+```text
+https://github.com/Pmarze/Quiniela2026
+```
+
+La pagina publicada vive en:
+
+```text
+https://pmarze.github.io/Quiniela2026/
+```
+
+La seccion siguiente queda como referencia historica si se recrea el repo desde cero.
 
 Si usas GitHub CLI:
 
 ```powershell
-gh repo create quiniela2026 --private --source . --remote origin --push
+gh repo create quiniela2026 --public --source . --remote origin --push
 ```
 
 Si prefieres crearlo desde la web:

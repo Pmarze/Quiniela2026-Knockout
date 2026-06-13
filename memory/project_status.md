@@ -20,7 +20,11 @@ Scoring priority:
 
 ## Current Repository Policy
 
-The repo is being prepared for public GitHub publication.
+The repo is public and the dashboard is live on GitHub Pages:
+
+```text
+https://pmarze.github.io/Quiniela2026/
+```
 
 Versioned:
 
@@ -191,10 +195,12 @@ Do not edit generated HTML directly. Regenerate it from scripts.
 
 Recent dashboard changes are summarized in `docs/knowledge/039_handoff_dashboard_y_operacion_2026_live.md`.
 Publication/security policy is summarized in `docs/knowledge/040_publicacion_publica_dashboard_privado.md`.
+GitHub Pages and daily automation are summarized in `docs/knowledge/041_pages_y_automatizacion_diaria.md`.
 
 ## Next Good Work Items
 
 - Keep `docs/index.html` and `outputs/dashboard/index.html` synchronized after dashboard changes.
 - Continue daily updates with `python scripts\daily_update.py --skip-git` before reviewing new results.
+- For Claude Code daily automation, follow `CLAUDE.md` and `docs/daily_update_workflow.md`; push normal work to `development`, promote to `main` only when publishing live.
 - Monitor the live 2026 model ranking; the preferred model can change as completed matches increase.
 - Backtest and review `similar_match_knn_scoreline` before allowing it into ensembles or automatic preferred-pick selection.

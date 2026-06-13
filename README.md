@@ -48,6 +48,12 @@ python scripts\generate_validation_dashboard.py
 
 ## Dashboards
 
+Dashboard publico:
+
+```text
+https://pmarze.github.io/Quiniela2026/
+```
+
 El dashboard publico se genera en:
 
 ```text
@@ -87,10 +93,11 @@ y `data/ui/friends_quinielas.json`. El enlace/ID de Google Sheets se guarda fuer
 
 - [Instrucciones para Codex](AGENTS.md)
 - [Guia para colaborar desde cero](docs/collaborator_onboarding.md)
-- [Preparacion del repositorio privado](docs/repository_setup.md)
+- [Preparacion del repositorio publico](docs/repository_setup.md)
 - [Plan de implementacion](docs/implementation_plan.md)
 - [Arquitectura](docs/architecture.md)
 - [Workflow diario y actualizaciones](docs/daily_update_workflow.md)
+- [Automatizacion diaria y GitHub Pages](docs/knowledge/041_pages_y_automatizacion_diaria.md)
 - [Almacenamiento de datos](docs/data_storage.md)
 - [Canonicalizacion y reconciliacion](docs/canonicalization.md)
 - [Capa historica para modelos](docs/history_layer.md)

@@ -68,6 +68,28 @@ python scripts\generate_dashboard.py --exclude-friends
 
 El push automatico a `main` dispara `.github/workflows/deploy-pages.yml`.
 
+## Estado GitHub Pages
+
+GitHub Pages quedo habilitado con `build_type=workflow`.
+
+URL publica:
+
+```text
+https://pmarze.github.io/Quiniela2026/
+```
+
+Ultima publicacion verificada:
+
+- commit: `26d76ea`
+- ramas: `main` y `development`
+- workflow: `Deploy Dashboard to GitHub Pages`
+- resultado: `success`
+- verificacion HTTP publica: `200`
+
+El workflow de deploy se dispara con push a `main` cuando cambia `docs/**` o `.github/workflows/deploy-pages.yml`.
+
+Si un deploy falla porque Pages no esta habilitado, revisar `docs/knowledge/041_pages_y_automatizacion_diaria.md`.
+
 ## Seguridad
 
 Permitido publicar:

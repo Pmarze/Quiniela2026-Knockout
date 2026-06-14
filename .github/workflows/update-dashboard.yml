@@ -2,9 +2,6 @@ name: Update Public Dashboard Data
 
 on:
   workflow_dispatch:
-  schedule:
-    # UTC. Runs every 30 minutes during June and July; disable after the tournament if desired.
-    - cron: "17,47 * * 6,7 *"
 
 permissions:
   contents: write

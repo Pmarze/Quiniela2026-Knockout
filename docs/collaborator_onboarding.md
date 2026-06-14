@@ -6,7 +6,7 @@ Esta guia esta pensada para que un colaborador pueda clonar el repositorio, reco
 
 Un colaborador nuevo solo necesita:
 
-1. Tener invitacion al repositorio privado de GitHub.
+1. Clonar el repositorio publico de GitHub.
 2. Instalar Git, Git LFS y Anaconda/Miniconda.
 3. Clonar el repositorio y correr los comandos de las secciones 2, 3 y 4 desde la raiz del proyecto.
 4. Abrir los HTML generados en `outputs/`.
@@ -32,7 +32,7 @@ git lfs install
 ## 2. Clonar
 
 ```powershell
-git clone <URL_PRIVADA_DEL_REPO>
+git clone https://github.com/Pmarze/Quiniela2026.git
 cd quiniela2026
 git lfs pull
 ```
@@ -176,3 +176,37 @@ Archivos no compartibles:
 - `outputs/`
 - `.env`
 - `.claude/settings.local.json`
+
+## 10. Publicacion publica y automatizacion diaria
+
+La pagina publica vive en:
+
+```text
+https://pmarze.github.io/Quiniela2026/
+```
+
+El dashboard publicado es:
+
+```text
+docs/index.html
+```
+
+GitHub Actions puede actualizarlo automaticamente con:
+
+```text
+.github/workflows/update-dashboard.yml
+```
+
+Y desplegarlo con:
+
+```text
+.github/workflows/deploy-pages.yml
+```
+
+Para automatizar con Claude Code, leer primero:
+
+- `CLAUDE.md`
+- `docs/daily_update_workflow.md`
+- `docs/knowledge/041_pages_y_automatizacion_diaria.md`
+
+La hoja de Google Sheets de amigos no debe estar en el repo. Usar GitHub Secrets `QUINIELA_FRIENDS_SHEET_*` o config local ignorada `configs/friends_sheet.local.json`.

@@ -10,7 +10,13 @@ Current date of this status: 2026-06-13.
 ## State
 
 The local dashboard is implemented as an offline HTML artifact generated from Python.
-Generated dashboard files are not versioned and should be rebuilt locally.
+`docs/index.html` is versioned as the public GitHub Pages artifact. Other generated dashboard files should be rebuilt locally.
+
+Public URL:
+
+```text
+https://pmarze.github.io/Quiniela2026/
+```
 
 Primary generated outputs:
 
@@ -115,6 +121,14 @@ Latest validation in this context:
 
 - `python scripts\check_public_dashboard.py docs\index.html` -> OK, 104 matches, 5 friends.
 - `python scripts\security_scan_publish.py` -> OK, 220 files scanned.
+- GitHub Pages deploy at commit `26d76ea` -> success.
+- Public HTTP check for `https://pmarze.github.io/Quiniela2026/` -> `200`.
+
+Daily automation details are in:
+
+- `CLAUDE.md`
+- `docs/daily_update_workflow.md`
+- `docs/knowledge/041_pages_y_automatizacion_diaria.md`
 
 ## Real Results
 

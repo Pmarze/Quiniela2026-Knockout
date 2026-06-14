@@ -51,4 +51,5 @@ Esta carpeta guarda conocimientos acumulados del proyecto. Cada nota se numera i
 - [037 - Compartir datos y modelos entrenados](037_compartir_datos_y_modelos_entrenados.md)
 - [038 - Model registry y datos reconstruibles](038_model_registry_y_datos_reconstruibles.md)
 - [039 - Handoff dashboard y operacion 2026 live](039_handoff_dashboard_y_operacion_2026_live.md)
-- [040 - Publicacion publica y dashboard privado](040_publicacion_publica_dashboard_privado.md)
+- [040 - Publicacion publica, amigos visibles y fuentes privadas](040_publicacion_publica_dashboard_privado.md)
+- [041 - GitHub Pages y automatizacion diaria](041_pages_y_automatizacion_diaria.md)

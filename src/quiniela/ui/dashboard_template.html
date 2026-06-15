@@ -639,6 +639,56 @@ main{margin-top:var(--navh);}
 .son-m-t.win{color:var(--teal);font-weight:700;}
 .son-m-sc{font-family:var(--fc);font-size:13px;font-weight:700;color:var(--ink);flex-shrink:0;min-width:28px;text-align:center;}
 .son-empty{color:var(--mutl);text-align:center;padding:40px 0;font-size:13px;}
+
+/* MODEL DOC MODAL */
+#modeldoc-overlay{position:fixed;inset:0;background:rgba(13,27,42,.85);z-index:1200;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .18s;}
+#modeldoc-overlay.vis{opacity:1;pointer-events:auto;}
+.mddoc{background:var(--pan);border-radius:var(--rlg);width:min(880px,100%);max-height:calc(100vh - 40px);
+  overflow:hidden;display:flex;flex-direction:column;box-shadow:0 28px 80px rgba(0,0,0,.6);
+  transform:scale(.97);transition:transform .18s;}
+#modeldoc-overlay.vis .mddoc{transform:scale(1);}
+.mddoc-hd{padding:16px 20px;flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;
+  background:var(--nav);border-bottom:2px solid var(--teal);}
+.mddoc-hl{display:flex;align-items:flex-start;gap:13px;}
+.mddoc-fam{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--teal2);margin-bottom:5px;font-family:var(--fc);}
+.mddoc-title{font-family:var(--fc);font-size:20px;font-weight:700;color:white;}
+.mddoc-id{font-size:11px;color:rgba(255,255,255,.38);font-family:var(--fc);margin-top:3px;letter-spacing:.3px;}
+.mddoc-body{overflow-y:auto;flex:1;padding:22px 24px;}
+.mddoc-sec{margin-bottom:24px;}
+.mddoc-sec-t{font-family:var(--fc);font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;
+  color:var(--teal2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px;}
+.mddoc-txt{font-size:13px;line-height:1.8;color:var(--ink);margin-bottom:8px;}
+.mddoc-why{padding:11px 14px;background:var(--td);border-radius:var(--r);border-left:3px solid var(--teal);font-size:12px;line-height:1.75;color:var(--ink);margin-top:8px;}
+.eq-blk{background:var(--pan2);border:1px solid var(--brd);border-left:3px solid var(--teal);
+  border-radius:var(--r);padding:12px 16px;margin:10px 0;overflow-x:auto;}
+.eq-blk-t{font-size:9px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--mut);margin-bottom:8px;font-family:var(--f);}
+.eq-math{font-family:'Courier New',monospace;font-size:12.5px;line-height:2;color:var(--ink);margin:4px 0;}
+.eq-math sub,.eq-math sup{font-size:9px;}
+.eq-where{font-size:11px;color:var(--ink2);margin-top:8px;line-height:1.9;font-family:var(--f);border-top:1px solid var(--brd);padding-top:7px;}
+.eq-where sub,.eq-where sup{font-size:9px;}
+.mddoc-steps{display:flex;flex-direction:column;gap:7px;}
+.mddoc-step{display:flex;gap:12px;padding:10px 14px;background:var(--pan2);border-radius:var(--r);border:1px solid var(--brd);border-left:3px solid var(--teal);}
+.mddoc-step-n{font-family:var(--fc);font-size:18px;font-weight:700;color:var(--teal);flex-shrink:0;width:20px;line-height:1.1;margin-top:1px;}
+.mddoc-step-body{flex:1;}
+.mddoc-step-t{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.mddoc-step-d{font-size:11.5px;color:var(--ink2);line-height:1.6;}
+.mddoc-ex{background:linear-gradient(135deg,var(--nav),var(--nav2));border:1px solid var(--nav2);border-radius:var(--r);padding:14px 18px;}
+.mddoc-ex-t{font-size:10px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-family:var(--fc);}
+.mddoc-ex-line{font-family:'Courier New',monospace;font-size:12px;color:rgba(255,255,255,.8);line-height:1.95;}
+.mddoc-ex-gap{height:7px;}
+.mddoc-ex-result{font-family:var(--fc);font-size:13px;font-weight:700;color:var(--teal2);margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.1);}
+.mddoc-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;}
+@media(max-width:600px){.mddoc-2col{grid-template-columns:1fr;}}
+.mddoc-pc-t{font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:7px;font-family:var(--fc);}
+.mddoc-pc-t.pro{color:var(--grn);}.mddoc-pc-t.con{color:var(--cor);}
+.mddoc-pi{font-size:11.5px;line-height:1.55;padding:5px 9px;border-radius:4px;margin-bottom:4px;}
+.mddoc-pi.pro{background:var(--grd);color:var(--grn);}.mddoc-pi.con{background:var(--cord);color:var(--cor);}
+.mddoc-link{cursor:pointer;color:var(--teal)!important;transition:opacity .12s;}
+.mddoc-link:hover{opacity:.72;text-decoration:underline dotted;}
+.mddoc-link-arrow{font-size:9px;opacity:.65;margin-left:3px;vertical-align:middle;}
+.mddoc-diagram{border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;margin:8px 0;background:var(--pan2);}
 </style>
 </head>
 <body>
@@ -735,6 +785,24 @@ main{margin-top:var(--navh);}
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MODEL DOC MODAL -->
+<div id="modeldoc-overlay" onclick="mdocOverlayClick(event)">
+  <div class="mddoc">
+    <div class="mddoc-hd">
+      <div class="mddoc-hl">
+        <span class="fb" id="mddoc-badge" style="align-self:flex-start;margin-top:3px;font-size:9px">MOD</span>
+        <div>
+          <div class="mddoc-fam" id="mddoc-fam">—</div>
+          <div class="mddoc-title" id="mddoc-title">—</div>
+          <div class="mddoc-id" id="mddoc-id">—</div>
+        </div>
+      </div>
+      <button class="m-close" onclick="closeModelDoc()" style="flex-shrink:0;margin-left:14px">✕</button>
+    </div>
+    <div class="mddoc-body" id="mddoc-body"></div>
   </div>
 </div>
 
@@ -2601,7 +2669,7 @@ function renderMetodologia(){
   modelDocs.forEach(function(md){
     modelDocCards += '<div class="gcard"><div class="gcard-hd">'+
       '<span class="fb '+md[0]+'" style="flex-shrink:0">'+(modelBadge[md[0]]||'MOD')+'</span>'+
-      '<div><div class="gcard-title">'+md[2]+'</div><div class="gcard-tag">'+md[1]+'</div></div>'+
+      '<div><div class="gcard-title mddoc-link" onclick="openModelDoc(\''+md[1]+'\')">'+md[2]+' <span class="mddoc-link-arrow">&#9656;</span></div><div class="gcard-tag">'+md[1]+'</div></div>'+
       '</div><div class="gcard-body">'+md[3]+
       '<div class="gcard-ex"><div class="gcard-ex-l">Cautela</div>'+md[4]+'</div></div></div>';
   });
@@ -2643,6 +2711,618 @@ function renderMetodologia(){
     '<div class="gcard-body">Exacto=3 · Ganador=1 · Fallo=0. Sin premio por margen. Cambia el ranking de modelos y los picks recomendados. El backtest se recalcula dinámicamente al cambiar de perfil.</div></div>'+
     '</div>';
 }
+
+/* ══════════════════ MODEL DOC MODAL ══════════════════ */
+
+var MODEL_DOC_DATA = {
+
+'elo_poisson':{
+  title:'Elo Poisson', cat:'Fuerza Global · Distribución de Marcador',
+  badge:'FGOL', badgeCls:'fb-fgol',
+  theory:'El sistema <strong>Elo</strong> fue creado en 1960 por Arpad Elo para clasificar jugadores de ajedrez. Cada resultado actualiza los ratings de ambos equipos según la expectativa previa: ganar a un rival fuerte sube mucho, perder ante uno débil baja mucho. En fútbol se adapta asignando S=1 (victoria), 0.5 (empate), 0 (derrota), y usando un factor K proporcional a la importancia del partido (K=60 para Copa del Mundo). La diferencia de rating se convierte después en tasas de goles esperados (λ) mediante una función exponencial, y la distribución de <strong>Poisson</strong> sobre esas λ genera la matriz completa de probabilidades de marcador.',
+  why:'<strong>¿Por qué usarlo?</strong> Es el modelo de referencia más estable y validado en pronosticación deportiva. Simple, interpretable y robusto frente a datos escasos. Cada partido nuevo del torneo actualiza el rating automáticamente. Sirve de ancla para comparar el rendimiento de modelos más complejos.',
+  eqs:[
+    '<div class="eq-blk-t">Probabilidad esperada (Elo)</div>'+
+    '<div class="eq-math">E<sub>A</sub> = 1 / (1 + 10<sup>(R<sub>B</sub>&minus;R<sub>A</sub>)/400</sup>)</div>'+
+    '<div class="eq-where">R<sub>A</sub>, R<sub>B</sub> = ratings Elo de los equipos A y B</div>',
+
+    '<div class="eq-blk-t">Actualización del rating tras cada partido</div>'+
+    '<div class="eq-math">R\'<sub>A</sub> = R<sub>A</sub> + K &middot; (S<sub>A</sub> &minus; E<sub>A</sub>)</div>'+
+    '<div class="eq-where">K = multiplicador de importancia: amistoso K=5 &nbsp;·&nbsp; clasificatoria K=25 &nbsp;·&nbsp; Copa del Mundo K=60<br>S<sub>A</sub> = 1 (victoria) &nbsp;/&nbsp; 0.5 (empate) &nbsp;/&nbsp; 0 (derrota)</div>',
+
+    '<div class="eq-blk-t">De diferencia de Elo a goles esperados</div>'+
+    '<div class="eq-math">&lambda;<sub>H</sub> = &mu; &middot; exp(c &middot; &Delta;R / 400)&nbsp;&nbsp;&nbsp;&nbsp;&lambda;<sub>A</sub> = &mu; &middot; exp(&minus;c &middot; &Delta;R / 400)</div>'+
+    '<div class="eq-where">&mu; = media global de goles por partido (~1.30) &nbsp;&nbsp; c = parámetro calibrado (~0.35) &nbsp;&nbsp; &Delta;R = R<sub>local</sub>&minus;R<sub>visit.</sub></div>',
+
+    '<div class="eq-blk-t">Distribución de Poisson y matriz de marcadores</div>'+
+    '<div class="eq-math">P(k; &lambda;) = e<sup>&minus;&lambda;</sup> &middot; &lambda;<sup>k</sup> / k!</div>'+
+    '<div class="eq-math">P(i goles local, j goles visit.) = P(i; &lambda;<sub>H</sub>) &middot; P(j; &lambda;<sub>A</sub>)</div>'+
+    '<div class="eq-where">Se evalúa para i,j &isin; {0..8} generando una matriz 9&times;9. Se asume independencia entre los goles de cada equipo.</div>'
+  ],
+  diagram:'poisson',
+  steps:[
+    {t:'Historial internacional FIFA',d:'Se recopilan resultados desde 2000 hasta hoy. Cada partido tiene fecha, equipos, marcador y categoría (amistoso, clasificatoria, Copa del Mundo, continental).'},
+    {t:'Inicialización y actualización',d:'Los ratings arrancan basados en el ranking FIFA o en 1000 (neutral). Se actualizan cronológicamente con la fórmula Elo, usando K proporcional a la importancia.'},
+    {t:'Calibración de c y μ',d:'Los parámetros c (sensibilidad de λ a la diferencia de rating) y μ (media global de goles) se calibran minimizando log-loss sobre un conjunto de validación histórico (L-BFGS-B).'},
+    {t:'Generación de matriz y extracción',d:'Para el partido A vs B: ΔR → λ_H, λ_A → Poisson(i;λ) para i∈{0..8}². Se extraen 1X2, xG (los propios λ), pick Max Puntos (argmax EV) y EV completo.'}
+  ],
+  ex:{
+    title:'Alemania (R=1850) vs Japón (R=1550)',
+    lines:['&Delta;R = 1850 &minus; 1550 = 300','&lambda;<sub>ALE</sub> = 1.30 &middot; exp(0.35 &middot; 300/400) = 1.30 &middot; 1.306 &asymp; 1.70 goles esperados','&lambda;<sub>JPN</sub> = 1.30 &middot; exp(&minus;0.35 &middot; 300/400) = 1.30 &middot; 0.766 &asymp; 1.00 goles esperados','','P(2 goles ALE) = e<sup>&minus;1.70</sup> &middot; 1.70<sup>2</sup>/2! = 0.183 &middot; 1.445 = 0.265','P(1 gol JPN) &nbsp;= e<sup>&minus;1.00</sup> &middot; 1.00<sup>1</sup>/1! = 0.368 &middot; 1.000 = 0.368','','P(marcador 2-1) = 0.265 &middot; 0.368 &asymp; 9.7%'],
+    result:'Pick sugerido: 2-1 Alemania &nbsp;&middot;&nbsp; xG 1.70 vs 1.00 &nbsp;&middot;&nbsp; P(ALE gana) &asymp; 62%'
+  },
+  pros:['Referencia sólida, probada y ampliamente validada','Actualización incremental tras cada partido del torneo','Interpretable: el &Delta;R resume toda la fuerza relativa en un número'],
+  cons:['Reacciona lento a cambios de plantilla o táctica recientes','No distingue ataque y defensa de forma independiente','Asume independencia de goles entre equipos (Poisson puro)']
+},
+
+'elo_dixon_coles':{
+  title:'Elo Dixon-Coles', cat:'Corrección de Marcadores Bajos · Poisson Ajustado',
+  badge:'BAJOS', badgeCls:'fb-mba',
+  theory:'Dixon y Coles (1997) observaron empíricamente que los modelos Poisson independientes tienen errores sistemáticos en marcadores bajos: el 0-0 ocurre <em>más</em> de lo que Poisson predice, y los 1-0 / 0-1 suelen estar sobreestimados. La solución: un <strong>factor de corrección τ(i,j)</strong> que ajusta solo las cuatro celdas donde ambos equipos marcaron ≤1 gol, dejando intacto el resto de la distribución. El parámetro ρ (rho) que controla la corrección se estima por máxima verosimilitud sobre historial.',
+  why:'<strong>¿Por qué usarlo?</strong> Mejora la precisión en partidos cerrados o defensivos donde el 0-0, 1-0 o 1-1 son resultados plausibles. En quinielas, esos empates a pocos goles son donde pueden lograrse puntos de exacto que otros participantes no anticipan.',
+  eqs:[
+    '<div class="eq-blk-t">Factor de corrección τ(i,j)</div>'+
+    '<div class="eq-math">&tau;(0,0) = 1 &minus; &lambda;<sub>H</sub>&middot;&lambda;<sub>A</sub>&middot;&rho;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&tau;(1,0) = 1 + &lambda;<sub>A</sub>&middot;&rho;</div>'+
+    '<div class="eq-math">&tau;(0,1) = 1 + &lambda;<sub>H</sub>&middot;&rho;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&tau;(1,1) = 1 &minus; &rho;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&tau;(i,j) = 1 para todos los demás</div>'+
+    '<div class="eq-where">&rho; = parámetro de dependencia estimado por MLE (típicamente &rho; &asymp; &minus;0.13)<br>&rho; &lt; 0 infla la probabilidad de 0-0 y reduce ligeramente 1-0 / 0-1</div>',
+
+    '<div class="eq-blk-t">Probabilidad de marcador corregida</div>'+
+    '<div class="eq-math">P*(i,j) = &tau;(i,j; &rho;) &middot; Poisson(i; &lambda;<sub>H</sub>) &middot; Poisson(j; &lambda;<sub>A</sub>)</div>'+
+    '<div class="eq-where">Tras aplicar τ, la matriz se renormaliza para que sume exactamente 1.<br>La corrección solo afecta a 4 celdas; el resto de la distribución queda inalterada.</div>'
+  ],
+  steps:[
+    {t:'Base Elo idéntica',d:'Se calculan λ_H y λ_A con el mecanismo Elo estándar. La diferencia está únicamente en el post-procesamiento de la matriz de scoreline.'},
+    {t:'Estimación de ρ por MLE',d:'Se comparan frecuencias observadas de (0,0), (1,0), (0,1), (1,1) en el historial vs las predicciones Poisson sin corrección. ρ minimiza la divergencia.'},
+    {t:'Aplicación de τ y renormalización',d:'Cada celda (i,j) ≤ (1,1) se multiplica por τ(i,j; ρ). Las demás celdas permanecen iguales. La matriz se renormaliza.'}
+  ],
+  ex:{
+    title:'Partido defensivo: λ_H=1.70, λ_A=1.00, ρ=−0.13',
+    lines:['P_base(0,0) = e<sup>&minus;1.70</sup> &middot; e<sup>&minus;1.00</sup> = 0.183 &middot; 0.368 = 0.0673','','Con &rho; = &minus;0.13:','&tau;(0,0) = 1 &minus; 1.70 &middot; 1.00 &middot; (&minus;0.13) = 1 + 0.221 = 1.221','P*(0,0) = 1.221 &middot; 0.0673 = 0.0822 &nbsp;(+22.1% respecto a Poisson puro)','','&tau;(1,0) = 1 + 1.00&middot;(&minus;0.13) = 0.870 &rarr; P*(1,0) se reduce'],
+    result:'El empate a cero sube ~22%. Los 1-0 y 0-1 bajan proporcionalmente.'
+  },
+  pros:['Mejor calibración en partidos defensivos o cerrados','Solo añade un parámetro extra (ρ) sobre Poisson','Mejora sistemática en marcadores bajos que son frecuentes en Mundiales'],
+  cons:['La corrección solo actúa en 4 celdas; no modela dependencia en marcadores altos','Si ρ está mal estimado puede empeorar la calibración','Asume que la dependencia entre goles es constante en todos los partidos']
+},
+
+'attack_defense_poisson':{
+  title:'Ataque / Defensa Poisson', cat:'Parámetros Separados de Ataque y Defensa',
+  badge:'AT/DEF', badgeCls:'fb-atd',
+  theory:'En lugar de un único número Elo, este modelo descompone la fuerza de cada selección en dos dimensiones: <strong>α<sub>i</sub> (potencia ofensiva)</strong> y <strong>β<sub>i</sub> (debilidad defensiva)</strong>. Los goles esperados de local son proporcionales al ataque local multiplicado por la debilidad defensiva del visitante, escalados por la media global y la ventaja de jugar en casa. Así un equipo que marca mucho pero también concede (α alto, β alto) se modela distinto a uno sólido y contenido (α medio, β bajo). Los parámetros se estiman por <strong>máxima verosimilitud ponderada</strong>, dando más peso a partidos recientes e importantes.',
+  why:'<strong>¿Por qué usarlo?</strong> Captura información que el Elo promedia: la diferencia entre ganar 3-2 (ofensivo pero vulnerable) y ganar 1-0 (sólido defensivamente). Para quinielas donde el marcador exacto cuenta, distinguir el perfil ofensivo/defensivo de cada equipo es clave para anticipar partidos de muchos o pocos goles.',
+  eqs:[
+    '<div class="eq-blk-t">Goles esperados (modelo multiplicativo)</div>'+
+    '<div class="eq-math">&lambda;<sub>H</sub> = &mu; &middot; &alpha;<sub>H</sub> &middot; &beta;<sub>A</sub> &middot; &gamma;&nbsp;&nbsp;&nbsp;&nbsp;&lambda;<sub>A</sub> = &mu; &middot; &alpha;<sub>A</sub> &middot; &beta;<sub>H</sub></div>'+
+    '<div class="eq-where">&mu; = media global de goles por partido &nbsp;&nbsp; &alpha;<sub>i</sub> = potencia atacante (&alpha;=1 es media, &alpha;&gt;1 ataca mucho)<br>&beta;<sub>i</sub> = debilidad defensiva (&beta;&gt;1 concede más de la media) &nbsp;&nbsp; &gamma; = ventaja local (~1.15&ndash;1.25)</div>',
+
+    '<div class="eq-blk-t">Estimación por máxima verosimilitud ponderada</div>'+
+    '<div class="eq-math">L(&theta;) = &Sigma;<sub>i</sub> w<sub>i</sub> &middot; [log P(g<sub>H</sub>; &lambda;<sub>H</sub>) + log P(g<sub>A</sub>; &lambda;<sub>A</sub>)]</div>'+
+    '<div class="eq-where">Peso por recencia: w<sub>i</sub> = exp(&minus;0.002 &middot; días_desde_partido)<br>Peso por importancia: multiplicador adicional (amistoso &times;0.5, Copa del Mundo &times;1.0)<br>Optimizador: L-BFGS-B con restricciones &alpha;<sub>i</sub>&gt;0, &beta;<sub>i</sub>&gt;0</div>'
+  ],
+  steps:[
+    {t:'Recopilación y ponderación',d:'Historial internacional FIFA con peso combinado de recencia (decaimiento exponencial) e importancia del torneo.'},
+    {t:'Inicialización y regularización',d:'α y β arrancan en 1.0 (media global). Equipos con pocos partidos reciben regularización (shrinkage) hacia la media para evitar estimaciones extremas con datos escasos.'},
+    {t:'Optimización MLE',d:'Se maximiza la log-verosimilitud ponderada con L-BFGS-B. Restricciones α>0, β>0. Convergencia típica en menos de 200 iteraciones.'},
+    {t:'Predicción y actualización',d:'λ_H = μ·α_H·β_A·γ, λ_A = μ·α_A·β_H → matriz Poisson 9×9. Tras cada partido del torneo los parámetros se reestiman.'}
+  ],
+  ex:{
+    title:'Francia (α=1.40, β=0.75) vs Marruecos (α=0.90, β=1.10), μ=1.30, γ=1.20',
+    lines:['Francia de local:','  &lambda;<sub>FRA</sub> = 1.30 &middot; 1.40 &middot; 1.10 &middot; 1.20 = 2.39 goles esperados','','Marruecos de visitante:','  &lambda;<sub>MAR</sub> = 1.30 &middot; 0.90 &middot; 0.75 = 0.88 goles esperados','','Francia: ataque fuerte (&alpha;=1.40) y defensa sólida (&beta;=0.75 &lt; 1)','Marruecos: ataque moderado (&alpha;=0.90) y defensa algo permeable (&beta;=1.10 &gt; 1)'],
+    result:'Dominio claro de Francia · &lambda; 2.39 vs 0.88 · Pick probable: 2-0 o 2-1 FRA'
+  },
+  pros:['Distingue perfiles ofensivos y defensivos independientemente','Recalibrado con cada resultado del torneo','Más preciso en partidos con desequilibrio ofensivo/defensivo marcado'],
+  cons:['Equipos con pocos partidos necesitan regularización fuerte','No captura dependencia entre goles (ver Dixon-Coles)','Los parámetros son relativos; cambiar un equipo afecta a toda la escala']
+},
+
+'draw_specialist':{
+  title:'Especialista en Empates', cat:'Corrección de Probabilidad de Empate',
+  badge:'EMPATE', badgeCls:'fb-emp',
+  theory:'Los modelos Poisson estándar subestiman sistemáticamente los empates en ciertos contextos: partidos entre selecciones de fuerza muy parecida, fases de grupo donde clasificar con empate es suficiente, o enfrentamientos entre estilos defensivos similares. Este modelo identifica esos contextos mediante características tácticas y situacionales, y aplica una <strong>mezcla ponderada</strong> entre la distribución Poisson base y una distribución inflada en empates. El peso de mezcla ε se aprende por regresión logística sobre datos históricos de Mundiales.',
+  why:'<strong>¿Por qué usarlo?</strong> En la fase de grupos del Mundial, los empates son frecuentes —especialmente en jornadas donde ambos equipos tienen cuentas que hacer. Predecir correctamente un empate difícil vale los mismos puntos que acertar un gane claro, pero el valor esperado es mayor si los demás modelos no lo anticipan.',
+  eqs:[
+    '<div class="eq-blk-t">Inflación de probabilidad de empate</div>'+
+    '<div class="eq-math">P\'(X) = (1&minus;&epsilon;)&middot;P<sub>Poisson</sub>(X) + &epsilon;&middot;&pi;<sub>draw_prior</sub></div>'+
+    '<div class="eq-math">P\'(1) = (1&minus;&epsilon;)&middot;P<sub>Poisson</sub>(1)&nbsp;&nbsp;&nbsp;&nbsp;P\'(2) = (1&minus;&epsilon;)&middot;P<sub>Poisson</sub>(2)</div>'+
+    '<div class="eq-where">&epsilon; = parámetro de inflación &isin; [0,1] &nbsp;&nbsp; &pi;<sub>draw_prior</sub> = prior de empate según contexto<br>Los tres resultados se renormalizan para sumar exactamente 1.</div>',
+
+    '<div class="eq-blk-t">Estimación de ε según contexto</div>'+
+    '<div class="eq-math">&epsilon; = &sigma;(&beta;<sub>0</sub> + &beta;<sub>1</sub>&middot;|&Delta;Elo| + &beta;<sub>2</sub>&middot;fase + &beta;<sub>3</sub>&middot;estilo + ...)</div>'+
+    '<div class="eq-where">&sigma;(x) = 1/(1+e<sup>&minus;x</sup>) = función logística &nbsp;(salida &isin; (0,1))<br>|&Delta;Elo| peque&ntilde;o &rarr; &epsilon; mayor &nbsp;&middot;&nbsp; fase eliminatoria &rarr; &epsilon; menor &nbsp;&middot;&nbsp; ambos equipos defensivos &rarr; &epsilon; mayor</div>'
+  ],
+  steps:[
+    {t:'Modelo base',d:'Se genera la distribución Poisson estándar (Elo o A/D). La distribución resultante es el punto de partida.'},
+    {t:'Extracción de contexto',d:'Diferencia de Elo, fase del torneo, jornada en grupo, historial de empates de ambos equipos en competiciones similares.'},
+    {t:'Regresión logística de ε',d:'Entrenada sobre historial de Mundiales para predecir probabilidad de empate dado el contexto. Output: ε ∈ (0,1).'},
+    {t:'Mezcla y ajuste de scoreline',d:'P\'(X) = (1-ε)·P_Poisson(X) + ε·π_draw. La probabilidad de empate se redistribuye entre 0-0, 1-1, 2-2, etc. según frecuencias históricas del contexto.'}
+  ],
+  ex:{
+    title:'Corea del Sur vs Ghana · Grupo H · Jornada 2 · ΔElo=80',
+    lines:['Poisson base: P(1X2) = 36% / 29% / 35%','','Contexto: |&Delta;Elo|=80 (fuerzas muy parejas), grupo jornada 2, ambos con opciones','&epsilon; calculado (logístico): 0.18','','P\'(X) = (1&minus;0.18)&middot;0.29 + 0.18&middot;0.40 = 0.238 + 0.072 = 31.0%','P\'(1) = 0.36 &middot; 0.82 = 29.5%&nbsp;&nbsp;P\'(2) = 0.35 &middot; 0.82 = 28.7%'],
+    result:'El empate sube de 29% → 31%. En partidos muy parejos, el especialista de empates puede cambiar el pick recomendado.'
+  },
+  pros:['Captura contextos donde el empate es estructuralmente más probable','Útil en grupos con fuerzas parejas','El parámetro ε es aprendido de datos reales de Mundiales'],
+  cons:['Puede sobrevalorar empates si el mercado real está más inclinado de lo que sugiere el historial','En eliminatoria directa, la inflación de empate puede ser contraproducente','Depende de la calidad de las features contextuales']
+},
+
+'bradley_terry_davidson':{
+  title:'Bradley-Terry-Davidson', cat:'Comparaciones por Pares · 1X2 Directo',
+  badge:'1X2', badgeCls:'fb-1x2',
+  theory:'El modelo de <strong>Bradley-Terry (1952)</strong> asigna a cada equipo una "fuerza" π<sub>i</sub> y predice que A derrota a B con probabilidad proporcional a π<sub>A</sub>/(π<sub>A</sub>+π<sub>B</sub>). El término de <strong>Davidson (1970)</strong> añade el parámetro ν que pondera la media geométrica de ambas fuerzas para modelar la tendencia al empate. A diferencia de los modelos Poisson, BTD modela directamente 1X2 sin necesidad de pasar por goles esperados; la distribución de scorelines se deriva en un paso secundario.',
+  why:'<strong>¿Por qué usarlo?</strong> Cuando importa más la dirección del partido que el marcador exacto, BTD ofrece una estimación directa y matemáticamente consistente de 1X2. Es especialmente útil para detectar desacuerdos entre modelos y para validar contra mercados de apuestas que también modelan 1X2 directamente.',
+  eqs:[
+    '<div class="eq-blk-t">Modelo de Davidson (tres resultados)</div>'+
+    '<div class="eq-math">P(A gana) = &pi;<sub>A</sub> / D&nbsp;&nbsp;&nbsp;&nbsp;P(empate) = &nu;&middot;&radic;(&pi;<sub>A</sub>&middot;&pi;<sub>B</sub>) / D&nbsp;&nbsp;&nbsp;&nbsp;P(B gana) = &pi;<sub>B</sub> / D</div>'+
+    '<div class="eq-math">D = &pi;<sub>A</sub> + &nu;&middot;&radic;(&pi;<sub>A</sub>&middot;&pi;<sub>B</sub>) + &pi;<sub>B</sub></div>'+
+    '<div class="eq-where">&pi;<sub>i</sub> = "fuerza" del equipo i (estimada por MLE, &pi;&gt;0)<br>&nu; = parámetro global de tendencia al empate (&nu;&gt;0)<br>D = denominador normalizador &rarr; garantiza que las tres probabilidades sumen 1</div>',
+
+    '<div class="eq-blk-t">Estimación por máxima verosimilitud</div>'+
+    '<div class="eq-math">L(&pi;, &nu;) = &Sigma;<sub>partidos</sub> log P(resultado<sub>i</sub>; &pi;<sub>A</sub>, &pi;<sub>B</sub>, &nu;)</div>'+
+    '<div class="eq-where">Log-verosimilitud es cóncava &rarr; garantía de convergencia a máximo global<br>Algoritmo: Newton-Raphson o MM (Minorize-Majorize)</div>'
+  ],
+  steps:[
+    {t:'Datos de entrenamiento',d:'Historial de partidos internacionales FIFA con resultado 1X2. Los goles exactos no se usan directamente en BTD.'},
+    {t:'Inicialización y optimización',d:'π_i=1.0 para todos, ν=1.0. Se aplica el algoritmo MM para actualizar π y ν iterativamente maximizando la log-verosimilitud.'},
+    {t:'Derivación de scoreline',d:'Con P(1X2) calculada, se ajusta la distribución de marcadores para que (a) sume exactamente P(A_wins), P(draw), P(B_wins) y (b) tenga forma similar a Poisson con λ deducido de las probabilidades.'},
+    {t:'Predicción',d:'Output primario: P(1), P(X), P(2). Output secundario: matriz de scoreline derivada. Pick Max Puntos se calcula sobre ambos.'}
+  ],
+  ex:{
+    title:'Alemania (&pi;=4.20) vs Japón (&pi;=1.10), &nu;=0.80',
+    lines:['&radic;(&pi;<sub>ALE</sub> &middot; &pi;<sub>JPN</sub>) = &radic;(4.20 &middot; 1.10) = &radic;4.62 = 2.149','Término de empate: &nu; &middot; &radic;(&pi;&middot;&pi;) = 0.80 &middot; 2.149 = 1.719','D = 4.20 + 1.719 + 1.10 = 7.019','','P(Alemania) = 4.20 / 7.019 = 59.8%','P(Empate) &nbsp;&nbsp;= 1.719 / 7.019 = 24.5%','P(Japón) &nbsp;&nbsp;&nbsp;= 1.10 / 7.019 = 15.7%','Suma = 59.8% + 24.5% + 15.7% = 100.0% ✓'],
+    result:'Alemania favorita con 59.8% · el empate tiene peso significativo de 24.5%'
+  },
+  pros:['Modelado directo de 1X2 sin pasar por goles esperados','Suma exacta a 1 garantizada matemáticamente','El parámetro ν captura la tendencia global al empate con un solo número'],
+  cons:['No genera distribución de scoreline desde primeros principios; requiere paso secundario','π mezcla ataque y defensa en un solo número','No tan preciso para marcadores exactos como los modelos Poisson']
+},
+
+'bayesian_monte_carlo_scoreline':{
+  title:'Bayesian Monte Carlo', cat:'Inferencia Bayesiana · Propagación de Incertidumbre',
+  badge:'BAYES', badgeCls:'fb-mba',
+  theory:'La estadística <strong>bayesiana</strong> trata los parámetros del modelo como variables aleatorias con distribución de probabilidad, en lugar de valores fijos. Para Poisson, la distribución <strong>Gamma</strong> es la prior conjugada: si λ ~ Gamma(α,β) y observamos k ~ Poisson(λ), la posterior también es Gamma, permitiendo actualización analítica. La predicción final integra sobre todos los posibles λ ponderando por la posterior. Esto produce distribuciones predictivas más amplias cuando hay poca evidencia, actuando como regularización natural y evitando el exceso de confianza.',
+  why:'<strong>¿Por qué usarlo?</strong> Con selecciones que tienen pocas apariciones en torneos recientes, los modelos frecuentistas pueden ser excesivamente confiados. La incertidumbre bayesiana suaviza esas predicciones: cuando los datos son escasos, las estimaciones se acercan más a la media global (prior).',
+  eqs:[
+    '<div class="eq-blk-t">Actualización bayesiana (conjugado Gamma-Poisson)</div>'+
+    '<div class="eq-math">Prior: &nbsp;&lambda; ~ Gamma(&alpha;<sub>0</sub>, &beta;<sub>0</sub>)</div>'+
+    '<div class="eq-math">Datos: &nbsp;k<sub>1</sub>,...,k<sub>n</sub> ~ Poisson(&lambda;)</div>'+
+    '<div class="eq-math">Posterior: &lambda;|datos ~ Gamma(&alpha;<sub>0</sub> + &Sigma;k<sub>i</sub>, &beta;<sub>0</sub> + n)</div>'+
+    '<div class="eq-where">&alpha;<sub>0</sub>, &beta;<sub>0</sub> = hiperparámetros del prior (encauzan hacia la media global)<br>El prior se "diluye" a medida que n (número de partidos) aumenta</div>',
+
+    '<div class="eq-blk-t">Distribución predictiva (integración analítica)</div>'+
+    '<div class="eq-math">P(k<sub>new</sub> | datos) = NegBin(k<sub>new</sub>; &alpha;<sub>post</sub>, &beta;<sub>post</sub>/(&beta;<sub>post</sub>+1))</div>'+
+    '<div class="eq-where">La Binomial Negativa es más pesada de cola que Poisson &rarr; mayor masa en marcadores "sorpresa"<br>Refleja la incertidumbre sobre &lambda; además de la variabilidad intrínseca de los goles</div>',
+
+    '<div class="eq-blk-t">Alternativa: Monte Carlo sampling</div>'+
+    '<div class="eq-math">Para m=1..N: &lambda;<sub>m</sub> ~ Gamma(&alpha;<sub>post</sub>, &beta;<sub>post</sub>) &nbsp;&rarr;&nbsp; P<sub>m</sub>(i,j) = Pois(i;&lambda;<sub>Hm</sub>)&middot;Pois(j;&lambda;<sub>Am</sub>)</div>'+
+    '<div class="eq-math">P(i,j) &asymp; (1/N) &middot; &Sigma;<sub>m</sub> P<sub>m</sub>(i,j)</div>'+
+    '<div class="eq-where">N = 1000&ndash;10000 muestras. El promedio de matrices da la distribución predictiva marginal.</div>'
+  ],
+  steps:[
+    {t:'Definición del prior',d:'Se fija un prior Gamma débil basado en la media histórica de goles en partidos internacionales. El prior encauza sin dominar cuando hay datos suficientes.'},
+    {t:'Actualización posterior',d:'Se observan los k goles marcados y concedidos de cada equipo en n partidos recientes. α_post = α₀ + Σk, β_post = β₀ + n.'},
+    {t:'Muestreo Monte Carlo',d:'Se extraen N muestras de la posterior Gamma de λ_H y λ_A. Para N=1000, se generan 1000 matrices de scoreline Poisson independientes.'},
+    {t:'Promedio y extracción',d:'Las 1000 matrices se promedian. La varianza entre muestras refleja la incertidumbre del modelo. De la media se extraen 1X2, pick, xG y EV.'}
+  ],
+  ex:{
+    title:'Equipo con pocos datos: n=8 partidos, &Sigma;k=9 goles marcados',
+    lines:['Prior: &lambda; ~ Gamma(4.0, 3.0) &rarr; media prior = 4.0/3.0 = 1.33 goles/partido','','Observaciones: 8 partidos, 9 goles marcados (MLE daría &lambda;=9/8=1.125)','Posterior: &lambda; ~ Gamma(4+9, 3+8) = Gamma(13, 11)','Media posterior: 13/11 = 1.182 goles (entre MLE 1.125 y prior 1.333)','Varianza posterior: 13/121 = 0.107 &rarr; desviación estándar = 0.33 goles'],
+    result:'El prior actúa como regularización: equipos con pocos datos convergen hacia la media global'
+  },
+  pros:['Maneja explícitamente la incertidumbre paramétrica','Regularización automática para equipos con pocos datos','Predicciones mejor calibradas en escenarios de alta incertidumbre'],
+  cons:['Más costoso computacionalmente (MC sampling)', 'La elección del prior influye cuando n es pequeño','Con muchos datos históricos, converge al MLE frecuentista (el prior se diluye)']
+},
+
+'opta_power_poisson':{
+  title:'Opta Power Poisson', cat:'Ratings Externos · Señal Estadística Enriquecida',
+  badge:'OPTA', badgeCls:'fb-fgol',
+  theory:'Mientras los demás modelos calculan la fuerza de cada selección desde cero usando resultados, Opta Power Poisson importa una valoración externa ya procesada: los <strong>ratings de poder de Opta</strong>. Estas métricas incorporan estadísticas avanzadas de cada partido (xG generado y concedido, duelos ganados, recuperaciones, zonas de presión, calidad de portero) que van más allá de resultados simples. Una vez disponibles los ratings, el proceso es idéntico al Poisson estándar: transformación a goles esperados, generación de la matriz de marcadores.',
+  why:'<strong>¿Por qué usarlo?</strong> Captura señales que los modelos basados en resultados tardan en reflejar. Un equipo que encadena victorias pero con xG muy inferior al rival está "sobreperformando" su nivel real; el Elo sube, pero Opta ya muestra la discrepancia. Aporta una visión independiente y externa al historial local del proyecto.',
+  eqs:[
+    '<div class="eq-blk-t">Transformación de rating Opta a goles esperados</div>'+
+    '<div class="eq-math">&lambda;<sub>H</sub> = a + b&middot;R<sub>H</sub> + c&middot;(R<sub>H</sub>&minus;R<sub>A</sub>) + d&middot;home_adv</div>'+
+    '<div class="eq-math">&lambda;<sub>A</sub> = a + b&middot;R<sub>A</sub> + c&middot;(R<sub>A</sub>&minus;R<sub>H</sub>)</div>'+
+    '<div class="eq-where">R<sub>i</sub> = rating Opta del equipo i (métrica continua, mayor = más fuerte)<br>a, b, c, d = coeficientes calibrados por regresión sobre historial FIFA<br>El ajuste minimiza RMSE entre &lambda; predicho y goles reales observados</div>',
+
+    '<div class="eq-blk-t">Resto del proceso: idéntico a Elo Poisson</div>'+
+    '<div class="eq-math">P(i,j) = Poisson(i; &lambda;<sub>H</sub>) &middot; Poisson(j; &lambda;<sub>A</sub>)</div>'+
+    '<div class="eq-where">La diferencia está solo en cómo se calculan &lambda;<sub>H</sub> y &lambda;<sub>A</sub>, no en la generación de la matriz.</div>'
+  ],
+  steps:[
+    {t:'Descarga de ratings Opta',d:'Se importa el archivo de ratings de poder para todos los equipos del torneo. Los ratings se actualizan periódicamente por Opta.'},
+    {t:'Calibración regresiva',d:'Se ajustan los coeficientes a, b, c, d por regresión lineal sobre historial de partidos internacionales: R_team → goles reales. Validación cruzada temporal.'},
+    {t:'Cómputo de λ',d:'Para cada partido pendiente: ratings Opta de ambos equipos → transformación calibrada → λ_H, λ_A.'},
+    {t:'Generación de matriz y extracción',d:'Exactamente igual al proceso Elo Poisson: Poisson(i;λ_H) × Poisson(j;λ_A) para i,j ∈ {0..8}. Mismo pipeline de extracción.'}
+  ],
+  ex:{
+    title:'Bélgica (R_Opta=82.5) vs Canadá (R_Opta=67.3), calibración: a=0.30, b=0.012, c=0.008',
+    lines:['&lambda;<sub>BEL</sub> = 0.30 + 0.012&middot;82.5 + 0.008&middot;(82.5&minus;67.3) + 0.25 = 0.30 + 0.990 + 0.122 + 0.25 = 1.66','&lambda;<sub>CAN</sub> = 0.30 + 0.012&middot;67.3 + 0.008&middot;(67.3&minus;82.5) = 0.30 + 0.808 &minus; 0.122 = 0.99'],
+    result:'Bélgica favorita · λ 1.66 vs 0.99 · Señal Opta incorpora calidad estadística más allá de resultados'
+  },
+  pros:['Incorpora señales avanzadas: xG, duelos, presión alta, transiciones','Puede anticipar cambios de nivel antes de que los resultados los reflejen','Compatible con el mismo pipeline Poisson del resto de modelos'],
+  cons:['Dependiente de la calidad y frecuencia de actualización de Opta','Si los ratings no se actualizan tras el último partido, la señal puede estar desactualizada','No debe dominar solo por ser externo; requiere validación contra historial propio']
+},
+
+'neural_scoreline_mlp':{
+  title:'Neural Scoreline MLP', cat:'Red Neuronal · Patrones No Lineales',
+  badge:'NEURAL', badgeCls:'fb-neu',
+  theory:'Una <strong>red neuronal artificial (MLP)</strong> es un aproximador universal de funciones. A diferencia de Poisson, que asume una forma funcional específica (tasas λ independientes), el MLP aprende la relación entre características del partido y la distribución de marcadores directamente desde los datos, capturando interacciones no lineales que los modelos paramétricos no pueden representar. El output es una distribución completa sobre la matriz de marcadores (9×9 = 81 probabilidades) mediante una capa Softmax.',
+  why:'<strong>¿Por qué usarlo?</strong> Si existen patrones sistemáticos que violan el supuesto log-lineal de Poisson (estilos de juego específicos, matchups históricos particulares, dinámicas de torneo), el MLP puede captarlos. Se mantiene oculto de los picks directos en el dashboard pero alimenta los ensembles con su señal complementaria.',
+  eqs:[
+    '<div class="eq-blk-t">Arquitectura del MLP</div>'+
+    '<div class="eq-math">Entrada: x &isin; &reals;<sup>~40</sup>&nbsp;&nbsp;(features del partido)</div>'+
+    '<div class="eq-math">h<sub>1</sub> = ReLU(W<sub>1</sub>&middot;x + b<sub>1</sub>)&nbsp;[128 neuronas]&nbsp;&rarr;&nbsp;Dropout(0.30)</div>'+
+    '<div class="eq-math">h<sub>2</sub> = ReLU(W<sub>2</sub>&middot;h<sub>1</sub> + b<sub>2</sub>)&nbsp;[64 neuronas]&nbsp;&rarr;&nbsp;Dropout(0.20)</div>'+
+    '<div class="eq-math">h<sub>3</sub> = ReLU(W<sub>3</sub>&middot;h<sub>2</sub> + b<sub>3</sub>)&nbsp;[32 neuronas]</div>'+
+    '<div class="eq-math">P(i,j) = Softmax(W<sub>4</sub>&middot;h<sub>3</sub> + b<sub>4</sub>)&nbsp;&nbsp;&isin;&nbsp;&reals;<sup>81</sup></div>'+
+    '<div class="eq-where">ReLU(z) = max(0,z) &rarr; introduce no-linealidad entre capas<br>Dropout: apaga neuronas aleatoriamente durante entrenamiento &rarr; previene sobreajuste</div>',
+
+    '<div class="eq-blk-t">Función de pérdida y optimización</div>'+
+    '<div class="eq-math">Loss = &minus;&Sigma;<sub>i,j</sub> y<sub>ij</sub> &middot; log P(i,j)&nbsp;&nbsp;[cross-entropy]</div>'+
+    '<div class="eq-math">Optimizador: Adam(lr=10<sup>&minus;3</sup>, weight_decay=10<sup>&minus;4</sup>)</div>'+
+    '<div class="eq-where">y<sub>ij</sub> = 1 si el marcador real fue (i,j), 0 en otros<br>Validación walk-forward: nunca se usa información futura<br>Temperature scaling post-entrenamiento para calibrar la confianza del Softmax</div>'
+  ],
+  diagram:'neural',
+  steps:[
+    {t:'Ingeniería de features (~40)',d:'Diferencia Elo, ratings A/D, forma últimos 5 partidos (goles marcados/concedidos), historial H2H, fase del torneo, altitud, ventaja local, ratios de tiro, confederación.'},
+    {t:'División walk-forward',d:'Datos organizados cronológicamente. Para validar el Mundial 2026, se entrena con todo lo anterior. Cada fold produce pesos distintos.'},
+    {t:'Entrenamiento con Dropout',d:'Adam + Dropout "apaga" neuronas aleatoriamente durante el forward pass de entrenamiento, forzando a la red a no depender de ninguna feature en particular.'},
+    {t:'Calibración de temperatura',d:'Tras el entrenamiento, se aplica Temperature Scaling: se busca T tal que el Softmax calibrado (logits/T) tenga menor Expected Calibration Error en el set de validación.'},
+    {t:'Integración en ensembles',d:'Los pesos del MLP se congelan para producción. La matriz P(i,j) entra como input en los ensembles con peso calibrado por backtest.'}
+  ],
+  pros:['Captura interacciones no lineales invisibles para modelos paramétricos','Puede aprender patrones de matchup histórico específicos','No asume ninguna forma funcional entre fuerza y goles'],
+  cons:['Caja negra: difícil interpretar por qué predice un marcador específico','Riesgo de sobreajuste si el conjunto de entrenamiento es reducido','Sensible a cambios de distribución en los features']
+},
+
+'neural_hybrid_v2':{
+  title:'Neural Hybrid V2', cat:'Híbrido Poisson–Neural · Estructura + Flexibilidad',
+  badge:'HYBRID', badgeCls:'fb-neu',
+  theory:'El modelo híbrido combina lo mejor de dos mundos: la <strong>estructura probabilística interpretable del Poisson</strong> con la <strong>flexibilidad de una red neuronal</strong>. El "cabezal Poisson" produce una distribución base bien calibrada y respaldada por teoría estadística. La "corrección neuronal" aprende los residuos: los patrones que el Poisson sistemáticamente sobre o subestima. La combinación se hace en log-espacio sumando la corrección neuronal Δ(i,j) al log del prior Poisson, seguido de Softmax.',
+  why:'<strong>¿Por qué usarlo?</strong> Un MLP puro puede producir distribuciones con formas extrañas. El híbrido garantiza que la base tenga la forma correcta de Poisson y usa la red solo para modulaciones. Si la corrección neuronal aprende cero, recupera exactamente el Poisson. Es más estable con conjuntos de datos pequeños.',
+  eqs:[
+    '<div class="eq-blk-t">Cabezal Poisson (prior estructurado)</div>'+
+    '<div class="eq-math">&lambda;<sub>H</sub>, &lambda;<sub>A</sub> &larr; A/D Poisson o Elo</div>'+
+    '<div class="eq-math">P<sub>Poisson</sub>(i,j) = Pois(i; &lambda;<sub>H</sub>) &middot; Pois(j; &lambda;<sub>A</sub>)</div>',
+
+    '<div class="eq-blk-t">Cabezal neuronal de corrección</div>'+
+    '<div class="eq-math">features &rarr; [Dense 64 &rarr; ReLU &rarr; Dense 32] &rarr; &Delta;(i,j) &isin; &reals;<sup>9&times;9</sup></div>'+
+    '<div class="eq-where">&Delta;(i,j) son correcciones aditivas en log-probabilidad (inicializadas en cero)</div>',
+
+    '<div class="eq-blk-t">Combinación en log-espacio</div>'+
+    '<div class="eq-math">logits(i,j) = log P<sub>Poisson</sub>(i,j) + &Delta;(i,j)</div>'+
+    '<div class="eq-math">P<sub>final</sub>(i,j) = Softmax(logits)&nbsp;&nbsp;[suma exactamente 1]</div>'+
+    '<div class="eq-where">Si &Delta;&rarr;0 se recupera P_Poisson exactamente &middot; Regularización L2 sobre &Delta; encauza hacia el prior<br>La suma en log-espacio equivale a multiplicación en espacio de probabilidad</div>'
+  ],
+  diagram:'hybrid',
+  steps:[
+    {t:'Fase Poisson (sin parámetros aprendidos)',d:'Se calculan λ_H y λ_A con el modelo A/D Poisson. Se genera la distribución base P_Poisson(i,j). Esta parte no tiene parámetros aprendidos por entrenamiento.'},
+    {t:'Entrenamiento de corrección neuronal',d:'La red aprende Δ(i,j) minimizando cross-entropy entre P_final y los marcadores reales históricos. Target de la red: desviaciones del Poisson base.'},
+    {t:'Fine-tuning conjunto',d:'En fases avanzadas, se desbloquean parcialmente los parámetros del cabezal Poisson. La regularización L2 sobre Δ limita la magnitud de las correcciones.'},
+    {t:'Predicción',d:'logits(i,j) = log(P_Poisson(i,j)) + Δ(i,j). Softmax sobre la matriz 9×9 produce P_final con suma = 1.'}
+  ],
+  pros:['Más estable que MLP puro: el prior Poisson ancla la distribución','Correcciones interpretables como desviaciones del Poisson base','Degradación elegante: si la red no aprende nada útil, recupera exactamente Poisson'],
+  cons:['Más complejo de entrenar que Poisson puro o MLP por separado','Si la corrección neuronal se pasa puede desestabilizar marcadores bien explicados por el prior','Requiere suficientes datos para que las correcciones sean estadísticamente significativas']
+},
+
+'similar_match_knn_scoreline':{
+  title:'Partidos Similares KNN', cat:'K-Nearest Neighbors · Analogías Históricas',
+  badge:'KNN', badgeCls:'fb-sim',
+  theory:'En lugar de modelar un proceso generativo, K-Nearest Neighbors se basa en la idea de que <strong>partidos similares tienden a tener resultados similares</strong>. Encuentra los k partidos históricos más parecidos al que se quiere predecir, midiendo similitud mediante una función de distancia en el espacio de características. La predicción es un promedio ponderado de los resultados de esos vecinos. Para evitar sobreajuste con pocos vecinos (especialmente en matchups raros), se mezcla con un prior Poisson.',
+  why:'<strong>¿Por qué usarlo?</strong> Captura efectos de contexto difíciles de parametrizar: el historial entre continentes en Mundiales, equipos que rinden diferente en grandes torneos vs clasificatorias, o patrones que se repiten en matchups entre estilos específicos. Sirve principalmente como referencia de analogías y validación de los modelos paramétricos.',
+  eqs:[
+    '<div class="eq-blk-t">Función de distancia en espacio de features</div>'+
+    '<div class="eq-math">d(m<sub>1</sub>, m<sub>2</sub>) = &radic;( &Sigma;<sub>f</sub> w<sub>f</sub> &middot; (feat<sub>f</sub>(m<sub>1</sub>) &minus; feat<sub>f</sub>(m<sub>2</sub>))<sup>2</sup> )</div>'+
+    '<div class="eq-where">m<sub>1</sub>, m<sub>2</sub> = partido actual vs partido histórico<br>feat<sub>f</sub> = valor de la feature f (&Delta;Elo, &lambda;<sub>H</sub>, &lambda;<sub>A</sub>, fase, confederación, importancia...)<br>w<sub>f</sub> = peso de la feature (aprendido por CV; features más predictivas tienen w mayor)</div>',
+
+    '<div class="eq-blk-t">Predicción con prior Poisson (mezcla regularizada)</div>'+
+    '<div class="eq-math">P<sub>KNN</sub>(i,j) = &Sigma;<sub>k&isin;vecinos</sub> sim(k)/&Sigma;sim &middot; 1{result<sub>k</sub>=(i,j)}</div>'+
+    '<div class="eq-math">P(i,j) = (1&minus;&alpha;)&middot;P<sub>KNN</sub>(i,j) + &alpha;&middot;P<sub>Poisson</sub>(i,j)</div>'+
+    '<div class="eq-where">sim(k) = 1/d(k) &rarr; mayor similitud = mayor peso<br>&alpha; = mezcla con prior Poisson (regularización, típicamente 0.4&ndash;0.6)<br>Para K pequeño la mezcla con Poisson es más importante</div>'
+  ],
+  steps:[
+    {t:'Base de datos histórica de features',d:'Cada partido FIFA se representa como vector: ΔElo, λ_H, λ_A estimados, fase, importancia, sede, confederaciones de ambos equipos.'},
+    {t:'Calibración de pesos de distancia',d:'Validación cruzada temporal para calibrar w_f: features más predictivas reciben mayor peso en la función de distancia.'},
+    {t:'Búsqueda de K vecinos',d:'Para cada partido pendiente, se calcula la distancia a todos los partidos históricos. Se seleccionan los K más similares (K=10–30, óptimo por CV).'},
+    {t:'Estimación y mezcla con Poisson',d:'P_KNN pondera vecinos por 1/distancia. P_final = (1-α)·P_KNN + α·P_Poisson. El prior Poisson evita que pocos vecinos extremos distorsionen la predicción.'}
+  ],
+  ex:{
+    title:'Japón vs Alemania · Grupo, &Delta;Elo=&minus;300, &lambda;<sub>H</sub>=1.70, &lambda;<sub>A</sub>=1.00',
+    lines:['Vecinos más similares encontrados:','  1. España 3-1 Japón (Qatar 2022, dist=0.12, sim=8.3)','  2. Alemania 2-0 Corea Sur (Rusia 2018, dist=0.15, sim=6.7)','  3. Alemania 4-0 Portugal (Brasil 2014, dist=0.21, sim=4.8)','','P_KNN: alta probabilidad de victoria amplia del equipo europeo','Mezcla (&alpha;=0.5): P_final = 0.5&middot;P_KNN + 0.5&middot;P_Poisson'],
+    result:'KNN amplifica el patrón histórico de dominio europeo en este tipo de matchup'
+  },
+  pros:['Captura patrones de matchup histórico específicos','No asume ninguna forma funcional','Detecta contextos raros que los modelos paramétricos pueden ignorar'],
+  cons:['Con pocos vecinos similares las predicciones son ruidosas','La base de Mundiales es pequeña (~500 partidos total)','Puede reproducir sesgos históricos si no se controla (ej: dominio europeo)']
+},
+
+'weighted_ensemble':{
+  title:'Weighted Ensemble', cat:'Ensemble · Mezcla Ponderada de Matrices',
+  badge:'POND.', badgeCls:'fb-pond',
+  theory:'Un <strong>ensemble</strong> combina las predicciones de múltiples modelos base para obtener una predicción más robusta. La teoría: si distintos modelos cometen errores no correlacionados, su combinación tiene varianza menor que cualquier modelo individual. El Weighted Ensemble asigna un peso w<sub>m</sub> a cada modelo, aprendido mediante backtest walk-forward para minimizar la log-pérdida sobre la distribución completa de marcadores. Los pesos se optimizan sobre la mezcla de matrices P(i,j), no solo sobre 1X2.',
+  why:'<strong>¿Por qué usarlo?</strong> Ningún modelo domina en todas las situaciones: Elo es bueno para favoritos claros, A/D captura desequilibrios ofensivos/defensivos, BTD es mejor para 1X2 directo. El ensemble pondera automáticamente cuál ha sido históricamente más confiable. Es la línea base de ensemble más sólida del sistema.',
+  eqs:[
+    '<div class="eq-blk-t">Mezcla de distribuciones de scoreline</div>'+
+    '<div class="eq-math">P<sub>ens</sub>(i,j) = &Sigma;<sub>m</sub> w<sub>m</sub> &middot; P<sub>m</sub>(i,j)</div>'+
+    '<div class="eq-where">w<sub>m</sub> &ge; 0 &nbsp;&nbsp; &Sigma;w<sub>m</sub> = 1 &nbsp;&nbsp; (restricción de simplex)<br>P<sub>m</sub>(i,j) = probabilidad del marcador (i,j) según modelo m<br>La mezcla se hace en espacio de probabilidad lineal, no en log-espacio</div>',
+
+    '<div class="eq-blk-t">Optimización de pesos (backtest walk-forward)</div>'+
+    '<div class="eq-math">min L = &minus;(1/N) &middot; &Sigma;<sub>partidos</sub> &Sigma;<sub>i,j</sub> y<sub>ij</sub> &middot; log P<sub>ens</sub>(i,j)</div>'+
+    '<div class="eq-math">s.t. &nbsp;&Sigma; w<sub>m</sub> = 1,&nbsp; w<sub>m</sub> &ge; 0</div>'+
+    '<div class="eq-where">Implementado con scipy.optimize.minimize + restricciones de simplex<br>Walk-forward: para cada torneo de test se optimizan pesos solo con datos anteriores</div>'
+  ],
+  steps:[
+    {t:'Predicciones de modelos base',d:'Para cada partido histórico se recopilan las matrices P_m(i,j) de todos los modelos base (Elo, A/D, DC, BTD, Bayesian, Opta, Neural, KNN).'},
+    {t:'Optimización walk-forward',d:'Pesos optimizados sobre datos anteriores a cada torneo de validación. Nunca se ven los resultados del torneo de test.'},
+    {t:'Verificación de robustez',d:'Se verifica que ningún modelo tenga peso excesivo (>60%) que sugiera sobreajuste. Si es así, se aplica regularización adicional (prior Dirichlet en los pesos).'},
+    {t:'Predicción en producción',d:'P_ens(i,j) = Σ w_m · P_m(i,j) con los pesos del último backtest. Pick = argmax EV(pick) sobre todos los scorelines posibles.'}
+  ],
+  pros:['Reduce varianza respecto a cualquier modelo individual','Pesos aprendidos automáticamente del historial','Más robusto ante partidos atípicos que favorecen un solo modelo'],
+  cons:['Si todos los modelos comparten el mismo sesgo el ensemble lo hereda','El tamaño del backtest histórico limita la confianza en los pesos','Requiere ejecutar todos los modelos base primero']
+},
+
+'weighted_points_ensemble':{
+  title:'Weighted Points Ensemble', cat:'Ensemble Optimizado para Puntos de Quiniela',
+  badge:'POND.', badgeCls:'fb-pond',
+  theory:'Este ensemble no busca minimizar log-loss sino <strong>maximizar directamente los puntos esperados de quiniela</strong> bajo la regla de scoring activa. La diferencia es sutil pero importante: un modelo perfectamente calibrado en log-loss puede no maximizar puntos. El pick de máximo valor esperado (EV) bajo la regla de quiniela puede diferir del marcador más probable en ciertos contextos. Los pesos se optimizan mediante backtest walk-forward sobre la métrica de puntos, no log-loss.',
+  why:'<strong>¿Por qué usarlo?</strong> Es el <strong>modelo operativo principal</strong> del sistema. Al estar optimizado directamente para el objetivo de la quiniela, sus pesos reflejan qué combinación de modelos ha sido más útil para <em>ganar puntos</em>, no solo para calibrar probabilidades. Cuando la regla de scoring cambia (5-3-1 vs 3-1-0), los pesos se recalculan automáticamente.',
+  eqs:[
+    '<div class="eq-blk-t">Valor esperado bajo la regla de quiniela</div>'+
+    '<div class="eq-math">EV(pick; P<sub>ens</sub>) = &Sigma;<sub>i,j</sub> P<sub>ens</sub>(i,j) &middot; score(pick, (i,j))</div>'+
+    '<div class="eq-math">score(pick, result) = 5 si exacto | 3 si mismo margen | 1 si ganador | 0 si fallo</div>'+
+    '<div class="eq-where">El pick óptimo es argmax<sub>pick</sub> EV(pick) sobre todos los scorelines posibles<br>Los pesos w<sub>m</sub> se optimizan para maximizar &Sigma; EV(pick*, P<sub>ens</sub>) sobre el backtest<br>Equivalente a minimizar "arrepentimiento esperado" bajo la regla de scoring de quiniela</div>',
+
+    '<div class="eq-blk-t">Recalculación dinámica al cambiar regla de scoring</div>'+
+    '<div class="eq-math">w<sub>m</sub><sup>5-3-1</sup> &ne; w<sub>m</sub><sup>3-1-0</sup></div>'+
+    '<div class="eq-where">Los pesos se precomputan para cada perfil de scoring y se guardan por separado.<br>Al cambiar la regla en el dashboard, los pesos se intercambian instantáneamente.</div>'
+  ],
+  steps:[
+    {t:'Definición de la regla activa',d:'El sistema lee el perfil de scoring activo (5-3-1 clásica o 3-1-0 simple). Los pesos se guardan por separado para cada perfil.'},
+    {t:'Simulación de picks en backtest',d:'Para cada combinación de pesos, se simula qué pick habría elegido el ensemble (argmax EV) en cada partido histórico. Se suman los puntos reales obtenidos.'},
+    {t:'Optimización de pesos',d:'Se buscan los w_m que maximizan la suma de puntos en el backtest walk-forward. Restricción de simplex: pesos no negativos que suman 1.'},
+    {t:'Recalibración dinámica',d:'Al cambiar la regla de scoring, los pesos recalculados para ese perfil se activan automáticamente. La recalibración es instantánea.'}
+  ],
+  pros:['Directamente alineado con el objetivo de maximizar puntos de quiniela','Recalibrado dinámicamente al cambiar la regla de scoring (5-3-1 / 3-1-0)','Puede preferir picks no intuitivos que maximizan EV bajo la regla activa'],
+  cons:['Los puntos de quiniela son una señal ruidosa; buen backtest no garantiza estabilidad futura','Con pocas partidas jugadas, los pesos pueden estar poco estabilizados','Puede elegir marcadores "extraños" si el EV lo justifica bajo la regla activa']
+},
+
+'weighted_1x2_ensemble':{
+  title:'Weighted 1X2 Ensemble', cat:'Ensemble Optimizado para Resultado Direccional',
+  badge:'POND.', badgeCls:'fb-pond',
+  theory:'Variante del ensemble donde los pesos se optimizan para maximizar la precisión en la predicción del resultado 1X2 (local gana / empate / visitante) sobre el backtest histórico. El proceso de mezcla de matrices es idéntico, pero la función objetivo es log-loss sobre 1X2 (marginalizando la distribución de scoreline), no sobre el scoreline completo.',
+  why:'<strong>¿Por qué usarlo?</strong> Útil como referencia para validar la dirección del partido. Si varios ensembles coinciden en 1X2 pero difieren en el margen, la señal de dirección tiene alta confianza. En la quiniela, el ganador correcto (1 punto) es la predicción más frecuente y este ensemble maximiza capturar esa señal.',
+  eqs:[
+    '<div class="eq-blk-t">Marginales 1X2 del ensemble</div>'+
+    '<div class="eq-math">P<sub>ens</sub>(1) = &Sigma;<sub>i&gt;j</sub> P<sub>ens</sub>(i,j)&nbsp;&nbsp;P<sub>ens</sub>(X) = &Sigma;<sub>i=j</sub> P<sub>ens</sub>(i,j)&nbsp;&nbsp;P<sub>ens</sub>(2) = &Sigma;<sub>i&lt;j</sub> P<sub>ens</sub>(i,j)</div>'+
+    '<div class="eq-math">Objetivo: max &Sigma;<sub>partidos</sub> log P<sub>ens</sub>(resultado<sub>1X2</sub>)</div>'+
+    '<div class="eq-where">Los modelos que mejor predicen 1X2 reciben mayor peso, independientemente de su precisión en marcadores exactos</div>'
+  ],
+  pros:['Mejor para detectar la dirección del partido','Complemento útil al weighted_points_ensemble','Captura consenso de dirección de múltiples modelos'],
+  cons:['No siempre óptimo para marcador exacto (objetivo distinto)','Los modelos que dominan en 1X2 pueden no ser los mejores para scoreline']
+},
+
+'weighted_exact_ensemble':{
+  title:'Weighted Exact Ensemble', cat:'Ensemble Optimizado para Marcador Exacto',
+  badge:'POND.', badgeCls:'fb-pond',
+  theory:'Variante que optimiza los pesos para maximizar la frecuencia de marcadores exactos en el backtest. Prioriza los modelos que históricamente han acertado con mayor frecuencia el resultado preciso (i,j). Es el ensemble de mayor riesgo y mayor recompensa: si acierta el exacto, 5 puntos; si no, puede quedarse sin el ganador correcto.',
+  why:'<strong>¿Por qué usarlo?</strong> En una quiniela competitiva, el diferencial lo generan principalmente los exactos (5 puntos). Este ensemble es la referencia para evaluar si vale la pena perseguir precisión fina vs dirección robusta.',
+  eqs:[
+    '<div class="eq-blk-t">Objetivo de optimización (exacto)</div>'+
+    '<div class="eq-math">max &Sigma;<sub>partidos</sub> 1{pick<sub>ens</sub>(p) = resultado<sub>real</sub>(p)}</div>'+
+    '<div class="eq-math">pick<sub>ens</sub>(p) = argmax<sub>(i,j)</sub> P<sub>ens</sub>(i,j)&nbsp;&nbsp;[scoreline de máxima probabilidad]</div>'+
+    '<div class="eq-where">Notar: argmax P(i,j) vs argmax EV(pick) pueden dar picks distintos<br>El exacto es el pick de mayor probabilidad puntual, no necesariamente el de mayor EV</div>'
+  ],
+  pros:['Maximiza la métrica de exacto sobre backtest','Útil para identificar qué modelos son más precisos en scorelines específicos'],
+  cons:['El exacto es señal muy ruidosa; sobreajuste es frecuente','Puede ignorar la señal de dirección si busca exacto a toda costa']
+},
+
+'calibrated_scoreline_ensemble':{
+  title:'Calibrated Scoreline Ensemble', cat:'Ensemble Calibrado · Ajuste de Confianza',
+  badge:'POND.', badgeCls:'fb-pond',
+  theory:'Un modelo bien calibrado asigna probabilidades que corresponden a frecuencias observadas: si dice "30% de probabilidad de gana el local", en partidos donde lo dijo debería ganar el local el 30% de las veces. Los ensembles de scoreline suelen tener sobreconfianza. La calibración post-hoc corrige esto mediante <strong>Temperature Scaling</strong> o <strong>Regresión Isotónica</strong>, ajustando las probabilidades para que sean consistentes con frecuencias históricas reales.',
+  why:'<strong>¿Por qué usarlo?</strong> Una distribución bien calibrada produce mejores valores esperados y picks más confiables. Si el ensemble dice "10% de probabilidad de 2-1" pero históricamente ese marcador ocurre el 15% de las veces en contextos similares, la calibración corrige esa discrepancia —especialmente importante cuando la regla de scoring premia marcadores exactos.',
+  eqs:[
+    '<div class="eq-blk-t">Temperature Scaling</div>'+
+    '<div class="eq-math">P<sub>cal</sub>(i,j) = Softmax(logits(i,j) / T)</div>'+
+    '<div class="eq-math">logits(i,j) = log P<sub>ens</sub>(i,j)&nbsp;&nbsp;&nbsp;&nbsp;T &gt; 1 &rarr; más plana &nbsp;&middot;&nbsp; T &lt; 1 &rarr; más afilada</div>'+
+    '<div class="eq-where">T se optimiza minimizando NLL en un set de calibración separado<br>Un solo parámetro T no cambia el ranking de los picks, solo las probabilidades</div>',
+
+    '<div class="eq-blk-t">Expected Calibration Error (ECE)</div>'+
+    '<div class="eq-math">ECE = &Sigma;<sub>bins</sub> |B<sub>k</sub>|/N &middot; |acc(B<sub>k</sub>) &minus; conf(B<sub>k</sub>)|</div>'+
+    '<div class="eq-where">acc(B) = fracción de eventos que realmente ocurrieron en el bin B<br>conf(B) = confianza media del modelo en el bin B<br>ECE mide el error de calibración promedio ponderado por tamaño de bin</div>'
+  ],
+  steps:[
+    {t:'Ensemble base',d:'Se parte de la predicción P_ens(i,j) del Weighted Ensemble o Weighted Points Ensemble.'},
+    {t:'Curva de calibración',d:'Para cada bin de probabilidad (0-5%, 5-10%, ..., 95-100%), se mide qué porcentaje de eventos realmente ocurrió. Desviaciones de la diagonal indican mala calibración.'},
+    {t:'Ajuste de temperatura T',d:'Se busca T minimizando NLL en el set de calibración. T > 1 aplana la distribución si el ensemble es demasiado confiado (habitual en ensembles bien entrenados).'},
+    {t:'Validación',d:'Se verifica que ECE mejoró y que el ranking de picks no cambió. La calibración no debe invertir el orden de probabilidades, solo escalarlas correctamente.'}
+  ],
+  pros:['Mejora la fidelidad probabilística del ensemble','Produce mejores EV cuando el objetivo es la distribución de puntos','La calibración post-hoc añade solo un parámetro (T)'],
+  cons:['Puede "sacrificar" agresividad en picks si detecta sobreconfianza','Si los datos de calibración son escasos, el ajuste puede no ser representativo','Temperature scaling asume mala calibración uniforme (misma T para todos los bins)']
+}
+
+};
+
+/* ─── Diagrams ─── */
+function _mdPoissonSVG(){
+  var W=520,H=155,pl=38,pr=18,pt=28,pb=36;
+  var cW=W-pl-pr,cH=H-pt-pb;
+  var lams=[1.0,1.8,2.5];
+  var cols=['var(--teal2)','var(--gold)','var(--cor)'];
+  var lbls=['λ=1.0','λ=1.8','λ=2.5'];
+  var maxK=6;
+  function pmf(lam,k){var p=Math.exp(-lam);for(var i=1;i<=k;i++)p*=lam/i;return p;}
+  var maxP=0;
+  for(var l=0;l<3;l++)for(var k=0;k<=maxK;k++)maxP=Math.max(maxP,pmf(lams[l],k));
+  var gW=cW/(maxK+1),bW=(gW-8)/3;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">';
+  s+='<rect width="'+W+'" height="'+H+'" fill="var(--pan2)" rx="6"/>';
+  s+='<text x="'+(W/2)+'" y="17" text-anchor="middle" fill="var(--mut)" font-size="9" font-family="Barlow Condensed,sans-serif" letter-spacing="1" font-weight="700">DISTRIBUCIÓN POISSON · P(k goles ; λ)</text>';
+  for(var l=0;l<3;l++){
+    for(var k=0;k<=maxK;k++){
+      var p=pmf(lams[l],k);
+      var bH=(p/maxP)*cH;
+      var x=pl+k*gW+l*bW+4;
+      var y=pt+cH-bH;
+      s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bW.toFixed(1)+'" height="'+bH.toFixed(1)+'" fill="'+cols[l]+'" opacity="0.8" rx="1.5"/>';
+      if(l===0&&k===Math.round(lams[l])){s+='<text x="'+(x+bW/2).toFixed(1)+'" y="'+(y-3).toFixed(1)+'" text-anchor="middle" fill="'+cols[l]+'" font-size="7" font-family="Barlow Condensed,sans-serif">▼</text>';}
+    }
+  }
+  for(var k=0;k<=maxK;k++){
+    s+='<text x="'+(pl+k*gW+gW/2).toFixed(1)+'" y="'+(H-pb+13)+'" text-anchor="middle" fill="var(--mut)" font-size="10" font-family="Barlow Condensed,sans-serif">'+(k===maxK?k+'+':k)+'</text>';
+  }
+  s+='<text x="'+(W/2)+'" y="'+(H-pb+25)+'" text-anchor="middle" fill="var(--mutl)" font-size="9" font-family="Barlow,sans-serif">k = goles por equipo</text>';
+  for(var l=0;l<3;l++){
+    var lx=pl+(cW/3)*l;
+    s+='<rect x="'+lx+'" y="'+(pt+cH+4)+'" width="8" height="8" fill="'+cols[l]+'" opacity="0.8" rx="1"/>';
+    s+='<text x="'+(lx+11)+'" y="'+(pt+cH+12)+'" fill="var(--ink2)" font-size="9" font-family="Barlow,sans-serif">'+lbls[l]+'</text>';
+  }
+  s+='</svg>';
+  return s;
+}
+
+function _mdNeuralSVG(){
+  var W=500,H=170;
+  var layers=[{n:4,label:'Input\nfeatures'},{n:6,label:'Capa 1\n(128)'},{n:5,label:'Capa 2\n(64)'},{n:3,label:'Capa 3\n(32)'},{n:4,label:'Output\nSoftmax'}];
+  var lx=[50,150,250,350,450];
+  var cols=['var(--mut)','var(--teal)','var(--teal2)','var(--gold)','var(--cor)'];
+  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">';
+  s+='<rect width="'+W+'" height="'+H+'" fill="var(--pan2)" rx="6"/>';
+  s+='<text x="'+(W/2)+'" y="16" text-anchor="middle" fill="var(--mut)" font-size="9" font-family="Barlow Condensed,sans-serif" letter-spacing="1" font-weight="700">ARQUITECTURA MLP · NEURAL SCORELINE</text>';
+  var nodePos=[];
+  for(var l=0;l<layers.length;l++){
+    var ly=layers[l];
+    var nodes=[];
+    var yStep=80/(ly.n+1);
+    for(var n=0;n<ly.n;n++){
+      var cy=45+(n+1)*yStep+((8-ly.n)*5);
+      nodes.push({x:lx[l],y:cy});
+    }
+    nodePos.push(nodes);
+  }
+  for(var l=0;l<layers.length-1;l++){
+    var fromNodes=nodePos[l],toNodes=nodePos[l+1];
+    for(var a=0;a<fromNodes.length;a++){
+      for(var b=0;b<toNodes.length;b++){
+        s+='<line x1="'+fromNodes[a].x+'" y1="'+fromNodes[a].y+'" x2="'+toNodes[b].x+'" y2="'+toNodes[b].y+'" stroke="var(--brd)" stroke-width="0.7" opacity="0.6"/>';
+      }
+    }
+  }
+  for(var l=0;l<layers.length;l++){
+    var nodes=nodePos[l];
+    for(var n=0;n<nodes.length;n++){
+      s+='<circle cx="'+nodes[n].x+'" cy="'+nodes[n].y+'" r="7" fill="'+cols[l]+'" opacity="0.85"/>';
+    }
+    var labelLines=layers[l].label.split('\n');
+    s+='<text x="'+lx[l]+'" y="'+(H-22)+'" text-anchor="middle" fill="var(--ink2)" font-size="9" font-family="Barlow,sans-serif">'+labelLines[0]+'</text>';
+    if(labelLines[1]) s+='<text x="'+lx[l]+'" y="'+(H-11)+'" text-anchor="middle" fill="var(--mutl)" font-size="8" font-family="Barlow Condensed,sans-serif">'+labelLines[1]+'</text>';
+  }
+  s+='</svg>';
+  return s;
+}
+
+function _mdHybridSVG(){
+  var W=500,H=160;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">';
+  s+='<rect width="'+W+'" height="'+H+'" fill="var(--pan2)" rx="6"/>';
+  s+='<text x="'+(W/2)+'" y="16" text-anchor="middle" fill="var(--mut)" font-size="9" font-family="Barlow Condensed,sans-serif" letter-spacing="1" font-weight="700">ARQUITECTURA HÍBRIDA · POISSON + NEURAL</text>';
+  function box(x,y,w,h,col,txt,sub){
+    s+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="6" fill="'+col+'" opacity="0.18" stroke="'+col+'" stroke-width="1.2" opacity2="0.6"/>';
+    s+='<text x="'+(x+w/2)+'" y="'+(y+h/2-4)+'" text-anchor="middle" fill="var(--ink)" font-size="10" font-family="Barlow Condensed,sans-serif" font-weight="700">'+txt+'</text>';
+    if(sub) s+='<text x="'+(x+w/2)+'" y="'+(y+h/2+9)+'" text-anchor="middle" fill="var(--ink2)" font-size="8" font-family="Barlow,sans-serif">'+sub+'</text>';
+  }
+  function arrow(x1,y1,x2,y2,lbl){
+    s+='<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="var(--teal)" stroke-width="1.5" marker-end="url(#ah)"/>';
+    if(lbl) s+='<text x="'+((x1+x2)/2)+'" y="'+((y1+y2)/2-4)+'" text-anchor="middle" fill="var(--teal2)" font-size="8" font-family="Barlow Condensed,sans-serif">'+lbl+'</text>';
+  }
+  s+='<defs><marker id="ah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="var(--teal)"/></marker></defs>';
+  box(20,30,120,50,'var(--teal)','Poisson head','λ_H, λ_A → P_Poisson');
+  box(20,95,120,50,'var(--gold)','Neural head','features → Δ(i,j)');
+  box(200,55,120,50,'var(--mut)','log-sum','log P_Poisson + Δ');
+  box(380,55,100,50,'var(--cor)','Softmax','P_final(i,j)');
+  arrow(140,55,200,80,'');
+  arrow(140,120,200,100,'');
+  arrow(320,80,380,80,'');
+  s+='</svg>';
+  return s;
+}
+
+function buildMDDiagram(type){
+  var inner='';
+  if(type==='poisson') inner=_mdPoissonSVG();
+  else if(type==='neural') inner=_mdNeuralSVG();
+  else if(type==='hybrid') inner=_mdHybridSVG();
+  if(!inner) return '';
+  return '<div class="mddoc-diagram">'+inner+'</div>';
+}
+
+/* ─── Render ─── */
+function buildModelDocHTML(modelId){
+  var D=MODEL_DOC_DATA[modelId];
+  if(!D) return '<p style="color:var(--mut);padding:20px 0">Sin documentación disponible para este modelo.</p>';
+  var h='';
+
+  h+='<div class="mddoc-sec"><div class="mddoc-sec-t">Teoría y fundamento</div>';
+  h+='<div class="mddoc-txt">'+D.theory+'</div>';
+  if(D.why) h+='<div class="mddoc-why">'+D.why+'</div>';
+  h+='</div>';
+
+  if(D.eqs&&D.eqs.length){
+    h+='<div class="mddoc-sec"><div class="mddoc-sec-t">Desarrollo matemático</div>';
+    D.eqs.forEach(function(eq){h+='<div class="eq-blk">'+eq+'</div>';});
+    h+='</div>';
+  }
+
+  if(D.diagram){
+    h+='<div class="mddoc-sec"><div class="mddoc-sec-t">Visualización</div>'+buildMDDiagram(D.diagram)+'</div>';
+  }
+
+  if(D.steps&&D.steps.length){
+    h+='<div class="mddoc-sec"><div class="mddoc-sec-t">Proceso de implementación</div><div class="mddoc-steps">';
+    D.steps.forEach(function(s,i){
+      h+='<div class="mddoc-step"><div class="mddoc-step-n">'+(i+1)+'</div>';
+      h+='<div class="mddoc-step-body"><div class="mddoc-step-t">'+s.t+'</div>';
+      h+='<div class="mddoc-step-d">'+s.d+'</div></div></div>';
+    });
+    h+='</div></div>';
+  }
+
+  if(D.ex){
+    h+='<div class="mddoc-sec"><div class="mddoc-sec-t">Ejemplo ilustrativo</div>';
+    h+='<div class="mddoc-ex"><div class="mddoc-ex-t">'+D.ex.title+'</div>';
+    D.ex.lines.forEach(function(l){
+      h+=l===''?'<div class="mddoc-ex-gap"></div>':'<div class="mddoc-ex-line">'+l+'</div>';
+    });
+    if(D.ex.result) h+='<div class="mddoc-ex-result">&rarr; '+D.ex.result+'</div>';
+    h+='</div></div>';
+  }
+
+  if(D.pros||D.cons){
+    h+='<div class="mddoc-sec"><div class="mddoc-sec-t">Fortalezas y cautelas</div><div class="mddoc-2col">';
+    if(D.pros){
+      h+='<div><div class="mddoc-pc-t pro">&#10003; FORTALEZAS</div>';
+      D.pros.forEach(function(p){h+='<div class="mddoc-pi pro">'+p+'</div>';});
+      h+='</div>';
+    }
+    if(D.cons){
+      h+='<div><div class="mddoc-pc-t con">&#9888; CAUTELAS</div>';
+      D.cons.forEach(function(c){h+='<div class="mddoc-pi con">'+c+'</div>';});
+      h+='</div>';
+    }
+    h+='</div></div>';
+  }
+
+  return h;
+}
+
+function openModelDoc(modelId){
+  var D=MODEL_DOC_DATA[modelId];
+  if(!D) return;
+  var badge=document.getElementById('mddoc-badge');
+  badge.className='fb '+D.badgeCls;
+  badge.textContent=D.badge;
+  document.getElementById('mddoc-fam').textContent=D.cat;
+  document.getElementById('mddoc-title').textContent=D.title;
+  document.getElementById('mddoc-id').textContent=modelId;
+  document.getElementById('mddoc-body').innerHTML=buildModelDocHTML(modelId);
+  document.getElementById('modeldoc-overlay').classList.add('vis');
+}
+function closeModelDoc(){ document.getElementById('modeldoc-overlay').classList.remove('vis'); }
+function mdocOverlayClick(e){ if(e.target===document.getElementById('modeldoc-overlay')) closeModelDoc(); }
 
 /* ══════════════════ AMIGOS ══════════════════ */
 
@@ -3004,7 +3684,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // Keyboard
   document.addEventListener('keydown', function(e){
-    if(e.key==='Escape'){ closeModal(); closeHover(); closeValHover(); }
+    if(e.key==='Escape'){ closeModal(); closeHover(); closeValHover(); closeModelDoc(); }
   });
 });
 

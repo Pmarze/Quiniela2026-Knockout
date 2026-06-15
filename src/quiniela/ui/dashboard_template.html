@@ -904,7 +904,7 @@ function renderPrivateShell(id){
 }
 
 /* ══════════════════ SCORING PROFILES ══════════════════ */
-var SCORING_ACTIVE = (DATA.scoring||{}).active || '5-3-1';
+var SCORING_ACTIVE = (DATA.scoring||{}).active || '3-1-0';
 var SCORING_PROFILES = (DATA.scoring||{}).profiles || {};
 var _origMatchData = null;
 var _origBacktestMetrics = null;
@@ -977,7 +977,7 @@ function switchScoring(profileId){
   }
   SCORING_ACTIVE = profileId;
   localStorage.setItem('q2026_scoring', profileId);
-  var defaultProfile = (DATA.scoring||{}).active || '5-3-1';
+  var defaultProfile = (DATA.scoring||{}).active || '3-1-0';
   if(profileId === defaultProfile){
     _origMatchData.forEach(function(orig){
       var m = DATA.matches.find(function(x){ return x.id===orig.id; });
@@ -2331,7 +2331,7 @@ function _scoringValues(){
 }
 function _ptsCls(p){
   var sv=_scoringValues();
-  return p===sv.exact?'fr-p5':p===sv.margin?'fr-p3':p===sv.winner?'fr-p1':'fr-p0';
+  return p===sv.exact?'fr-p5':sv.margin>0&&p===sv.margin?'fr-p3':p===sv.winner?'fr-p1':'fr-p0';
 }
 function calcMatchPoints(pick, result){
   if(!result || !pick || pick==='—') return null;

@@ -1036,7 +1036,7 @@ function _getCurrentRankOrder(){
   if(played.length > 0){
     var rd = buildCurrentRankData();
     rd.sort(function(a,b){
-      return (b.pts_score-a.pts_score) || (b.exact_score-a.exact_score) || (b.hits_score-a.hits_score);
+      return (b.pts_top-a.pts_top) || (b.exact_top-a.exact_top) || (b.hits_top-a.hits_top);
     });
     _currentRankCache = rd.map(function(m){ return m.id; });
   } else {
@@ -1073,26 +1073,17 @@ function getTop5ModelIds(){
   var refMatch = DATA.matches.find(function(m){ return (m.models||[]).length>0; });
   if(!refMatch){ _top5IdsCache=[]; _top5IdsScoringKey=sk; return []; }
   var modelList = refMatch.models.map(function(m){ return m.id; });
-  var sP={},tP={};
-  modelList.forEach(function(id){ sP[id]=0; tP[id]=0; });
+  var tP={};
+  modelList.forEach(function(id){ tP[id]=0; });
   played.forEach(function(match){
     (match.models||[]).forEach(function(mod){
-      var sp=calcMatchPoints(mod.score,match.result);
       var tp=calcMatchPoints(mod.top,match.result);
-      if(sp!==null) sP[mod.id]=(sP[mod.id]||0)+sp;
       if(tp!==null) tP[mod.id]=(tP[mod.id]||0)+tp;
     });
   });
-  var allFlat=[];
-  modelList.forEach(function(id){
-    allFlat.push({id:id,pts:sP[id]||0});
-    allFlat.push({id:id,pts:tP[id]||0});
-  });
+  var allFlat=modelList.map(function(id){ return {id:id,pts:tP[id]||0}; });
   allFlat.sort(function(a,b){ return b.pts-a.pts; });
-  var seen={},result=[];
-  for(var i=0;i<allFlat.length&&result.length<5;i++){
-    if(!seen[allFlat[i].id]){ seen[allFlat[i].id]=true; result.push(allFlat[i].id); }
-  }
+  var result=allFlat.slice(0,5).map(function(e){ return e.id; });
   _top5IdsCache=result; _top5IdsScoringKey=sk;
   return result;
 }
@@ -1631,7 +1622,7 @@ function currentBestModelId(){
   var ranked = buildCurrentRankData().filter(function(item){
     return item.played>0 && !AUTO_PICK_EXCLUDED_MODELS[item.id];
   }).sort(function(a,b){
-    return (b.pts_score-a.pts_score) || (b.exact_score-a.exact_score) || (b.hits_score-a.hits_score);
+    return (b.pts_top-a.pts_top) || (b.exact_top-a.exact_top) || (b.hits_top-a.hits_top);
   });
   return ranked.length ? ranked[0].id : 'weighted_points_ensemble';
 }
@@ -2105,14 +2096,14 @@ function renderHome(){
 
   /* — Ordenar modelos — */
   var sortedR = rankData.slice().sort(function(a,b){
-    return (b.pts_score-a.pts_score)||(b.exact_score-a.exact_score)||(b.hits_score-a.hits_score);
+    return (b.pts_top-a.pts_top)||(b.exact_top-a.exact_top)||(b.hits_top-a.hits_top);
   });
   var top5 = sortedR.slice(0,5);
 
   /* — Posición del usuario entre todos los modelos — */
   var userRank = null;
   if(playedCount>0 && userPlayed>0){
-    var allR = sortedR.map(function(m){ return {id:m.id,pts:m.pts_score,ex:m.exact_score}; });
+    var allR = sortedR.map(function(m){ return {id:m.id,pts:m.pts_top,ex:m.exact_top}; });
     allR.push({id:'__user',pts:userPts,ex:userExact});
     allR.sort(function(a,b){ return (b.pts-a.pts)||(b.ex-a.ex); });
     userRank = allR.findIndex(function(x){ return x.id==='__user'; })+1;
@@ -2136,18 +2127,18 @@ function renderHome(){
       lbRows += '</div>';
     });
   } else {
-    var maxPts5 = Math.max(1, top5[0].pts_score);
+    var maxPts5 = Math.max(1, top5[0].pts_top);
     top5.forEach(function(m,i){
-      var barW = (m.pts_score/maxPts5*100).toFixed(0);
+      var barW = (m.pts_top/maxPts5*100).toFixed(0);
       lbRows += '<div style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-bottom:1px solid var(--brd)'+(i===4?';border-bottom:none':'')+'">';
       lbRows += '<span style="font-size:14px;width:22px;text-align:center;flex-shrink:0">'+medals[i]+'</span>';
       lbRows += '<div style="flex:1;min-width:0">';
       lbRows += '<div style="font-size:11px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+m.id.replace(/_/g,' ')+'</div>';
       lbRows += '<div style="display:flex;align-items:center;gap:5px;margin-top:3px">';
       lbRows += '<div style="flex:1;height:3px;background:var(--brd);border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--grn),var(--teal));width:'+barW+'%"></div></div>';
-      lbRows += '<span style="font-family:var(--fc);font-size:9px;color:var(--mutl);flex-shrink:0">'+m.exact_score+' ex.</span>';
+      lbRows += '<span style="font-family:var(--fc);font-size:9px;color:var(--mutl);flex-shrink:0">'+m.exact_top+' ex.</span>';
       lbRows += '</div></div>';
-      lbRows += '<div style="text-align:right;flex-shrink:0"><div style="font-family:var(--fc);font-size:15px;font-weight:700;color:var(--teal);line-height:1">'+m.pts_score+'</div><div style="font-size:9px;color:var(--mutl)">pts</div></div>';
+      lbRows += '<div style="text-align:right;flex-shrink:0"><div style="font-family:var(--fc);font-size:15px;font-weight:700;color:var(--teal);line-height:1">'+m.pts_top+'</div><div style="font-size:9px;color:var(--mutl)">pts</div></div>';
       lbRows += '</div>';
     });
   }
@@ -2155,7 +2146,7 @@ function renderHome(){
   /* — Fila de mis picks — */
   var userHTML = '';
   if(playedCount>0 && userPlayed>0){
-    var maxRef = sortedR.length>0 ? Math.max(1,sortedR[0].pts_score) : 1;
+    var maxRef = sortedR.length>0 ? Math.max(1,sortedR[0].pts_top) : 1;
     var uBarW  = Math.min(100,(userPts/maxRef*100)).toFixed(0);
     userHTML =
       '<div style="border-top:2px solid rgba(201,150,14,.45);padding:8px 10px;background:rgba(201,150,14,.07)">'+
@@ -2483,32 +2474,32 @@ function buildCurrentRankRows(){
 
   /* ── Con partidos jugados: ranking real ── */
   var sorted = data.slice().sort(function(a,b){
-    return (b.pts_score-a.pts_score) || (b.exact_score-a.exact_score) || (b.hits_score-a.hits_score);
+    return (b.pts_top-a.pts_top) || (b.exact_top-a.exact_top) || (b.hits_top-a.hits_top);
   });
-  var maxV = Math.max(1, sorted[0].pts_score);
+  var maxV = Math.max(1, sorted[0].pts_top);
   var maxPts = playedCount * _scoringValues().exact;
 
   var rows = '';
   sorted.forEach(function(m,i){
-    var barW = (m.pts_score/maxV*100).toFixed(1);
-    var eff  = maxPts>0 ? (m.pts_score/maxPts*100).toFixed(1) : '0.0';
+    var barW = (m.pts_top/maxV*100).toFixed(1);
+    var eff  = maxPts>0 ? (m.pts_top/maxPts*100).toFixed(1) : '0.0';
     rows += '<div class="rankrow">';
     rows += '<span class="rn">'+(i+1)+'</span>';
     rows += '<div class="rinfo">';
     rows += '<div class="rmod"><span style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1">'+m.id.replace(/_/g,' ')+'</span>'
           + '<span class="fb '+m.fb+'" style="font-size:8px;flex-shrink:0">'+m.label+'</span></div>';
     rows += '<div class="rbar-bg"><div class="rbar" style="width:'+barW+'%;'
-          + 'background:linear-gradient(90deg,var(--grn),var(--teal))"></div></div>';
+          + 'background:linear-gradient(90deg,var(--teal),var(--blu))"></div></div>';
     rows += '<div class="reff">'
-          + m.hits_score+' aciertos · '+m.exact_score+' exactos'
+          + m.hits_top+' aciertos · '+m.exact_top+' exactos'
           + ' · Ef. '+eff+'%'
-          + ' <span style="color:var(--mutl)">· Más probable: '+m.pts_top+' pts</span>'
+          + ' <span style="color:var(--mutl)">· Max pts.: '+m.pts_score+' pts</span>'
           + '</div>';
     rows += '</div>';
     rows += '<div class="rpts">';
-    rows += '<div class="rpts-v" style="color:var(--grn)">'+m.pts_score+'</div>';
+    rows += '<div class="rpts-v" style="color:var(--teal)">'+m.pts_top+'</div>';
     rows += '<div class="rpts-l">/ '+maxPts+' pts</div>';
-    rows += '<div class="rpts-ex">'+m.exact_score+'<span style="font-size:10px;color:var(--mutl);font-weight:400"> / '+playedCount+' ex.</span></div>';
+    rows += '<div class="rpts-ex">'+m.exact_top+'<span style="font-size:10px;color:var(--mutl);font-weight:400"> / '+playedCount+' ex.</span></div>';
     rows += '</div></div>';
   });
   return rows;

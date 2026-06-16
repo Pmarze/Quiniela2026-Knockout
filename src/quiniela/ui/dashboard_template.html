@@ -2625,7 +2625,7 @@ function buildCumulativeChart(){
     var maxRaw = ranked[0] ? Math.max(1, ser[ranked[0].id][N-1]||0) : 1;
     var yStep = maxRaw<=15?3:maxRaw<=30?5:maxRaw<=60?10:15;
     var maxY = Math.ceil(maxRaw/yStep)*yStep + yStep;
-    var W=800,H=300,ml=42,mr=160,mt=18,mb=38;
+    var W=800,H=200,ml=42,mr=160,mt=14,mb=34;
     var pw=W-ml-mr, ph=H-mt-mb;
     function xOf(i){ return ml+(N>1?i/(N-1)*pw:pw/2); }
     function yOf(v){ return mt+ph*(1-v/maxY); }
@@ -2682,7 +2682,7 @@ function buildCumulativeChart(){
     var maxRaw=Math.max.apply(null,allFlat.map(function(e){ return e.pts||0; }).concat([1]));
     var yStep=maxRaw<=15?3:maxRaw<=30?5:maxRaw<=60?10:15;
     var maxY=Math.ceil(maxRaw/yStep)*yStep+yStep;
-    var W=800,H=300,ml=42,mr=30,mt=18,mb=38;
+    var W=800,H=200,ml=42,mr=160,mt=14,mb=34;
     var pw=W-ml-mr,ph=H-mt-mb;
     function xOf(i){ return ml+(N>1?i/(N-1)*pw:pw/2); }
     function yOf(v){ return mt+ph*(1-v/maxY); }
@@ -2696,11 +2696,11 @@ function buildCumulativeChart(){
     for(var xi=0;xi<N;xi++){
       var xx=xOf(xi).toFixed(1);
       if(N<=17||xi===0||xi===N-1||xi%3===0){
-        svg+='<text x="'+xx+'" y="'+(mt+ph+14)+'" fill="var(--ink2)" font-size="9" text-anchor="middle">'+xi+'</text>';
+        svg+='<text x="'+xx+'" y="'+(mt+ph+13)+'" fill="var(--ink2)" font-size="9" text-anchor="middle">'+xi+'</text>';
         if(xi>0) svg+='<line x1="'+xx+'" y1="'+(mt+ph)+'" x2="'+xx+'" y2="'+(mt+ph+4)+'" stroke="var(--brd)" stroke-width="1"/>';
       }
     }
-    svg+='<text x="'+(ml+pw/2)+'" y="'+(H-5)+'" fill="var(--mut)" font-size="9" text-anchor="middle">Partidos jugados →</text>';
+    svg+='<text x="'+(ml+pw/2)+'" y="'+(H-3)+'" fill="var(--mut)" font-size="9" text-anchor="middle">Partidos jugados →</text>';
     /* All lines: same model = same color, solid=score, dashed=top */
     modelList.forEach(function(m){
       var col=mCol[m.id];
@@ -2715,32 +2715,31 @@ function buildCumulativeChart(){
     });
     /* Line-type legend top-left */
     var lx=ml+4,ly=mt+4;
-    svg+='<rect x="'+lx+'" y="'+ly+'" width="178" height="16" rx="3" fill="var(--pan1)" opacity="0.85"/>';
-    svg+='<line x1="'+(lx+6)+'" y1="'+(ly+8)+'" x2="'+(lx+20)+'" y2="'+(ly+8)+'" stroke="var(--ink2)" stroke-width="2"/>';
-    svg+='<text x="'+(lx+24)+'" y="'+(ly+11.5)+'" fill="var(--ink2)" font-size="8">— Max Pts.</text>';
-    svg+='<line x1="'+(lx+90)+'" y1="'+(ly+8)+'" x2="'+(lx+104)+'" y2="'+(ly+8)+'" stroke="var(--ink2)" stroke-width="1.5" stroke-dasharray="4,2"/>';
-    svg+='<text x="'+(lx+108)+'" y="'+(ly+11.5)+'" fill="var(--ink2)" font-size="8">╌ Más Probable</text>';
-    svg+='</svg>';
-    /* HTML numbered legend below chart: 3-column grid sorted by rank */
-    var top5leg = allFlat.slice(0,5);
-    var leg='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px 10px;padding:8px 2px 0;border-top:1px solid var(--brd);margin-top:6px">';
-    top5leg.forEach(function(e){
-      var col=mCol[e.id];
-      var isDash=e.strat==='top';
-      var lineEl=isDash
-        ? '<span style="display:inline-block;width:16px;border-top:2px dashed '+col+';vertical-align:middle;margin:0 3px 0 1px"></span>'
-        : '<span style="display:inline-block;width:16px;border-top:2px solid '+col+';vertical-align:middle;margin:0 3px 0 1px"></span>';
-      leg+='<div style="display:flex;align-items:center;overflow:hidden;white-space:nowrap;padding:1px 0">'+
-        '<span style="color:'+col+';font-weight:700;font-size:9px;min-width:16px">'+e.num+'.</span>'+
-        lineEl+
-        '<span style="color:'+col+';font-size:9px;overflow:hidden;text-overflow:ellipsis">'+
-          esc(e.id.replace(/_/g,' '))+
-          ' <span style="opacity:0.65;font-size:8px">'+( isDash ? 'más prob.' : 'max pts.')+' · '+e.pts+'pts</span>'+
-        '</span>'+
-      '</div>';
+    svg+='<rect x="'+lx+'" y="'+ly+'" width="178" height="14" rx="3" fill="var(--pan1)" opacity="0.85"/>';
+    svg+='<line x1="'+(lx+6)+'" y1="'+(ly+7)+'" x2="'+(lx+18)+'" y2="'+(ly+7)+'" stroke="var(--ink2)" stroke-width="2"/>';
+    svg+='<text x="'+(lx+22)+'" y="'+(ly+10)+'" fill="var(--ink2)" font-size="8">— Max Pts.</text>';
+    svg+='<line x1="'+(lx+86)+'" y1="'+(ly+7)+'" x2="'+(lx+98)+'" y2="'+(ly+7)+'" stroke="var(--ink2)" stroke-width="1.5" stroke-dasharray="4,2"/>';
+    svg+='<text x="'+(lx+102)+'" y="'+(ly+10)+'" fill="var(--ink2)" font-size="8">╌ Más Probable</text>';
+    /* Top-5 inline labels on the right — same style as single-mode charts */
+    var top5 = allFlat.slice(0,5);
+    var lbls = top5.map(function(e){
+      var ser2 = e.strat==='score' ? scoreSer : topSer;
+      var stLabel = e.strat==='score' ? '—' : '╌';
+      return {
+        col: mCol[e.id],
+        y: yOf(ser2[e.id][N-1]||0),
+        text: e.num+'. '+e.id.replace(/_/g,' ')+' '+stLabel+' ('+e.pts+')',
+        bold: e.num<=3
+      };
+    }).sort(function(a,b){ return a.y-b.y; });
+    for(var li=1;li<lbls.length;li++){
+      if(lbls[li].y-lbls[li-1].y<11) lbls[li].y=lbls[li-1].y+11;
+    }
+    lbls.forEach(function(lb){
+      svg+='<text x="'+(W-mr+10)+'" y="'+(lb.y+3.5).toFixed(1)+'" fill="'+lb.col+'" font-size="9" font-weight="'+(lb.bold?700:400)+'">'+esc(lb.text)+'</text>';
     });
-    leg+='</div>';
-    return svg+leg;
+    svg+='</svg>';
+    return svg;
   }
 
   var svgScore = makeSVG(scoreSer, rankScore);

@@ -744,6 +744,7 @@ main{margin-top:var(--navh);}
     <div class="sheet-nav">
       <button class="sheet-btn" onclick="setHoverSheet('stats')" title="Graficos">&lsaquo;</button>
       <div class="sheet-label" id="hp-sheet-label">Graficos y consenso</div>
+      <button id="hover-top5-btn" class="sheet-btn" onclick="toggleHoverTop5()" title="Mostrar solo top 5 modelos" style="font-size:9px;padding:0 7px;width:auto;min-width:40px;letter-spacing:.3px">Top 5</button>
       <button class="sheet-btn" onclick="setHoverSheet('models')" title="Modelos">&rsaquo;</button>
     </div>
     <div class="sheet-page" id="hp-stats-sheet"></div>
@@ -770,6 +771,7 @@ main{margin-top:var(--navh);}
           <div class="sheet-nav">
             <button class="sheet-btn" onclick="setModalSheet('stats')" title="Graficos">&lsaquo;</button>
             <div class="sheet-label" id="m-sheet-label">Graficos y consenso</div>
+            <button id="modal-top5-btn" class="sheet-btn" onclick="toggleHoverTop5()" title="Mostrar solo top 5 modelos" style="font-size:9px;padding:0 7px;width:auto;min-width:40px;letter-spacing:.3px">Top 5</button>
             <button class="sheet-btn" onclick="setModalSheet('models')" title="Modelos">&rsaquo;</button>
           </div>
           <div class="sheet-page" id="m-stats-sheet"></div>
@@ -777,7 +779,7 @@ main{margin-top:var(--navh);}
             <div class="m-mod-hd">Pronósticos por modelo — ordenados por rendimiento histórico</div>
             <div class="m-mod-wrap">
               <table class="m-tbl">
-                <thead><tr><th>#</th><th>Modelo</th><th>Más Prob.</th><th>Max Puntos</th><th>xG</th><th>1 / X / 2</th><th>EV</th><th>Notas</th></tr></thead>
+                <thead><tr><th>#</th><th>Modelo</th><th>Más Probable</th><th>Max Pts.</th><th>xG</th><th>1 / X / 2</th><th>EV</th><th>Notas</th></tr></thead>
                 <tbody id="m-tbody"></tbody>
               </table>
             </div>
@@ -819,7 +821,7 @@ main{margin-top:var(--navh);}
   <div class="vh-body">
     <div id="vh-summary"></div>
     <table class="vh-tbl">
-      <thead><tr><th>#</th><th>Modelo</th><th style="background:rgba(201,150,14,.08)">Max Pts.</th><th style="background:rgba(201,150,14,.08)">Pts</th><th style="background:rgba(8,126,139,.06)">Más Prob.</th><th style="background:rgba(8,126,139,.06)">Pts</th><th>xG</th></tr></thead>
+      <thead><tr><th>#</th><th>Modelo</th><th style="background:rgba(201,150,14,.08)">Max Pts.</th><th style="background:rgba(201,150,14,.08)">Pts</th><th style="background:rgba(8,126,139,.06)">Más Probable</th><th style="background:rgba(8,126,139,.06)">Pts</th><th>xG</th></tr></thead>
       <tbody id="vh-tbody"></tbody>
     </table>
   </div>
@@ -1058,6 +1060,61 @@ function sortedModels(models, includeHidden){
   });
 }
 
+/* ── Top-5 filter for hover/modal stats sheet ── */
+var _hoverTop5 = false;
+var _top5IdsCache = null;
+var _top5IdsScoringKey = null;
+
+function getTop5ModelIds(){
+  var sk = SCORING_ACTIVE;
+  if(_top5IdsCache && _top5IdsScoringKey === sk) return _top5IdsCache;
+  var played = DATA.matches.filter(function(m){ return m.result!==null; });
+  if(!played.length){ _top5IdsCache=[]; _top5IdsScoringKey=sk; return []; }
+  var refMatch = DATA.matches.find(function(m){ return (m.models||[]).length>0; });
+  if(!refMatch){ _top5IdsCache=[]; _top5IdsScoringKey=sk; return []; }
+  var modelList = refMatch.models.map(function(m){ return m.id; });
+  var sP={},tP={};
+  modelList.forEach(function(id){ sP[id]=0; tP[id]=0; });
+  played.forEach(function(match){
+    (match.models||[]).forEach(function(mod){
+      var sp=calcMatchPoints(mod.score,match.result);
+      var tp=calcMatchPoints(mod.top,match.result);
+      if(sp!==null) sP[mod.id]=(sP[mod.id]||0)+sp;
+      if(tp!==null) tP[mod.id]=(tP[mod.id]||0)+tp;
+    });
+  });
+  var allFlat=[];
+  modelList.forEach(function(id){
+    allFlat.push({id:id,pts:sP[id]||0});
+    allFlat.push({id:id,pts:tP[id]||0});
+  });
+  allFlat.sort(function(a,b){ return b.pts-a.pts; });
+  var seen={},result=[];
+  for(var i=0;i<allFlat.length&&result.length<5;i++){
+    if(!seen[allFlat[i].id]){ seen[allFlat[i].id]=true; result.push(allFlat[i].id); }
+  }
+  _top5IdsCache=result; _top5IdsScoringKey=sk;
+  return result;
+}
+
+function toggleHoverTop5(){
+  _top5IdsCache=null; /* invalidate cache */
+  _hoverTop5=!_hoverTop5;
+  ['hover-top5-btn','modal-top5-btn'].forEach(function(bid){
+    var btn=document.getElementById(bid);
+    if(!btn) return;
+    btn.textContent=_hoverTop5?'Top 5 ✓':'Top 5';
+    btn.style.color=_hoverTop5?'var(--teal)':'';
+    btn.style.borderColor=_hoverTop5?'var(--teal)':'';
+  });
+  var m=(_hoverMid&&matchById(_hoverMid))||(_modalMid&&matchById(_modalMid));
+  if(!m) return;
+  var hs=document.getElementById('hp-stats-sheet');
+  if(hs) hs.innerHTML=buildStatsSheet(m);
+  var ms=document.getElementById('m-stats-sheet');
+  if(ms) ms.innerHTML=buildStatsSheet(m);
+}
+
 /* MATCH STATS SHEETS */
 var _hoverSheet = 'stats';
 var _modalSheet = 'stats';
@@ -1185,8 +1242,14 @@ function buildModelGoalHistogram(m, models){
   return html;
 }
 function buildStatsSheet(m){
-  var models = sortedModels(m.models || [], true);
-  return '<div class="chart-grid">'+
+  var allModels = sortedModels(m.models || [], true);
+  var models = _hoverTop5
+    ? (function(){ var ids=getTop5ModelIds(); return allModels.filter(function(mod){ return ids.indexOf(mod.id)>=0; }); })()
+    : allModels;
+  var filterNote = _hoverTop5
+    ? '<div style="font-size:9px;color:var(--teal);padding:2px 0 6px;font-weight:600">Filtrado: top 5 modelos por rendimiento combinado</div>'
+    : '';
+  return filterNote+'<div class="chart-grid">'+
     buildScatterChart(m, models)+
     buildHeatmapChart(m, models)+
     buildProbabilityChart(m, models)+
@@ -1870,10 +1933,10 @@ function showValHover(idx, el){
   document.getElementById('vh-sub').textContent = g.year+' · '+g.phase+' · '+g.models.length+' modelos';
   document.getElementById('vh-result').textContent = g.result;
   document.getElementById('vh-summary').innerHTML = '';
-  document.querySelector('#val-hover .vh-tbl thead').innerHTML = '<tr><th>#</th><th>Modelo</th><th style="background:rgba(201,150,14,.08)">Max Pts.</th><th style="background:rgba(201,150,14,.08)">Pts</th><th style="background:rgba(8,126,139,.06)">Más Prob.</th><th style="background:rgba(8,126,139,.06)">Pts</th><th>xG</th></tr>';
+  document.querySelector('#val-hover .vh-tbl thead').innerHTML = '<tr><th>#</th><th>Modelo</th><th style="background:rgba(201,150,14,.08)">Max Pts.</th><th style="background:rgba(201,150,14,.08)">Pts</th><th style="background:rgba(8,126,139,.06)">Más Probable</th><th style="background:rgba(8,126,139,.06)">Pts</th><th>xG</th></tr>';
   document.getElementById('vh-bestinfo').innerHTML =
     'Mejor Max Pts.: <strong>'+bMp.model.replace(/_/g,' ')+'</strong> — '+bMp.smp+' ('+bMp.pmp+' pts)<br>'+
-    'Mejor Más Prob.: <strong>'+bPr.model.replace(/_/g,' ')+'</strong> — '+bPr.spr+' ('+bPr.ppr+' pts)';
+    'Mejor Más Probable: <strong>'+bPr.model.replace(/_/g,' ')+'</strong> — '+bPr.spr+' ('+bPr.ppr+' pts)';
   var famMap = {};
   var _refM = DATA.matches.find(function(m){ return (m.models||[]).length>0; }) || DATA.matches[0];
   (_refM.models||[]).forEach(function(m){ famMap[m.id]=m.fb; });
@@ -1976,12 +2039,12 @@ function showCurrentModelHover(modelId, mode, el){
   var selectedPts = mode==='top' ? totals.topPts : totals.scorePts;
   var selectedExact = mode==='top' ? totals.topExact : totals.scoreExact;
   var selectedHits = mode==='top' ? totals.topHits : totals.scoreHits;
-  var primaryLabel = mode==='top' ? 'Top' : 'Max Pts.';
-  var secondaryLabel = mode==='top' ? 'Max Pts.' : 'Top';
-  var primaryBg = mode==='top' ? 'rgba(8,126,139,.06)' : 'rgba(201,150,14,.08)';
-  var secondaryBg = mode==='top' ? 'rgba(201,150,14,.08)' : 'rgba(8,126,139,.06)';
-  var primaryCellBg = mode==='top' ? 'rgba(8,126,139,.06)' : 'rgba(201,150,14,.05)';
-  var secondaryCellBg = mode==='top' ? 'rgba(201,150,14,.05)' : 'rgba(8,126,139,.06)';
+  var primaryLabel = mode==='top' ? 'Más Probable' : 'Max Pts.';
+  var secondaryLabel = mode==='top' ? 'Max Pts.' : 'Más Probable';
+  var primaryBg = 'rgba(201,150,14,.08)';
+  var secondaryBg = 'rgba(8,126,139,.06)';
+  var primaryCellBg = 'rgba(201,150,14,.05)';
+  var secondaryCellBg = 'rgba(8,126,139,.06)';
   var labelMode = mode==='top' ? 'Más Probable' : 'Max Pts.';
 
   document.getElementById('vh-title').textContent = modelDisplayName(modelId);
@@ -1997,7 +2060,7 @@ function showCurrentModelHover(modelId, mode, el){
       '<div class="vh-kpi"><div class="vh-kpi-l">Aciertos</div><div class="vh-kpi-v">'+selectedHits+'/'+playedN+'</div></div>'+
       '<div class="vh-kpi"><div class="vh-kpi-l">Error xG</div><div class="vh-kpi-v">'+(avgXgErr===null?'--':avgXgErr.toFixed(2))+'</div></div>'+
     '</div>'+
-    '<div class="vh-mini">1X2 compara la salida más probable del modelo contra el resultado real. P(real) indica cuánta probabilidad puso el modelo en la salida que terminó ocurriendo. Error xG = |xG local - goles local| + |xG visitante - goles visitante|.</div>';
+    '<div class="vh-mini"><strong>Max Pts.</strong>: marcador que maximiza puntos esperados bajo la regla activa (lo que el modelo recomienda para la quiniela). <strong>Más Probable</strong>: marcador con mayor probabilidad asignada (moda de la distribución). Ambos pueden diferir. 1X2 usa siempre la predicción probabilística del modelo. P(real) = probabilidad asignada al resultado que ocurrió. Error xG = |xG local − goles local| + |xG visitante − goles visitante|.</div>';
   document.querySelector('#val-hover .vh-tbl thead').innerHTML =
     '<tr><th>#</th><th>Partido</th><th>Real</th><th style="background:'+primaryBg+'">'+primaryLabel+'</th><th style="background:'+primaryBg+'">Pts</th><th style="background:'+secondaryBg+'">'+secondaryLabel+'</th><th style="background:'+secondaryBg+'">Pts</th><th>1X2</th><th>xG / Err</th></tr>';
 
@@ -2340,7 +2403,7 @@ function calcMatchPoints(pick, result){
   if(isNaN(pp[0])||isNaN(pp[1])||isNaN(rp[0])||isNaN(rp[1])) return null;
   var sv = _scoringValues();
   if(pick===result) return sv.exact;
-  if(pp[0]-pp[1] === rp[0]-rp[1]) return sv.margin;
+  if(sv.margin > sv.winner && pp[0]-pp[1] === rp[0]-rp[1]) return sv.margin;
   var po = pp[0]>pp[1]?'1':pp[0]<pp[1]?'2':'X';
   var ro = rp[0]>rp[1]?'1':rp[0]<rp[1]?'2':'X';
   return po===ro ? sv.winner : 0;
@@ -2439,7 +2502,7 @@ function buildCurrentRankRows(){
     rows += '<div class="reff">'
           + m.hits_score+' aciertos · '+m.exact_score+' exactos'
           + ' · Ef. '+eff+'%'
-          + ' <span style="color:var(--mutl)">· Prob: '+m.pts_top+' pts</span>'
+          + ' <span style="color:var(--mutl)">· Más probable: '+m.pts_top+' pts</span>'
           + '</div>';
     rows += '</div>';
     rows += '<div class="rpts">';
@@ -2508,6 +2571,203 @@ function buildRankRows(metrics, useProb){
   return rows;
 }
 
+/* ── Cumulative chart navigation state ── */
+var _ccIdx = 0;
+var _ccKeys = ['score','top','both'];
+var _ccLabels = {score:'Max Pts.',top:'Más Probable',both:'Combinado'};
+var _ccDescs  = {
+  score:'Top 5 por pick óptimo · puntos acumulados',
+  top:'Top 5 por pick más probable · puntos acumulados',
+  both:'Todos los modelos · ranking combinado · — Max Pts.  ╌ Más Probable'
+};
+function cumChartNav(dir){
+  _ccIdx = (_ccIdx + dir + _ccKeys.length) % _ccKeys.length;
+  _ccKeys.forEach(function(k){ var e=document.getElementById('cchart-'+k); if(e) e.style.display='none'; });
+  var k = _ccKeys[_ccIdx];
+  var e = document.getElementById('cchart-'+k); if(e) e.style.display='block';
+  var l = document.getElementById('cchart-lbl'); if(l) l.textContent=_ccLabels[k];
+  var d = document.getElementById('cchart-desc'); if(d) d.textContent=_ccDescs[k];
+}
+
+function buildCumulativeChart(){
+  var played = DATA.matches.filter(function(m){ return m.result!==null; });
+  if(!played.length) return '';
+  var refMatch = DATA.matches.find(function(m){ return (m.models||[]).length>0; });
+  if(!refMatch) return '';
+  var modelList = refMatch.models.map(function(m){ return {id:m.id}; });
+  var pal = ['#087e8b','#f7b731','#e74c3c','#6c5ce7','#00b894'];
+
+  /* Build cumulative series for one strategy */
+  function buildSeries(useTop){
+    var cum = {};
+    modelList.forEach(function(m){ cum[m.id]=0; });
+    var ser = {};
+    modelList.forEach(function(m){ ser[m.id]=[0]; });
+    played.forEach(function(match){
+      (match.models||[]).forEach(function(mod){
+        var p = calcMatchPoints(useTop ? mod.top : mod.score, match.result);
+        if(p!==null) cum[mod.id]=(cum[mod.id]||0)+p;
+      });
+      modelList.forEach(function(m){ ser[m.id].push(cum[m.id]||0); });
+    });
+    return ser;
+  }
+
+  var scoreSer = buildSeries(false);
+  var topSer   = buildSeries(true);
+  var N = played.length+1;
+
+  var rankScore = modelList.slice().sort(function(a,b){ return (scoreSer[b.id][N-1]||0)-(scoreSer[a.id][N-1]||0); });
+  var rankTop   = modelList.slice().sort(function(a,b){ return (topSer[b.id][N-1]||0)-(topSer[a.id][N-1]||0); });
+
+  /* SVG builder for single-mode (top 5 highlighted, rest faded) */
+  function makeSVG(ser, ranked){
+    var maxRaw = ranked[0] ? Math.max(1, ser[ranked[0].id][N-1]||0) : 1;
+    var yStep = maxRaw<=15?3:maxRaw<=30?5:maxRaw<=60?10:15;
+    var maxY = Math.ceil(maxRaw/yStep)*yStep + yStep;
+    var W=800,H=300,ml=42,mr=160,mt=18,mb=38;
+    var pw=W-ml-mr, ph=H-mt-mb;
+    function xOf(i){ return ml+(N>1?i/(N-1)*pw:pw/2); }
+    function yOf(v){ return mt+ph*(1-v/maxY); }
+    function makePath(series){ return series.map(function(y,i){ return (i?'L':'M')+xOf(i).toFixed(1)+' '+yOf(y).toFixed(1); }).join(''); }
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">';
+    for(var g=0;g<=maxY;g+=yStep){
+      svg+='<line x1="'+ml+'" y1="'+yOf(g).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+yOf(g).toFixed(1)+'" stroke="rgba(255,255,255,.06)" stroke-width="1"/>';
+      svg+='<text x="'+(ml-5)+'" y="'+(yOf(g)+3.5).toFixed(1)+'" fill="var(--ink2)" font-size="9" text-anchor="end">'+g+'</text>';
+    }
+    svg+='<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(W-mr)+'" y2="'+(mt+ph)+'" stroke="var(--brd)" stroke-width="1"/>';
+    for(var xi=0;xi<N;xi++){
+      var xx=xOf(xi).toFixed(1);
+      if(N<=17||xi===0||xi===N-1||xi%3===0){
+        svg+='<text x="'+xx+'" y="'+(mt+ph+14)+'" fill="var(--ink2)" font-size="9" text-anchor="middle">'+xi+'</text>';
+        if(xi>0) svg+='<line x1="'+xx+'" y1="'+(mt+ph)+'" x2="'+xx+'" y2="'+(mt+ph+4)+'" stroke="var(--brd)" stroke-width="1"/>';
+      }
+    }
+    svg+='<text x="'+(ml+pw/2)+'" y="'+(H-5)+'" fill="var(--mut)" font-size="9" text-anchor="middle">Partidos jugados →</text>';
+    ranked.slice(5).forEach(function(m){
+      svg+='<path d="'+makePath(ser[m.id])+'" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1"/>';
+    });
+    ranked.slice(0,5).forEach(function(m,ri){
+      var col=pal[ri];
+      svg+='<path d="'+makePath(ser[m.id])+'" fill="none" stroke="'+col+'" stroke-width="'+(ri<3?2.5:1.5)+'" stroke-linejoin="round" stroke-linecap="round"/>';
+      svg+='<circle cx="'+xOf(N-1).toFixed(1)+'" cy="'+yOf(ser[m.id][N-1]||0).toFixed(1)+'" r="3.5" fill="'+col+'"/>';
+    });
+    var lbls=ranked.slice(0,5).map(function(m,ri){
+      return {y:yOf(ser[m.id][N-1]||0), text:(ri+1)+'. '+m.id.replace(/_/g,' '), pts:ser[m.id][N-1]||0, col:pal[ri], bold:ri<3};
+    }).sort(function(a,b){ return a.y-b.y; });
+    for(var li=1;li<lbls.length;li++){
+      if(lbls[li].y-lbls[li-1].y<11) lbls[li].y=lbls[li-1].y+11;
+    }
+    lbls.forEach(function(lb){
+      svg+='<text x="'+(W-mr+10)+'" y="'+(lb.y+3.5).toFixed(1)+'" fill="'+lb.col+'" font-size="9" font-weight="'+(lb.bold?700:400)+'">'+esc(lb.text)+' ('+lb.pts+')</text>';
+    });
+    svg+='</svg>';
+    return svg;
+  }
+
+  /* SVG builder for combined mode: ALL models x both strategies, flat-ranked + HTML legend below */
+  function makeCombinedSVG(){
+    var palX=['#087e8b','#f7b731','#e74c3c','#6c5ce7','#00b894','#fd9644','#a29bfe','#fdcb6e'];
+    /* Flat ranking: every (model x strategy) entry sorted by final cumulative pts */
+    var allFlat=[];
+    modelList.forEach(function(m){
+      allFlat.push({id:m.id,strat:'score',pts:scoreSer[m.id][N-1]||0});
+      allFlat.push({id:m.id,strat:'top',  pts:topSer[m.id][N-1]||0});
+    });
+    allFlat.sort(function(a,b){ return b.pts-a.pts; });
+    allFlat.forEach(function(e,i){ e.num=i+1; });
+    /* One color per model (assigned by first appearance in ranked list) */
+    var mCol={},ci=0;
+    allFlat.forEach(function(e){ if(!mCol[e.id]) mCol[e.id]=palX[ci++%palX.length]; });
+    var maxRaw=Math.max.apply(null,allFlat.map(function(e){ return e.pts||0; }).concat([1]));
+    var yStep=maxRaw<=15?3:maxRaw<=30?5:maxRaw<=60?10:15;
+    var maxY=Math.ceil(maxRaw/yStep)*yStep+yStep;
+    var W=800,H=300,ml=42,mr=30,mt=18,mb=38;
+    var pw=W-ml-mr,ph=H-mt-mb;
+    function xOf(i){ return ml+(N>1?i/(N-1)*pw:pw/2); }
+    function yOf(v){ return mt+ph*(1-v/maxY); }
+    function makePath(series){ return series.map(function(y,i){ return (i?'L':'M')+xOf(i).toFixed(1)+' '+yOf(y).toFixed(1); }).join(''); }
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">';
+    for(var g=0;g<=maxY;g+=yStep){
+      svg+='<line x1="'+ml+'" y1="'+yOf(g).toFixed(1)+'" x2="'+(W-mr)+'" y2="'+yOf(g).toFixed(1)+'" stroke="rgba(255,255,255,.06)" stroke-width="1"/>';
+      svg+='<text x="'+(ml-5)+'" y="'+(yOf(g)+3.5).toFixed(1)+'" fill="var(--ink2)" font-size="9" text-anchor="end">'+g+'</text>';
+    }
+    svg+='<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(W-mr)+'" y2="'+(mt+ph)+'" stroke="var(--brd)" stroke-width="1"/>';
+    for(var xi=0;xi<N;xi++){
+      var xx=xOf(xi).toFixed(1);
+      if(N<=17||xi===0||xi===N-1||xi%3===0){
+        svg+='<text x="'+xx+'" y="'+(mt+ph+14)+'" fill="var(--ink2)" font-size="9" text-anchor="middle">'+xi+'</text>';
+        if(xi>0) svg+='<line x1="'+xx+'" y1="'+(mt+ph)+'" x2="'+xx+'" y2="'+(mt+ph+4)+'" stroke="var(--brd)" stroke-width="1"/>';
+      }
+    }
+    svg+='<text x="'+(ml+pw/2)+'" y="'+(H-5)+'" fill="var(--mut)" font-size="9" text-anchor="middle">Partidos jugados →</text>';
+    /* All lines: same model = same color, solid=score, dashed=top */
+    modelList.forEach(function(m){
+      var col=mCol[m.id];
+      svg+='<path d="'+makePath(scoreSer[m.id])+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.85"/>';
+      svg+='<path d="'+makePath(topSer[m.id])+'"   fill="none" stroke="'+col+'" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.55"/>';
+    });
+    /* Endpoint dots */
+    modelList.forEach(function(m){
+      var col=mCol[m.id];
+      svg+='<circle cx="'+xOf(N-1).toFixed(1)+'" cy="'+yOf(scoreSer[m.id][N-1]||0).toFixed(1)+'" r="3" fill="'+col+'"/>';
+      svg+='<circle cx="'+xOf(N-1).toFixed(1)+'" cy="'+yOf(topSer[m.id][N-1]||0).toFixed(1)+'" r="2" fill="none" stroke="'+col+'" stroke-width="1.5"/>';
+    });
+    /* Line-type legend top-left */
+    var lx=ml+4,ly=mt+4;
+    svg+='<rect x="'+lx+'" y="'+ly+'" width="178" height="16" rx="3" fill="var(--pan1)" opacity="0.85"/>';
+    svg+='<line x1="'+(lx+6)+'" y1="'+(ly+8)+'" x2="'+(lx+20)+'" y2="'+(ly+8)+'" stroke="var(--ink2)" stroke-width="2"/>';
+    svg+='<text x="'+(lx+24)+'" y="'+(ly+11.5)+'" fill="var(--ink2)" font-size="8">— Max Pts.</text>';
+    svg+='<line x1="'+(lx+90)+'" y1="'+(ly+8)+'" x2="'+(lx+104)+'" y2="'+(ly+8)+'" stroke="var(--ink2)" stroke-width="1.5" stroke-dasharray="4,2"/>';
+    svg+='<text x="'+(lx+108)+'" y="'+(ly+11.5)+'" fill="var(--ink2)" font-size="8">╌ Más Probable</text>';
+    svg+='</svg>';
+    /* HTML numbered legend below chart: 3-column grid sorted by rank */
+    var top5leg = allFlat.slice(0,5);
+    var leg='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px 10px;padding:8px 2px 0;border-top:1px solid var(--brd);margin-top:6px">';
+    top5leg.forEach(function(e){
+      var col=mCol[e.id];
+      var isDash=e.strat==='top';
+      var lineEl=isDash
+        ? '<span style="display:inline-block;width:16px;border-top:2px dashed '+col+';vertical-align:middle;margin:0 3px 0 1px"></span>'
+        : '<span style="display:inline-block;width:16px;border-top:2px solid '+col+';vertical-align:middle;margin:0 3px 0 1px"></span>';
+      leg+='<div style="display:flex;align-items:center;overflow:hidden;white-space:nowrap;padding:1px 0">'+
+        '<span style="color:'+col+';font-weight:700;font-size:9px;min-width:16px">'+e.num+'.</span>'+
+        lineEl+
+        '<span style="color:'+col+';font-size:9px;overflow:hidden;text-overflow:ellipsis">'+
+          esc(e.id.replace(/_/g,' '))+
+          ' <span style="opacity:0.65;font-size:8px">'+( isDash ? 'más prob.' : 'max pts.')+' · '+e.pts+'pts</span>'+
+        '</span>'+
+      '</div>';
+    });
+    leg+='</div>';
+    return svg+leg;
+  }
+
+  var svgScore = makeSVG(scoreSer, rankScore);
+  var svgTop   = makeSVG(topSer,   rankTop);
+  var svgBoth  = makeCombinedSVG();
+
+  var activeKey = _ccKeys[_ccIdx] || 'score';
+  var svgs = {score:svgScore, top:svgTop, both:svgBoth};
+
+  var btnStyle = 'background:var(--pan3);border:1px solid var(--brd);color:var(--ink);width:26px;height:22px;border-radius:5px;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center';
+  var html =
+    '<div style="background:var(--pan2);border:1px solid var(--brd);border-radius:10px;padding:16px 12px 10px;margin-bottom:20px">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
+      '<div style="font-size:11px;font-weight:700;color:var(--ink)">Evolución de puntos · <span id="cchart-lbl">'+_ccLabels[activeKey]+'</span> · '+SCORING_ACTIVE+'</div>'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+        '<span id="cchart-desc" style="font-size:10px;color:var(--mut)">'+_ccDescs[activeKey]+'</span>'+
+        '<button onclick="cumChartNav(-1)" style="'+btnStyle+'">&#8592;</button>'+
+        '<button onclick="cumChartNav(1)"  style="'+btnStyle+'">&#8594;</button>'+
+      '</div>'+
+    '</div>';
+  _ccKeys.forEach(function(k){
+    html += '<div id="cchart-'+k+'" style="display:'+(k===activeKey?'block':'none')+'">'+svgs[k]+'</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
 function renderValidacion(){
   var el = document.getElementById('sec-validacion');
   var bk = DATA.backtest;
@@ -2515,20 +2775,6 @@ function renderValidacion(){
   var bestProb = bk.metrics.slice().sort(function(a,b){ return b.pts_prob-a.pts_prob; })[0];
   el.innerHTML =
     '<div class="pg-hd"><div class="pg-title">Validación Histórica</div><div class="pg-sub">Backtest · '+bk.years.join(', ')+' · ID: '+bk.run_id+'</div></div>'+
-    '<div class="krow">'+
-    '<div class="kpi"><div class="kpi-l">Modelos</div><div class="kpi-v">'+bk.metrics.length+'</div></div>'+
-    '<div class="kpi"><div class="kpi-l">Torneos</div><div class="kpi-v t">'+bk.years.length+'</div></div>'+
-    '<div class="kpi"><div class="kpi-l">★ Max Pts.</div><div class="kpi-v sm">'+bestMp.model.replace(/_/g,' ')+'</div></div>'+
-    '<div class="kpi"><div class="kpi-l">★ Más Prob.</div><div class="kpi-v sm">'+bestProb.model.replace(/_/g,' ')+'</div></div>'+
-    '<div class="kpi"><div class="kpi-l">Máx. posible</div><div class="kpi-v">'+bk.metrics[0].max+'</div></div>'+
-    '</div>'+
-    '<div class="warnbox">⚠️ &nbsp;'+esc(bk.ref_note)+'</div>'+
-
-    '<div class="sdiv"><div class="sdiv-t">Ranking comparativo</div><div class="sdiv-l"></div></div>'+
-    '<div class="vlayout3">'+
-    '<div class="rank-panel"><div class="panel-hd"><span class="panel-hd-t">Backtest · Max Pts.</span><span class="panel-hd-s">score · '+bestMp.pts+'/'+bestMp.max+'</span></div>'+buildRankRows(bk.metrics,false)+'</div>'+
-    '<div class="rank-panel"><div class="panel-hd" style="background:var(--teal)"><span class="panel-hd-t">Backtest · Más Probable</span><span class="panel-hd-s">top_score · '+bestProb.pts_prob+'/'+bestProb.max+'</span></div>'+buildRankRows(bk.metrics,true)+'</div>'+
-    '</div>'+
 
     '<div class="sdiv"><div class="sdiv-t">Torneo 2026 · Actual</div><div class="sdiv-l"></div></div>'+
     (function(){
@@ -2542,14 +2788,29 @@ function renderValidacion(){
       return '<div class="krow" style="margin-bottom:16px">'+
         '<div class="kpi"><div class="kpi-l">Partidos</div><div class="kpi-v t">'+cp+'</div></div>'+
         '<div class="kpi"><div class="kpi-l">★ Max Pts.</div><div class="kpi-v sm">'+bestScore.id.replace(/_/g,' ')+'</div></div>'+
-        '<div class="kpi"><div class="kpi-l">★ Más Prob.</div><div class="kpi-v sm">'+bestTop.id.replace(/_/g,' ')+'</div></div>'+
+        '<div class="kpi"><div class="kpi-l">★ Más Probable</div><div class="kpi-v sm">'+bestTop.id.replace(/_/g,' ')+'</div></div>'+
         '<div class="kpi"><div class="kpi-l">Máx. posible</div><div class="kpi-v">'+maxPts+'</div></div>'+
         '</div>'+
+        buildCumulativeChart()+
         '<div class="vlayout3" style="grid-template-columns:1fr 1fr">'+
         '<div class="rank-panel rank-panel-live"><div class="panel-hd"><span class="panel-hd-t">2026 · Max Pts.<span class="live-badge">LIVE</span></span><span class="panel-hd-s">score · '+bestScore.pts_score+'/'+maxPts+'</span></div>'+_build2026RankRows(rd,'score',maxPts)+'</div>'+
-        '<div class="rank-panel rank-panel-live"><div class="panel-hd" style="background:var(--teal)"><span class="panel-hd-t">2026 · Más Probable<span class="live-badge">LIVE</span></span><span class="panel-hd-s">top · '+bestTop.pts_top+'/'+maxPts+'</span></div>'+_build2026RankRows(rd,'top',maxPts)+'</div>'+
+        '<div class="rank-panel rank-panel-live"><div class="panel-hd" style="background:var(--teal)"><span class="panel-hd-t">2026 · Más Probable<span class="live-badge">LIVE</span></span><span class="panel-hd-s">top prob · '+bestTop.pts_top+'/'+maxPts+'</span></div>'+_build2026RankRows(rd,'top',maxPts)+'</div>'+
         '</div>';
     })() +
+
+    '<div class="sdiv"><div class="sdiv-t">Ranking comparativo · Backtest histórico</div><div class="sdiv-l"></div></div>'+
+    '<div class="krow">'+
+    '<div class="kpi"><div class="kpi-l">Modelos</div><div class="kpi-v">'+bk.metrics.length+'</div></div>'+
+    '<div class="kpi"><div class="kpi-l">Torneos</div><div class="kpi-v t">'+bk.years.length+'</div></div>'+
+    '<div class="kpi"><div class="kpi-l">★ Max Pts.</div><div class="kpi-v sm">'+bestMp.model.replace(/_/g,' ')+'</div></div>'+
+    '<div class="kpi"><div class="kpi-l">★ Más Probable</div><div class="kpi-v sm">'+bestProb.model.replace(/_/g,' ')+'</div></div>'+
+    '<div class="kpi"><div class="kpi-l">Máx. posible</div><div class="kpi-v">'+bk.metrics[0].max+'</div></div>'+
+    '</div>'+
+    '<div class="warnbox">⚠️ &nbsp;'+esc(bk.ref_note)+'</div>'+
+    '<div class="vlayout3">'+
+    '<div class="rank-panel"><div class="panel-hd"><span class="panel-hd-t">Backtest · Max Pts.</span><span class="panel-hd-s">score · '+bestMp.pts+'/'+bestMp.max+'</span></div>'+buildRankRows(bk.metrics,false)+'</div>'+
+    '<div class="rank-panel"><div class="panel-hd" style="background:var(--teal)"><span class="panel-hd-t">Backtest · Más Probable</span><span class="panel-hd-s">top prob · '+bestProb.pts_prob+'/'+bestProb.max+'</span></div>'+buildRankRows(bk.metrics,true)+'</div>'+
+    '</div>'+
 
     '<div class="sdiv"><div class="sdiv-t">Partidos evaluados</div><div class="sdiv-l"></div></div>'+
     '<div class="pred-panel">'+
@@ -2562,7 +2823,7 @@ function renderValidacion(){
     '<div class="pred-wrap"><table class="pred-tbl"><thead><tr>'+
     '<th>Partido</th><th>Año</th><th>Fase</th><th>Real</th><th>#</th>'+
     '<th style="background:rgba(201,150,14,.08)">Mejor Max Pts.</th><th style="background:rgba(201,150,14,.08)">Pts</th>'+
-    '<th style="background:rgba(8,126,139,.06)">Mejor Más Prob.</th><th style="background:rgba(8,126,139,.06)">Pts</th>'+
+    '<th style="background:rgba(8,126,139,.06)">Mejor Más Probable</th><th style="background:rgba(8,126,139,.06)">Pts</th>'+
     '<th>Prom.</th></tr></thead><tbody id="pred-tbody"></tbody></table></div></div>';
 }
 
@@ -3368,7 +3629,10 @@ function buildFriendsRank(){
     });
   });
 
-  selModels.forEach(function(modelId){
+  selModels.forEach(function(key){
+    /* key format: "modelId|score" or "modelId|top" — skip old format without | */
+    if(key.indexOf('|')<0) return;
+    var parts=key.split('|'), modelId=parts[0], strat=parts[1]||'score';
     if(!DATA.matches[0]) return;
     var modInfo = (DATA.matches.find(function(_m){return(_m.models||[]).length>0;})||DATA.matches[0]).models.find(function(m){ return m.id===modelId; });
     if(!modInfo) return;
@@ -3376,14 +3640,16 @@ function buildFriendsRank(){
     played.forEach(function(m){
       var mod = m.models.find(function(md){ return md.id===modelId; });
       if(!mod) return;
-      var p = calcMatchPoints(mod.score, m.result);
+      var pick = strat==='top' ? mod.top : mod.score;
+      var p = calcMatchPoints(pick, m.result);
       var _sv=_scoringValues();
       if(p===_sv.exact){pts+=p;exact++;}
       else if(p===_sv.margin){pts+=p;margin++;}
       else if(p===_sv.winner){pts+=p;winner++;}
     });
+    var stratSuffix = strat==='top' ? ' · más prob.' : ' · max pts.';
     participants.push({
-      id:modelId, name:modelId.replace(/_/g,' '), isModel:true,
+      id:key, name:modelId.replace(/_/g,' ')+stratSuffix, isModel:true,
       fb:modInfo.fb, label:modInfo.family,
       pts:pts, exact:exact, margin:margin, winner:winner,
       total:DATA.matches.length
@@ -3396,25 +3662,60 @@ function buildFriendsRank(){
   return participants;
 }
 
-/* Chips de selección de modelos (reutilizado en home y en amigos) */
+/* Chips de selección de modelos: dos secciones por estrategia, ordenadas por rendimiento actual */
 function buildFrChips(){
   var allModels = (DATA.matches[0] ? (DATA.matches.find(function(_m){return(_m.models||[]).length>0;})||DATA.matches[0]).models : []).slice();
-  var btMap = {};
-  (DATA.backtest.metrics||[]).forEach(function(bm){ btMap[bm.model]=bm.pts; });
-  allModels.sort(function(a,b){
-    var pa=btMap[a.id]!=null?btMap[a.id]:-1;
-    var pb=btMap[b.id]!=null?btMap[b.id]:-1;
-    return pb-pa;
-  });
   var selModels = getFrModels();
-  return allModels.map(function(mod){
-    var isSel = selModels.indexOf(mod.id)>=0;
-    var pts = btMap[mod.id];
-    var ptsBadge = pts!=null?' <span style="font-size:8px;opacity:.6">'+pts+'p</span>':'';
-    return '<span class="fr-chip'+(isSel?' fr-sel-on':'')+'" onclick="toggleFrModel(\''+esc(mod.id)+'\')">'
+  var played = DATA.matches.filter(function(m){ return m.result!==null; });
+
+  /* Rendimiento actual por modelo */
+  var rdMap = {};
+  if(played.length > 0){
+    buildCurrentRankData().forEach(function(rd){ rdMap[rd.id]=rd; });
+  } else {
+    /* Sin partidos jugados: usar backtest como referencia */
+    (DATA.backtest.metrics||[]).forEach(function(bm){
+      rdMap[bm.model]={pts_score:bm.pts, pts_top:bm.pts, played:0};
+    });
+  }
+
+  /* key = "modelId|score" or "modelId|top" — each is independently selectable */
+  function makeChip(mod, pts, strat, isSel){
+    var key = mod.id+'|'+strat;
+    var ptsBadge = pts!=null&&pts>=0 ? ' <span style="font-size:8px;opacity:.65">'+pts+'p</span>' : '';
+    return '<span class="fr-chip'+(isSel?' fr-sel-on':'')+'" onclick="toggleFrModel(\''+esc(key)+'\')">'
          + '<span class="fb '+mod.fb+'" style="font-size:8px">'+esc(mod.label)+'</span>'
          + esc(mod.id.replace(/_/g,' '))+ptsBadge+'</span>';
-  }).join('');
+  }
+
+  var byScore = allModels.slice().sort(function(a,b){
+    var pa=(rdMap[a.id]||{}).pts_score; pa=pa!=null?pa:-1;
+    var pb=(rdMap[b.id]||{}).pts_score; pb=pb!=null?pb:-1;
+    return pb-pa;
+  });
+  var byTop = allModels.slice().sort(function(a,b){
+    var pa=(rdMap[a.id]||{}).pts_top; pa=pa!=null?pa:-1;
+    var pb=(rdMap[b.id]||{}).pts_top; pb=pb!=null?pb:-1;
+    return pb-pa;
+  });
+
+  var playedLabel = played.length > 0 ? ' · '+played.length+' partidos' : ' · backtest';
+  var hStyle = 'font-size:9px;font-weight:700;color:var(--mut);letter-spacing:.5px;text-transform:uppercase;margin:0 0 5px';
+
+  return '<div style="margin-bottom:12px">'
+    +'<div style="'+hStyle+'">Max Pts.'+playedLabel+'</div>'
+    +'<div class="fr-sel-grid">'+byScore.map(function(mod){
+        var rd=rdMap[mod.id]||{};
+        return makeChip(mod, rd.pts_score!=null?rd.pts_score:null, 'score', selModels.indexOf(mod.id+'|score')>=0);
+      }).join('')+'</div>'
+    +'</div>'
+    +'<div>'
+    +'<div style="'+hStyle+'">Más Probable'+playedLabel+'</div>'
+    +'<div class="fr-sel-grid">'+byTop.map(function(mod){
+        var rd=rdMap[mod.id]||{};
+        return makeChip(mod, rd.pts_top!=null?rd.pts_top:null, 'top', selModels.indexOf(mod.id+'|top')>=0);
+      }).join('')+'</div>'
+    +'</div>';
 }
 
 function renderAmigos(){
@@ -3448,7 +3749,7 @@ function renderAmigos(){
   var selBlock =
     '<div class="sdiv"><div class="sdiv-t">Comparar con modelos</div><div class="sdiv-l"></div></div>'
     +'<div class="fr-sel"><div class="fr-sel-t">Selecciona modelos para añadir al ranking</div>'
-    +'<div class="fr-sel-grid" id="fr-chips-amigos">'+buildFrChips()+'</div></div>';
+    +'<div id="fr-chips-amigos">'+buildFrChips()+'</div></div>';
 
   /* ── Ranking ── */
   var rankRows = '';
@@ -3485,11 +3786,21 @@ function renderAmigos(){
     +'</div>';
 
   /* ── Tabla de picks ── */
-  var allModels  = DATA.matches[0] ? (DATA.matches.find(function(_m){return(_m.models||[]).length>0;})||DATA.matches[0]).models : [];
-  var selModObjs = selMods.map(function(mid){ return allModels.find(function(m){ return m.id===mid; }); }).filter(Boolean);
+  var allModels = DATA.matches[0] ? (DATA.matches.find(function(_m){return(_m.models||[]).length>0;})||DATA.matches[0]).models : [];
+  /* Parse "modelId|strat" keys; skip old-format entries without | */
+  var selModEntries = selMods.filter(function(k){ return k.indexOf('|')>=0; }).map(function(key){
+    var parts=key.split('|'), modelId=parts[0], strat=parts[1]||'score';
+    var info=allModels.find(function(m){ return m.id===modelId; });
+    return info ? {key:key,id:modelId,strat:strat,info:info} : null;
+  }).filter(Boolean);
 
   var thFriends = friends.map(function(f){ return '<th class="fr-th-friend">'+esc(f.name)+'</th>'; }).join('');
-  var thModels  = selModObjs.map(function(m){ return '<th class="fr-th-model">'+esc(m.id.replace(/_/g,' '))+'</th>'; }).join('');
+  var thModels  = selModEntries.map(function(e){
+    var sl = e.strat==='top'
+      ? '<br><span style="font-size:7px;opacity:.6;font-weight:400">más probable</span>'
+      : '<br><span style="font-size:7px;opacity:.6;font-weight:400">max pts.</span>';
+    return '<th class="fr-th-model">'+esc(e.id.replace(/_/g,' '))+sl+'</th>';
+  }).join('');
 
   var tRows = DATA.matches.map(function(m){
     var friendCells = friends.map(function(f){
@@ -3497,18 +3808,15 @@ function renderAmigos(){
       if(!pick) return '<td class="fr-pnd">—</td>';
       if(!m.result) return '<td>'+esc(pick)+'</td>';
       var p = calcMatchPoints(pick, m.result);
-      var cls = _ptsCls(p);
-      return '<td class="'+cls+'">'+esc(pick)+'</td>';
+      return '<td class="'+_ptsCls(p)+'">'+esc(pick)+'</td>';
     }).join('');
 
-    var modCells = selModObjs.map(function(mod){
-      var modPred = m.models.find(function(md){ return md.id===mod.id; });
-      var pick = modPred ? modPred.score : null;
+    var modCells = selModEntries.map(function(e){
+      var modPred = m.models.find(function(md){ return md.id===e.id; });
+      var pick = modPred ? (e.strat==='top' ? modPred.top : modPred.score) : null;
       if(!pick) return '<td class="fr-pnd">—</td>';
       if(!m.result) return '<td>'+esc(pick)+'</td>';
-      var p = calcMatchPoints(pick, m.result);
-      var cls = _ptsCls(p);
-      return '<td class="'+cls+'">'+esc(pick)+'</td>';
+      return '<td class="'+_ptsCls(calcMatchPoints(pick,m.result))+'">'+esc(pick)+'</td>';
     }).join('');
 
     var resDisp = m.result || (m.status==='live'?'🔴':'—');
@@ -3522,7 +3830,7 @@ function renderAmigos(){
       +'</tr>';
   }).join('');
 
-  var tblBlock = (friends.length>0||selModObjs.length>0)
+  var tblBlock = (friends.length>0||selModEntries.length>0)
     ? '<div class="sdiv"><div class="sdiv-t">Pronósticos por partido</div><div class="sdiv-l"></div></div>'
       +'<div class="fr-tbl-wrap"><table class="fr-tbl"><thead><tr>'
       +'<th style="min-width:160px;position:sticky;left:0;z-index:3;background:var(--nav)">Partido</th>'
@@ -3552,10 +3860,12 @@ function showFrHover(participantId, isModel, triggerEl){
     var friend = (DATA.friends||[]).find(function(f){ return f.id===participantId; });
     if(friend){ name=friend.name; picks=friend.picks||{}; }
   } else {
-    name = participantId.replace(/_/g,' ');
+    var parts = participantId.split('|');
+    var modelId = parts[0], strat = parts[1]||'score';
+    name = modelId.replace(/_/g,' ')+' · '+(strat==='top'?'más prob.':'max pts.');
     DATA.matches.forEach(function(m){
-      var mod = m.models.find(function(md){ return md.id===participantId; });
-      if(mod) picks[String(m.id)] = mod.score;
+      var mod = m.models.find(function(md){ return md.id===modelId; });
+      if(mod) picks[String(m.id)] = strat==='top' ? mod.top : mod.score;
     });
   }
 

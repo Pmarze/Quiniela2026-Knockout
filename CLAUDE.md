@@ -47,13 +47,19 @@ Si `--ff-only` falla, detenerse, inspeccionar el conflicto y pedir confirmacion 
 
 ## Entorno Python
 
-Usar siempre el entorno Conda:
+Usar siempre el entorno Conda. En sesiones interactivas de terminal funciona `conda activate quiniela2026`. Pero desde Claude Code (Bash tool), `conda` no esta en el PATH, por lo que hay que invocar el interprete directamente:
 
-```powershell
-conda activate quiniela2026
+```text
+C:\Users\pablo\.conda\envs\quiniela2026\python.exe
 ```
 
-No hardcodear rutas absolutas de Python en scripts o documentacion. Desde la raiz del repo, usar `python ...` despues de activar el entorno.
+Ejemplo de uso desde Bash tool:
+
+```bash
+"/c/Users/pablo/.conda/envs/quiniela2026/python.exe" scripts/daily_update.py --skip-git
+```
+
+No usar `python ...` a secas desde el Bash tool: resuelve al Python del sistema (`C:\Users\pablo\AppData\Local\Programs\Python\Python312\python.exe`) que no tiene `torch` ni otras dependencias del proyecto.
 
 ## Dashboard publico
 

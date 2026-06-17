@@ -32,6 +32,11 @@ FORBIDDEN_TRACKED_SUFFIXES = (
     ".local.json",
 )
 
+# Archivos de documentacion interna que pueden contener rutas locales de ejemplo
+SCAN_EXCLUDED_FILES = {
+    "CLAUDE.md",
+}
+
 
 def _git_lines(args: list[str]) -> list[str]:
     proc = subprocess.run(
@@ -59,6 +64,8 @@ def _is_text(path: Path) -> bool:
 
 def _scan_file(path: Path) -> list[str]:
     rel = path.relative_to(ROOT).as_posix()
+    if path.name in SCAN_EXCLUDED_FILES:
+        return []
     issues: list[str] = []
 
     lower = rel.lower()

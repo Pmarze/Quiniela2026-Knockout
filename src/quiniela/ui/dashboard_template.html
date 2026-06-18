@@ -1522,30 +1522,66 @@ function buildGoalRefBlock(teamName, ref){
     buildGoalHistogram(lam)+
     '</div>';
 }
-function buildFriendlyTeamBlock(teamName, rows){
+function getTournamentMatchesForTeam(teamName, excludeMid){
+  return DATA.matches.filter(function(m){
+    return m.result !== null && m.id !== excludeMid && (m.home === teamName || m.away === teamName);
+  }).map(function(m){
+    var isHome = m.home === teamName;
+    var parts = String(m.result).split('-');
+    var hg = parseInt(parts[0], 10), ag = parseInt(parts[1], 10);
+    var res, score;
+    if(isHome){
+      res = hg > ag ? 'G' : hg === ag ? 'E' : 'P';
+      score = m.result;
+    } else {
+      res = ag > hg ? 'G' : hg === ag ? 'E' : 'P';
+      score = ag+'-'+hg;
+    }
+    return {date:m.date, result:res, opponent:isHome?m.away:m.home, side:isHome?'L':'V', score:score, group:m.group||''};
+  }).sort(function(a,b){ return a.date > b.date ? -1 : a.date < b.date ? 1 : 0; });
+}
+function buildFriendlyTeamBlock(teamName, rows, tournamentRows){
   rows = rows || [];
+  tournamentRows = tournamentRows || [];
   var html = '<div class="friendly-team">'+
     '<div class="friendly-team-hd">'+
     '<div class="friendly-team-name" title="'+esc(teamName)+'">'+esc(teamName)+'</div>'+
-    '<div class="friendly-team-count">'+rows.length+'/5</div>'+
+    '<div class="friendly-team-count">'+(tournamentRows.length?'T:'+tournamentRows.length+' · ':'')+rows.length+'/5</div>'+
     '</div>';
-  if(!rows.length){
-    html += '<div class="friendly-empty">Sin amistosos registrados.</div></div>';
-    return html;
-  }
   html += '<div class="friendly-list">';
-  rows.forEach(function(r){
-    var venue = r.venue ? esc(r.venue) : 'Sede no registrada';
-    html += '<div class="friendly-row">'+
-      '<div class="friendly-date">'+fdate(r.date)+'</div>'+
-      '<div class="friendly-res '+friendlyResultClass(r.result)+'">'+esc(r.result)+'</div>'+
-      '<div>'+
-        '<div class="friendly-main" title="'+esc(r.opponent||'')+'"><span class="friendly-side">'+friendlySideLabel(r.side)+'</span>'+esc(r.opponent||'')+'</div>'+
-        '<div class="friendly-venue" title="'+venue+'">'+venue+'</div>'+
-      '</div>'+
-      '<div class="friendly-score">'+esc(r.score||'')+'</div>'+
+  if(tournamentRows.length){
+    html += '<div style="padding:3px 8px;background:rgba(30,128,80,.12);border-bottom:1px solid var(--brd);font-size:9px;font-weight:700;color:var(--grn);letter-spacing:.5px">MUNDIAL 2026</div>';
+    tournamentRows.forEach(function(r){
+      html += '<div class="friendly-row">'+
+        '<div class="friendly-date">'+fdate(r.date)+'</div>'+
+        '<div class="friendly-res '+friendlyResultClass(r.result)+'">'+esc(r.result)+'</div>'+
+        '<div>'+
+          '<div class="friendly-main" title="'+esc(r.opponent||'')+'"><span class="friendly-side">'+friendlySideLabel(r.side)+'</span>'+esc(r.opponent||'')+'</div>'+
+          '<div class="friendly-venue">'+esc(r.group||'Fase de grupos')+'</div>'+
+        '</div>'+
+        '<div class="friendly-score">'+esc(r.score||'')+'</div>'+
       '</div>';
-  });
+    });
+  }
+  if(rows.length){
+    if(tournamentRows.length){
+      html += '<div style="padding:3px 8px;background:var(--pan-sticky);border-bottom:1px solid var(--brd);font-size:9px;font-weight:700;color:var(--mut);letter-spacing:.5px">AMISTOSOS</div>';
+    }
+    rows.forEach(function(r){
+      var venue = r.venue ? esc(r.venue) : 'Sede no registrada';
+      html += '<div class="friendly-row">'+
+        '<div class="friendly-date">'+fdate(r.date)+'</div>'+
+        '<div class="friendly-res '+friendlyResultClass(r.result)+'">'+esc(r.result)+'</div>'+
+        '<div>'+
+          '<div class="friendly-main" title="'+esc(r.opponent||'')+'"><span class="friendly-side">'+friendlySideLabel(r.side)+'</span>'+esc(r.opponent||'')+'</div>'+
+          '<div class="friendly-venue" title="'+venue+'">'+venue+'</div>'+
+        '</div>'+
+        '<div class="friendly-score">'+esc(r.score||'')+'</div>'+
+      '</div>';
+    });
+  } else if(!tournamentRows.length){
+    html += '<div class="friendly-empty">Sin amistosos registrados.</div>';
+  }
   html += '</div></div>';
   return html;
 }
@@ -1556,6 +1592,8 @@ function buildFriendliesSection(m){
   var sub = cov.max_date
     ? 'Datos locales hasta '+fdateFull(cov.max_date)+'. P gol usa hasta '+(cov.goal_reference_matches||10)+' amistosos ponderados; la lista muestra los ultimos 5.'
     : 'Sin cobertura historica de amistosos en la base local.';
+  var homeTournament = getTournamentMatchesForTeam(m.home, m.id);
+  var awayTournament = getTournamentMatchesForTeam(m.away, m.id);
   return '<div class="chart-card wide friendly-card">'+
     '<div class="chart-title">Preparacion reciente: gol y amistosos</div>'+
     '<div class="chart-sub">'+sub+'</div>'+
@@ -1565,8 +1603,8 @@ function buildFriendliesSection(m){
     '</div>'+
     '<div class="chart-foot">P gol = probabilidad de anotar al menos un gol en este cruce, combinando ataque reciente propio y goles concedidos recientes del rival.</div>'+
     '<div class="friendly-grid">'+
-      buildFriendlyTeamBlock(m.home, fr.home || [])+
-      buildFriendlyTeamBlock(m.away, fr.away || [])+
+      buildFriendlyTeamBlock(m.home, fr.home || [], homeTournament)+
+      buildFriendlyTeamBlock(m.away, fr.away || [], awayTournament)+
     '</div>'+
     '</div>';
 }

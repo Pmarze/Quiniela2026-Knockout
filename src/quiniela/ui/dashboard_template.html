@@ -1590,7 +1590,7 @@ function buildFriendliesSection(m){
   var gr = m.goal_ref || {};
   var cov = (DATA.meta || {}).friendlies || {};
   var sub = cov.max_date
-    ? 'Datos locales hasta '+fdateFull(cov.max_date)+'. P gol usa hasta '+(cov.goal_reference_matches||10)+' amistosos ponderados; la lista muestra los ultimos 5.'
+    ? 'P gol incluye partidos del torneo actual (peso ×2) + hasta '+(cov.goal_reference_matches||10)+' amistosos ponderados (datos hasta '+fdateFull(cov.max_date)+').'
     : 'Sin cobertura historica de amistosos en la base local.';
   var homeTournament = getTournamentMatchesForTeam(m.home, m.id);
   var awayTournament = getTournamentMatchesForTeam(m.away, m.id);

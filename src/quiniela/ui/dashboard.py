@@ -50,6 +50,8 @@ _FRIENDLY_PREP_WINDOW_END = "2026-06-09"
 _FRIENDLY_GOAL_REFERENCE_MATCHES = 10
 _FRIENDLY_GOAL_HALFLIFE_MATCHES = 4.0
 _FRIENDLY_GOAL_SHRINK_MATCHES = 8.0
+# Partidos de torneo ya jugados cuentan más que un amistoso de preparación
+_TOURNAMENT_GOAL_WEIGHT_MULTIPLIER = 2.0
 
 
 @dataclass(frozen=True)
@@ -242,12 +244,47 @@ def _load_recent_friendlies(
         (*team_ids, *team_ids),
     ).fetchall()
 
+    # ── Partidos del torneo ya jugados, por equipo (más recientes primero) ──────
+    # Se usan para el cálculo de goal_ref ANTES de los amistosos, con mayor peso,
+    # porque representan el rendimiento real en la competición actual.
+    tournament_goal_samples: dict[str, list[dict[str, float]]] = {tid: [] for tid in team_ids}
+    for m in matches:
+        if m.get("status") not in ("finished", "completed"):
+            continue
+        hs = m.get("home_score")
+        aws = m.get("away_score")
+        if hs is None or aws is None:
+            continue
+        hs, aws = int(hs), int(aws)
+        perspectives = (
+            (str(m.get("team_a_canonical_id") or ""), hs, aws),
+            (str(m.get("team_b_canonical_id") or ""), aws, hs),
+        )
+        for tid, gf, ga in perspectives:
+            if tid and tid in tournament_goal_samples:
+                tournament_goal_samples[tid].append({
+                    "goals_for":    float(gf),
+                    "goals_against": float(ga),
+                    "scored":    1.0 if gf > 0 else 0.0,
+                    "conceded":  1.0 if ga > 0 else 0.0,
+                })
+
     friendlies: dict[str, dict[str, Any]] = {
         team_id: {"matches": [], "goal_ref": _empty_goal_reference(coverage)}
         for team_id in team_ids
     }
     seen: dict[str, set[str]] = {team_id: set() for team_id in team_ids}
-    goal_samples: dict[str, list[dict[str, float]]] = {team_id: [] for team_id in team_ids}
+    # goal_samples ahora se llena DESPUÉS de insertar los del torneo
+    # Invertir para que el partido más reciente quede en índice 0 (mayor peso en decay)
+    goal_samples: dict[str, list[dict[str, float]]] = {
+        team_id: list(reversed(tournament_goal_samples[team_id]))
+        for team_id in team_ids
+    }
+    goal_multipliers: dict[str, list[float]] = {
+        team_id: [_TOURNAMENT_GOAL_WEIGHT_MULTIPLIER] * len(tournament_goal_samples[team_id])
+        for team_id in team_ids
+    }
+
     for row in rows:
         row_id = row["historical_match_id"]
         perspectives = (
@@ -261,6 +298,7 @@ def _load_recent_friendlies(
                 continue
             goals_for = int(goals_for)
             goals_against = int(goals_against)
+            # Rellenar hasta el cap con amistosos (el torneo ya ocupa las primeras posiciones)
             if len(goal_samples[team_id]) < _FRIENDLY_GOAL_REFERENCE_MATCHES:
                 goal_samples[team_id].append({
                     "goals_for": float(goals_for),
@@ -268,6 +306,7 @@ def _load_recent_friendlies(
                     "scored": 1.0 if goals_for > 0 else 0.0,
                     "conceded": 1.0 if goals_against > 0 else 0.0,
                 })
+                goal_multipliers[team_id].append(1.0)  # amistoso: peso estándar
             if len(friendlies[team_id]["matches"]) >= limit:
                 seen[team_id].add(row_id)
                 continue
@@ -293,7 +332,8 @@ def _load_recent_friendlies(
             seen[team_id].add(row_id)
 
     for team_id, samples in goal_samples.items():
-        friendlies[team_id]["goal_ref"] = _weighted_goal_reference(samples, coverage)
+        mults = goal_multipliers[team_id]
+        friendlies[team_id]["goal_ref"] = _weighted_goal_reference(samples, coverage, mults)
 
     return friendlies, coverage
 
@@ -311,19 +351,28 @@ def _empty_goal_reference(coverage: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _weighted_goal_reference(samples: list[dict[str, float]], coverage: dict[str, Any]) -> dict[str, Any]:
+def _weighted_goal_reference(
+    samples: list[dict[str, float]],
+    coverage: dict[str, Any],
+    multipliers: list[float] | None = None,
+) -> dict[str, Any]:
     baseline = float(coverage.get("avg_goals_per_team") or 1.35)
     if not samples:
         return _empty_goal_reference(coverage)
 
+    if multipliers is None:
+        multipliers = [1.0] * len(samples)
     decay = math.log(2.0) / _FRIENDLY_GOAL_HALFLIFE_MATCHES
-    weights = [math.exp(-decay * idx) for idx, _sample in enumerate(samples)]
+    # Decay by position, then scale by per-sample multiplier (tournament matches get higher base)
+    weights = [mult * math.exp(-decay * idx) for idx, mult in enumerate(multipliers)]
     total_weight = sum(weights)
     weighted_gf = sum(w * sample["goals_for"] for w, sample in zip(weights, samples)) / total_weight
     weighted_ga = sum(w * sample["goals_against"] for w, sample in zip(weights, samples)) / total_weight
     p_scored = sum(w * sample["scored"] for w, sample in zip(weights, samples)) / total_weight
     p_conceded = sum(w * sample["conceded"] for w, sample in zip(weights, samples)) / total_weight
-    confidence = min(1.0, len(samples) / _FRIENDLY_GOAL_SHRINK_MATCHES)
+    # Confidence based on effective sample count (tournament matches count double)
+    eff_n = sum(multipliers)
+    confidence = min(1.0, eff_n / _FRIENDLY_GOAL_SHRINK_MATCHES)
     gf = confidence * weighted_gf + (1.0 - confidence) * baseline
     ga = confidence * weighted_ga + (1.0 - confidence) * baseline
     p_scored_adj = confidence * p_scored + (1.0 - confidence) * (1.0 - math.exp(-baseline))

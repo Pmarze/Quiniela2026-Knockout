@@ -399,8 +399,10 @@ main{margin-top:var(--navh);}
 .rpts-l{font-size:9px;color:var(--mut);font-family:var(--fc);}
 .rpts-ex{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--grn);margin-top:1px;}
 .ptb{display:inline-block;font-family:var(--fc);font-size:11px;font-weight:700;padding:2px 7px;border-radius:var(--rsm);text-align:center;min-width:22px;}
-.pt0{background:var(--cord);color:var(--cor);}.pt1{background:var(--td);color:var(--teal);}
-.pt3{background:var(--gd);color:#8b6914;}.pt5{background:var(--grd);color:var(--grn);}
+.pt-miss{background:var(--cord);color:var(--cor);}
+.pt-winner{background:var(--td);color:var(--teal);}
+.pt-margin{background:var(--gd);color:#8b6914;}
+.pt-exact{background:var(--grd);color:var(--grn);}
 
 /* MULTI-SELECT */
 .ms-wrap{position:relative;display:inline-block;}
@@ -1017,6 +1019,7 @@ function switchScoring(profileId){
   renderValidacion();
   setTimeout(filterPreds, 50);
   if(_hoverMid) showHover(_hoverMid, _hoverTriggerEl);
+  if(_modalMid) openModal(_modalMid);
 }
 
 /* ══════════════════ HELPERS ══════════════════ */
@@ -1943,9 +1946,9 @@ function filterPreds(){
     rows += '<td style="font-family:var(--fc);font-weight:700">'+g.result+'</td>';
     rows += '<td style="text-align:center;color:var(--mut);font-family:var(--fc)">'+g.models.length+'</td>';
     rows += '<td style="background:rgba(201,150,14,.05);font-family:var(--fc)">'+bMp.smp+'</td>';
-    rows += '<td style="background:rgba(201,150,14,.05)"><span class="ptb pt'+bMp.pmp+'">'+bMp.pmp+'</span></td>';
+    rows += '<td style="background:rgba(201,150,14,.05)"><span class="ptb '+_ptBadgeCls(bMp.pmp)+'">'+bMp.pmp+'</span></td>';
     rows += '<td style="background:rgba(8,126,139,.06);font-family:var(--fc)">'+bPr.spr+'</td>';
-    rows += '<td style="background:rgba(8,126,139,.06)"><span class="ptb pt'+bPr.ppr+'">'+bPr.ppr+'</span></td>';
+    rows += '<td style="background:rgba(8,126,139,.06)"><span class="ptb '+_ptBadgeCls(bPr.ppr)+'">'+bPr.ppr+'</span></td>';
     rows += '<td style="font-size:11px;color:var(--mut)">MP:'+avgMp+' · Pr:'+avgPr+'</td>';
     rows += '</tr>';
   });
@@ -1981,9 +1984,9 @@ function showValHover(idx, el){
     rows += '<td class="vh-rank '+rCls+'">'+(i+1)+'</td>';
     rows += '<td style="font-size:11px;font-weight:600">'+p.model.replace(/_/g,' ')+'</td>';
     rows += '<td style="background:rgba(201,150,14,.05);font-family:var(--fc);font-weight:700">'+p.smp+starMp+'</td>';
-    rows += '<td style="background:rgba(201,150,14,.05)"><span class="ptb pt'+p.pmp+'">'+p.pmp+'</span></td>';
+    rows += '<td style="background:rgba(201,150,14,.05)"><span class="ptb '+_ptBadgeCls(p.pmp)+'">'+p.pmp+'</span></td>';
     rows += '<td style="background:rgba(8,126,139,.06);font-family:var(--fc);font-weight:700">'+p.spr+starProb+'</td>';
-    rows += '<td style="background:rgba(8,126,139,.06)"><span class="ptb pt'+p.ppr+'">'+p.ppr+'</span></td>';
+    rows += '<td style="background:rgba(8,126,139,.06)"><span class="ptb '+_ptBadgeCls(p.ppr)+'">'+p.ppr+'</span></td>';
     rows += '<td style="font-size:11px;color:var(--mut);font-family:var(--fc)">'+p.xg+'</td>';
     rows += '</tr>';
   });
@@ -2107,9 +2110,9 @@ function showCurrentModelHover(modelId, mode, el){
     rows += '<td style="font-size:11px;font-weight:700;min-width:150px">'+esc(r.m.home)+' - '+esc(r.m.away)+'</td>';
     rows += '<td style="font-family:var(--fc);font-weight:900">'+r.m.result+'</td>';
     rows += '<td style="background:'+primaryCellBg+';font-family:var(--fc);font-weight:800">'+primaryScore+'</td>';
-    rows += '<td style="background:'+primaryCellBg+'"><span class="ptb pt'+primaryPts+'">'+primaryPts+'</span></td>';
+    rows += '<td style="background:'+primaryCellBg+'"><span class="ptb '+_ptBadgeCls(primaryPts)+'">'+primaryPts+'</span></td>';
     rows += '<td style="background:'+secondaryCellBg+';font-family:var(--fc);font-weight:800">'+secondaryScore+'</td>';
-    rows += '<td style="background:'+secondaryCellBg+'"><span class="ptb pt'+secondaryPts+'">'+secondaryPts+'</span></td>';
+    rows += '<td style="background:'+secondaryCellBg+'"><span class="ptb '+_ptBadgeCls(secondaryPts)+'">'+secondaryPts+'</span></td>';
     rows += '<td style="font-size:11px">'+(outOk?'<span style="color:var(--grn);font-weight:800">✓</span> ':'<span style="color:var(--cor);font-weight:800">×</span> ')+r.predOut+' vs '+r.realOut+'<br><span style="color:var(--mut);font-size:10px">P(real) '+fmtPctNum(r.pReal)+'</span></td>';
     rows += '<td style="font-family:var(--fc);font-size:11px">'+esc(r.mod.xg||'--')+'<br><span style="color:var(--mut);font-size:10px">err '+(r.xgErr===null?'--':r.xgErr.toFixed(2))+'</span></td>';
     rows += '</tr>';
@@ -2258,7 +2261,7 @@ function renderHome(){
     '<div>'+lbRows+'</div>'+
     userHTML+
     '<div style="padding:7px 10px;background:var(--pan2);border-top:1px solid var(--brd);font-size:9px;color:var(--mut)">'+
-    'Modelo activo: <strong style="color:var(--teal)">weighted_points_ensemble</strong></div>'+
+    'Modelo activo: <strong style="color:var(--teal)">'+modelDisplayName(_cachedBestModelId())+'</strong></div>'+
     '</div>'+
 
     /* === DERECHA: Próximos partidos === */
@@ -2428,6 +2431,13 @@ function _outcomeFromScore(s){
   var p=s.split('-').map(Number);
   return (p.length<2||isNaN(p[0])||isNaN(p[1]))?'':p[0]>p[1]?'1':p[0]<p[1]?'2':'X';
 }
+function _ptBadgeCls(pts){
+  var sv=_scoringValues();
+  if(pts===sv.exact) return 'pt-exact';
+  if(sv.margin>sv.winner&&pts===sv.margin) return 'pt-margin';
+  if(pts===sv.winner) return 'pt-winner';
+  return 'pt-miss';
+}
 function _ptsCls(p){
   var sv=_scoringValues();
   return p===sv.exact?'fr-p5':sv.margin>0&&p===sv.margin?'fr-p3':p===sv.winner?'fr-p1':'fr-p0';
@@ -2584,7 +2594,7 @@ function _build2026RankRows(data, mode, maxPts){
 function buildRankRows(metrics, useProb){
   var sorted = metrics.slice().sort(function(a,b){ return useProb ? b.pts_prob-a.pts_prob : b.pts-a.pts; });
   var maxV = sorted.reduce(function(m,r){ return Math.max(m, useProb?r.pts_prob:r.pts); }, 0);
-  var totalMatches = sorted[0] ? sorted[0].max/5 : 62;
+  var totalMatches = sorted[0] ? sorted[0].max/_scoringValues().exact : 62;
   var rows = '';
   sorted.forEach(function(m,i){
     var pts = useProb ? m.pts_prob : m.pts;
@@ -3760,7 +3770,7 @@ function renderAmigos(){
   var friends = friendsRaw.filter(function(f){ return Object.keys(f.picks||{}).length>0; });
   var played  = DATA.matches.filter(function(m){ return m.result!==null; });
   var rank    = buildFriendsRank();
-  var maxPts  = played.length*5 || 1;
+  var maxPts  = played.length*_scoringValues().exact || 1;
   var maxV    = rank.length>0 ? Math.max(1, rank[0].pts) : 1;
   var selMods = getFrModels();
 

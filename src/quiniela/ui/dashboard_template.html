@@ -974,7 +974,7 @@ function switchScoring(profileId){
   if(!SCORING_PROFILES[profileId]) return;
   if(!_origMatchData){
     _origMatchData = JSON.parse(JSON.stringify(DATA.matches.map(function(m){
-      return { id:m.id, quiniela:m.quiniela, models:m.models.map(function(mod){ return {id:mod.id,score:mod.score,ev:mod.ev}; }) };
+      return { id:m.id, quiniela:m.quiniela, models:m.models.map(function(mod){ return {id:mod.id,score:mod.score,ev:mod.ev,out:mod.out}; }) };
     })));
   }
   SCORING_ACTIVE = profileId;
@@ -987,7 +987,7 @@ function switchScoring(profileId){
       m.quiniela = orig.quiniela;
       orig.models.forEach(function(om){
         var mod = m.models.find(function(x){ return x.id===om.id; });
-        if(mod){ mod.score=om.score; mod.ev=om.ev; }
+        if(mod){ mod.score=om.score; mod.ev=om.ev; mod.out=om.out; }
       });
     });
   } else {
@@ -999,10 +999,11 @@ function switchScoring(profileId){
         m.quiniela.score = alt.q.score;
         m.quiniela.ev = alt.q.ev;
         if(alt.q.model) m.quiniela.model = alt.q.model;
+        m.quiniela.out = _outcomeFromScore(alt.q.score);
       }
       (alt.m||[]).forEach(function(am){
         var mod = m.models.find(function(x){ return x.id===am.id; });
-        if(mod){ mod.score=am.score; mod.ev=am.ev; }
+        if(mod){ mod.score=am.score; mod.ev=am.ev; mod.out=_outcomeFromScore(am.score); }
       });
     });
   }
@@ -1015,6 +1016,7 @@ function switchScoring(profileId){
   renderAmigos();
   renderValidacion();
   setTimeout(filterPreds, 50);
+  if(_hoverMid) showHover(_hoverMid, _hoverTriggerEl);
 }
 
 /* ══════════════════ HELPERS ══════════════════ */
@@ -2420,6 +2422,11 @@ function _quinielaStats(){
 function _scoringValues(){
   var cfg = SCORING_PROFILES[SCORING_ACTIVE] || {};
   return { exact: cfg.exact_score || 5, margin: cfg.same_margin_or_draw != null ? cfg.same_margin_or_draw : 3, winner: cfg.winner || 1 };
+}
+function _outcomeFromScore(s){
+  if(!s||s==='—') return '';
+  var p=s.split('-').map(Number);
+  return (p.length<2||isNaN(p[0])||isNaN(p[1]))?'':p[0]>p[1]?'1':p[0]<p[1]?'2':'X';
 }
 function _ptsCls(p){
   var sv=_scoringValues();

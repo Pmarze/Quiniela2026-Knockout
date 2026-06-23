@@ -908,7 +908,7 @@ function renderPrivateShell(id){
 }
 
 /* ══════════════════ SCORING PROFILES ══════════════════ */
-var SCORING_ACTIVE = '3-1-0'; /* UI default; data pipeline default may differ */
+var SCORING_ACTIVE = (DATA.scoring||{}).active || '5-3-1';
 var SCORING_PROFILES = (DATA.scoring||{}).profiles || {};
 var _origMatchData = null;
 var _origBacktestMetrics = null;
@@ -982,33 +982,7 @@ function switchScoring(profileId){
   SCORING_ACTIVE = profileId;
   localStorage.setItem('q2026_scoring', profileId);
   var defaultProfile = (DATA.scoring||{}).active || '5-3-1';
-  if(profileId === defaultProfile){
-    _origMatchData.forEach(function(orig){
-      var m = DATA.matches.find(function(x){ return x.id===orig.id; });
-      if(!m) return;
-      m.quiniela = orig.quiniela;
-      orig.models.forEach(function(om){
-        var mod = m.models.find(function(x){ return x.id===om.id; });
-        if(mod){ mod.score=om.score; mod.ev=om.ev; mod.out=om.out; }
-      });
-    });
-  } else {
-    var altData = (SCORING_PROFILES[profileId]||{}).matches || {};
-    DATA.matches.forEach(function(m){
-      var alt = altData[String(m.num)] || altData[String(m.id)];
-      if(!alt) return;
-      if(alt.q){
-        m.quiniela.score = alt.q.score;
-        m.quiniela.ev = alt.q.ev;
-        if(alt.q.model) m.quiniela.model = alt.q.model;
-        m.quiniela.out = _outcomeFromScore(alt.q.score);
-      }
-      (alt.m||[]).forEach(function(am){
-        var mod = m.models.find(function(x){ return x.id===am.id; });
-        if(mod){ mod.score=am.score; mod.ev=am.ev; mod.out=_outcomeFromScore(am.score); }
-      });
-    });
-  }
+  _applyMatchScoring(profileId, defaultProfile);
   _recalcBacktestMetrics();
   _bestModelIdCache = null;
   _currentRankCache = null;
@@ -1020,6 +994,38 @@ function switchScoring(profileId){
   setTimeout(filterPreds, 50);
   if(_hoverMid) showHover(_hoverMid, _hoverTriggerEl);
   if(_modalMid) openModal(_modalMid);
+}
+function _applyMatchScoring(profileId, defaultProfile){
+  DATA.matches.forEach(function(m){
+    var orig = _origMatchData.find(function(o){ return o.id===m.id; });
+    if(!orig) return;
+    m.quiniela.score = orig.quiniela.score;
+    m.quiniela.ev    = orig.quiniela.ev;
+    m.quiniela.out   = orig.quiniela.out || '';
+    m.quiniela.model = orig.quiniela.model;
+    m.quiniela.top   = orig.quiniela.top;
+    m.quiniela.prob  = orig.quiniela.prob;
+    orig.models.forEach(function(om){
+      var mod = m.models.find(function(x){ return x.id===om.id; });
+      if(mod){ mod.score=om.score; mod.ev=om.ev; mod.out=om.out; }
+    });
+  });
+  if(profileId === defaultProfile) return;
+  var altData = (SCORING_PROFILES[profileId]||{}).matches || {};
+  DATA.matches.forEach(function(m){
+    var alt = altData[String(m.num)] || altData[String(m.id)];
+    if(!alt) return;
+    if(alt.q){
+      m.quiniela.score = alt.q.score;
+      m.quiniela.ev = alt.q.ev;
+      if(alt.q.model) m.quiniela.model = alt.q.model;
+      m.quiniela.out = _outcomeFromScore(alt.q.score);
+    }
+    (alt.m||[]).forEach(function(am){
+      var mod = m.models.find(function(x){ return x.id===am.id; });
+      if(mod){ mod.score=am.score; mod.ev=am.ev; mod.out=_outcomeFromScore(am.score); }
+    });
+  });
 }
 
 /* ══════════════════ HELPERS ══════════════════ */

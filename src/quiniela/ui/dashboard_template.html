@@ -1289,7 +1289,7 @@ function buildStatsSheet(m){
   return filterNote+'<div class="chart-grid">'+
     buildScatterChart(m, models)+
     buildHeatmapChart(m, models)+
-    buildGroupScenarios(m)+
+    buildGoalStatsCharts(m)+
     buildProbabilityChart(m, models)+
     buildFriendliesSection(m)+
     buildModelGoalHistogram(m, models)+
@@ -1632,176 +1632,161 @@ function buildFriendlyTeamBlock(teamName, rows, tournamentRows){
   html += '</div></div>';
   return html;
 }
-/* ══════════════════ GROUP SCENARIO TABLE ══════════════════ */
-function buildGroupScenarios(m){
-  if(m.phase!=='group' || !m.group || m.result) return '';
-  var grp = DATA.groups.find(function(g){ return g.id===m.group; });
-  if(!grp) return '';
-  var groupMatches = DATA.matches.filter(function(x){ return x.group===m.group && x.phase==='group'; });
+/* ══════════════════ GOAL STATS STRIP CHARTS ══════════════════ */
+function buildGoalStatsCharts(m){
+  if(m.result) return '';
+  var all = DATA.matches;
+  var completed = all.filter(function(x){ return !!x.result && typeof x.result==='string' && x.result.indexOf('-')>0; });
+  if(completed.length<2) return '';
 
-  function _cloneStandings(teams){
-    return teams.map(function(t){ return {t:t.t,j:t.j,g:t.g,e:t.e,p:t.p,gf:t.gf,ga:t.ga,gd:t.gd,pts:t.pts}; });
+  function _pr(r){ var p=r.split('-'); return {h:parseInt(p[0],10),a:parseInt(p[1],10)}; }
+
+  var catMap = {};
+  function _addCat(key, label, g){
+    if(!catMap[key]) catMap[key]={label:label, goals:[], teamGoals:[]};
+    catMap[key].goals.push(g.h+g.a);
+    catMap[key].teamGoals.push(g.h);
+    catMap[key].teamGoals.push(g.a);
   }
 
-  // Build head-to-head record from completed group matches
-  function _h2hRecord(standings, gMatches){
-    var rec = {};
-    standings.forEach(function(t){ rec[t.t] = {}; standings.forEach(function(t2){ rec[t.t][t2.t]={pts:0,gd:0,gf:0}; }); });
-    gMatches.forEach(function(gm){
-      if(!gm.result) return;
-      var sc = gm.result.split('-').map(Number);
-      if(sc.length<2||isNaN(sc[0])||isNaN(sc[1])) return;
-      var ha=gm.home, ab=gm.away, hg=sc[0], ag=sc[1];
-      if(!rec[ha]||!rec[ha][ab]) return;
-      rec[ha][ab].gf+=hg; rec[ha][ab].gd+=(hg-ag);
-      rec[ab][ha].gf+=ag; rec[ab][ha].gd+=(ag-hg);
-      if(hg>ag){rec[ha][ab].pts+=3;} else if(hg===ag){rec[ha][ab].pts+=1;rec[ab][ha].pts+=1;} else {rec[ab][ha].pts+=3;}
-    });
-    return rec;
-  }
+  var phaseLabels = {group:'Fase de Grupos',r16:'Octavos',qf:'Cuartos',sf:'Semifinal','3rd':'3er Lugar',final:'Final'};
 
-  // FIFA 2026 tiebreaker: sort standings array in place
-  function _fifaSort(standings, h2h){
-    standings.sort(function(a,b){
-      // 1. Points
-      if(a.pts!==b.pts) return b.pts-a.pts;
-      // Head-to-head between tied teams (criteria 2-4)
-      var ha=h2h[a.t]&&h2h[a.t][b.t]?h2h[a.t][b.t]:{pts:0,gd:0,gf:0};
-      var hb=h2h[b.t]&&h2h[b.t][a.t]?h2h[b.t][a.t]:{pts:0,gd:0,gf:0};
-      if(ha.pts!==hb.pts) return hb.pts-ha.pts;
-      if(ha.gd!==hb.gd) return hb.gd-ha.gd;
-      if(ha.gf!==hb.gf) return hb.gf-ha.gf;
-      // Overall criteria (5-6)
-      if(a.gd!==b.gd) return b.gd-a.gd;
-      if(a.gf!==b.gf) return b.gf-a.gf;
-      // 7. FIFA ranking (Jun 2026)
-      return _fifaRank(a.t)-_fifaRank(b.t);
-    });
-    return standings;
-  }
+  // Infer matchday per group
+  var groupIndexes = {};
+  all.filter(function(x){return x.phase==='group';}).sort(function(a,b){return a.num-b.num;}).forEach(function(x){
+    if(!x.group) return;
+    if(!groupIndexes[x.group]) groupIndexes[x.group]=0;
+    x._gIdx = groupIndexes[x.group]++;
+    x._md = Math.floor(x._gIdx/2)+1;
+  });
 
-  // Apply a simulated result to a cloned standings array
-  function _applyResult(standings, home, away, hGoals, aGoals){
-    var th = standings.find(function(t){ return t.t===home; });
-    var ta = standings.find(function(t){ return t.t===away; });
-    if(!th||!ta) return;
-    th.j++; ta.j++;
-    th.gf+=hGoals; th.ga+=aGoals; th.gd+=(hGoals-aGoals);
-    ta.gf+=aGoals; ta.ga+=hGoals; ta.gd+=(aGoals-hGoals);
-    if(hGoals>aGoals){th.g++;th.pts+=3;ta.p++;}
-    else if(hGoals===aGoals){th.e++;th.pts+=1;ta.e++;ta.pts+=1;}
-    else {ta.g++;ta.pts+=3;th.p++;}
-  }
+  completed.forEach(function(cm){
+    var g = _pr(cm.result);
+    _addCat('torneo','Torneo',g);
+    _addCat('phase_'+cm.phase, phaseLabels[cm.phase]||cm.phase, g);
+    if(m.group && cm.group===m.group && cm.phase==='group') _addCat('grupo','Grupo '+m.group,g);
+    if(cm.phase==='group' && cm._md) _addCat('md_'+cm._md, 'Jornada '+cm._md, g);
+  });
 
-  // Apply all other completed results + pending results with default score
-  function _applyOtherPending(standings, gMatches, excludeMatchId, h2h){
-    gMatches.forEach(function(gm){
-      if(gm.id===excludeMatchId) return;
-      if(gm.result){
-        // already in base standings
-        return;
-      }
-      // For other pending matches in group, simulate 0-0 (neutral) to fill standings
-      _applyResult(standings, gm.home, gm.away, 0, 0);
-      if(h2h[gm.home]) h2h[gm.home][gm.away]={pts:(h2h[gm.home][gm.away]||{}).pts+1||1,gd:0,gf:0};
-      if(h2h[gm.away]) h2h[gm.away][gm.home]={pts:(h2h[gm.away][gm.home]||{}).pts+1||1,gd:0,gf:0};
-    });
-  }
-
-  // Build scenario for outcome: '1' (home win), 'X' (draw), '2' (away win)
-  function _buildScenario(outcome){
-    var st = _cloneStandings(grp.teams);
-    var h2h = _h2hRecord(st, groupMatches);
-    var hg, ag;
-    if(outcome==='1'){hg=1;ag=0;} else if(outcome==='X'){hg=0;ag=0;} else {hg=0;ag=1;}
-    _applyResult(st, m.home, m.away, hg, ag);
-    // Update h2h for this match
-    if(h2h[m.home]&&h2h[m.home][m.away]){
-      h2h[m.home][m.away].gf+=hg; h2h[m.home][m.away].gd+=(hg-ag);
-      h2h[m.away][m.home].gf+=ag; h2h[m.away][m.home].gd+=(ag-hg);
-      if(hg>ag){h2h[m.home][m.away].pts+=3;} else if(hg===ag){h2h[m.home][m.away].pts+=1;h2h[m.away][m.home].pts+=1;} else {h2h[m.away][m.home].pts+=3;}
+  var catOrder = [];
+  if(catMap['grupo']) catOrder.push('grupo');
+  if(m.phase==='group') for(var md=1;md<=3;md++){ if(catMap['md_'+md]) catOrder.push('md_'+md); }
+  var phaseOrder=['group','r16','qf','sf','3rd','final'];
+  phaseOrder.forEach(function(ph){
+    var key='phase_'+ph;
+    if(catMap[key] && catOrder.indexOf(key)<0){
+      if(ph==='group' && m.phase==='group') return;
+      catOrder.push(key);
     }
-    _applyOtherPending(st, groupMatches, m.id, h2h);
-    _fifaSort(st, h2h);
-    return st;
-  }
+  });
+  catOrder.push('torneo');
 
-  var scenarios = {
-    '1': _buildScenario('1'),
-    'X': _buildScenario('X'),
-    '2': _buildScenario('2')
-  };
+  var categories = catOrder.map(function(k){ return {key:k, label:catMap[k].label, goals:catMap[k].goals, teamGoals:catMap[k].teamGoals}; });
 
-  // Current standings sorted
-  var curSt = _cloneStandings(grp.teams);
-  var curH2h = _h2hRecord(curSt, groupMatches);
-  _fifaSort(curSt, curH2h);
+  var uid = 'gs_'+m.id+'_'+Date.now();
+  var cW=280, cH=170, pL=28, pR=10, pT=15, pB=30;
+  var plW=cW-pL-pR, plH=cH-pT-pB;
 
-  // Position badge
-  function _posBadge(pos){
-    if(pos<=2) return '<span class="scn-pos scn-q">'+(pos)+'</span>';
-    if(pos===3) return '<span class="scn-pos scn-3rd">3</span>';
-    return '<span class="scn-pos scn-out">4</span>';
-  }
-
-  function _posChange(teamName, scenarioSt){
-    var curPos = curSt.findIndex(function(t){ return t.t===teamName; })+1;
-    var newPos = scenarioSt.findIndex(function(t){ return t.t===teamName; })+1;
-    if(newPos<curPos) return '<span class="scn-badge scn-up">▲'+(curPos-newPos)+'</span>';
-    if(newPos>curPos) return '<span class="scn-badge scn-dn">▼'+(newPos-curPos)+'</span>';
-    return '';
-  }
-
-  // Abbreviate team name
-  function _shortTeam(name){
-    if(name.length<=14) return name;
-    var parts = name.split(' ');
-    if(parts.length>2) return parts.map(function(w){ return w.length<=3?w:w[0]; }).join('. ');
-    return name.substring(0,12)+'…';
-  }
-
-  // Build HTML
-  var html = '<div class="chart-card wide scenario">';
-  html += '<div class="chart-title">Escenarios de clasificación · Grupo '+esc(m.group)+'</div>';
-  html += '<div class="chart-sub">Posiciones simuladas según resultado de '+esc(m.home)+' vs '+esc(m.away)+'. Top 2 clasifican directo, 3° puede clasificar como mejor tercero.</div>';
-
-  // Scenario tabs
-  var labels = {'1':'Victoria '+_shortTeam(m.home),'X':'Empate','2':'Victoria '+_shortTeam(m.away)};
-  var colors = {'1':'rgba(30,128,80,.25)','X':'rgba(201,150,14,.25)','2':'rgba(30,128,80,.25)'};
-  var textColors = {'1':'#2ecc71','X':'var(--gold)','2':'#2ecc71'};
-
-  function _renderTable(standings, label, labelBg, labelColor, showChange){
-    var h = '<div style="flex:1;min-width:130px">';
-    h += '<div style="text-align:center;margin-bottom:4px"><span style="padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);background:'+labelBg+';color:'+labelColor+'">'+label+'</span></div>';
-    h += '<table class="scn-tbl"><thead><tr><th></th><th>Equipo</th><th>Pts</th><th>DG</th><th>GF</th><th></th></tr></thead><tbody>';
-    standings.forEach(function(t,i){
-      var pos = i+1;
-      var isMatchTeam = (t.t===m.home||t.t===m.away);
-      var rowStyle = isMatchTeam ? 'font-weight:700;' : '';
-      h += '<tr style="'+rowStyle+'">';
-      h += '<td>'+_posBadge(pos)+'</td>';
-      h += '<td><span class="scn-team" title="'+esc(t.t)+'">'+esc(_shortTeam(t.t))+'</span></td>';
-      h += '<td class="scn-pts">'+t.pts+'</td>';
-      h += '<td>'+(t.gd>0?'+':'')+t.gd+'</td>';
-      h += '<td>'+t.gf+'</td>';
-      h += '<td>'+(showChange?_posChange(t.t, standings):'')+'</td>';
-      h += '</tr>';
+  function _svg(cats, dk, yLbl, cid, teamDots){
+    var mx=0; cats.forEach(function(c){ c[dk].forEach(function(v){if(v>mx)mx=v;}); }); mx=Math.max(mx,4);
+    var bW=plW/cats.length;
+    var s='<svg viewBox="0 0 '+cW+' '+cH+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">';
+    for(var t=0;t<=mx;t++){
+      var y=pT+plH-(t/mx)*plH;
+      s+='<line x1="'+pL+'" y1="'+y+'" x2="'+(cW-pR)+'" y2="'+y+'" stroke="var(--brd)" stroke-width="0.5" stroke-dasharray="2,2"/>';
+      s+='<text x="'+(pL-4)+'" y="'+(y+3)+'" text-anchor="end" fill="var(--mut)" font-size="8" font-family="var(--fc)">'+t+'</text>';
+    }
+    s+='<text x="6" y="'+(pT+plH/2)+'" text-anchor="middle" fill="var(--mut)" font-size="7" font-family="var(--fc)" transform="rotate(-90,6,'+(pT+plH/2)+')">'+yLbl+'</text>';
+    cats.forEach(function(c, ci){
+      var cx=pL+bW*ci+bW/2, vals=c[dk];
+      var avg=vals.reduce(function(a,b){return a+b;},0)/vals.length;
+      var mn=Math.min.apply(null,vals), mxV=Math.max.apply(null,vals);
+      var yMn=pT+plH-(mn/mx)*plH, yMx=pT+plH-(mxV/mx)*plH;
+      s+='<line x1="'+cx+'" y1="'+yMn+'" x2="'+cx+'" y2="'+yMx+'" stroke="var(--mut)" stroke-width="1" opacity="0.4"/>';
+      s+='<line x1="'+(cx-4)+'" y1="'+yMn+'" x2="'+(cx+4)+'" y2="'+yMn+'" stroke="var(--mut)" stroke-width="1" opacity="0.4"/>';
+      s+='<line x1="'+(cx-4)+'" y1="'+yMx+'" x2="'+(cx+4)+'" y2="'+yMx+'" stroke="var(--mut)" stroke-width="1" opacity="0.4"/>';
+      var yAvg=pT+plH-(avg/mx)*plH;
+      s+='<line x1="'+(cx-8)+'" y1="'+yAvg+'" x2="'+(cx+8)+'" y2="'+yAvg+'" stroke="var(--teal)" stroke-width="2"/>';
+      s+='<text x="'+cx+'" y="'+(yAvg-5)+'" text-anchor="middle" fill="var(--teal)" font-size="7" font-weight="700" font-family="var(--fc)">'+avg.toFixed(1)+'</text>';
+      vals.forEach(function(v,vi){
+        var vy=pT+plH-(v/mx)*plH;
+        var jx=((vi%5)-2)*3+((ci*7+3+vi*13)%5-2)*0.8;
+        var dc=teamDots?(vi%2===0?'var(--teal2)':'var(--gold)'):'var(--ink2)';
+        var dop=teamDots?'0.7':'0.45';
+        s+='<circle cx="'+(cx+jx)+'" cy="'+vy+'" r="2.5" fill="'+dc+'" opacity="'+dop+'"/>';
+      });
+      var ll=c.label.split(' ');
+      var ly=pT+plH+10;
+      if(ll.length<=2) s+='<text x="'+cx+'" y="'+ly+'" text-anchor="middle" fill="var(--mut)" font-size="7" font-family="var(--fc)">'+c.label+'</text>';
+      else { s+='<text x="'+cx+'" y="'+(ly-3)+'" text-anchor="middle" fill="var(--mut)" font-size="7" font-family="var(--fc)">'+ll.slice(0,-1).join(' ')+'</text>';
+        s+='<text x="'+cx+'" y="'+(ly+6)+'" text-anchor="middle" fill="var(--mut)" font-size="7" font-family="var(--fc)">'+ll[ll.length-1]+'</text>'; }
     });
-    h += '</tbody></table></div>';
-    return h;
+    s+='<g id="'+cid+'_user"></g></svg>';
+    return s;
   }
 
-  html += '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">';
-  html += _renderTable(curSt, 'Actual', 'rgba(255,255,255,.1)', 'var(--ink)', false);
-  html += _renderTable(scenarios['1'], labels['1'], colors['1'], textColors['1'], true);
-  html += _renderTable(scenarios['X'], labels['X'], colors['X'], textColors['X'], true);
-  html += _renderTable(scenarios['2'], labels['2'], colors['2'], textColors['2'], true);
-  html += '</div>';
+  var c1id=uid+'_match', c2id=uid+'_team';
+  var sv1=_svg(categories,'goals','Goles / Partido',c1id,false);
+  var sv2=_svg(categories,'teamGoals','Goles / Equipo',c2id,true);
 
-  // Note about tiebreaker rules
-  html += '<div class="scn-sub">Desempate FIFA: pts directos → DG directo → GF directo → DG total → GF total → ranking FIFA. Otros partidos pendientes del grupo simulados como empate 0-0.</div>';
-  html += '</div>';
-  return html;
+  var qp=m.quiniela&&m.quiniela.score?m.quiniela.score.split('-'):['',''];
+
+  var h='<div class="chart-card wide" style="min-height:auto">';
+  h+='<div class="chart-title">Contexto goleador</div>';
+  h+='<div class="chart-sub">Promedio, rango y distribuci\u00f3n de goles. Ingresa tu pron\u00f3stico para ver d\u00f3nde se ubica.</div>';
+  h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">';
+  h+='<span style="font-size:10px;color:var(--mut);font-family:var(--fc);font-weight:600">Tu pron\u00f3stico:</span>';
+  h+='<span style="font-size:10px;color:var(--ink);font-weight:700">'+esc(m.home)+'</span>';
+  h+='<input id="'+uid+'_h" type="number" min="0" max="20" value="'+(qp[0]||'')+'" style="width:36px;height:24px;text-align:center;border:1px solid var(--brd);border-radius:4px;background:var(--pan);color:var(--ink);font-family:var(--fc);font-size:12px;font-weight:700" placeholder="-">';
+  h+='<span style="font-size:11px;color:var(--mut);font-weight:700">-</span>';
+  h+='<input id="'+uid+'_a" type="number" min="0" max="20" value="'+(qp[1]||'')+'" style="width:36px;height:24px;text-align:center;border:1px solid var(--brd);border-radius:4px;background:var(--pan);color:var(--ink);font-family:var(--fc);font-size:12px;font-weight:700" placeholder="-">';
+  h+='<span style="font-size:10px;color:var(--ink);font-weight:700">'+esc(m.away)+'</span>';
+  h+='</div>';
+  h+='<div style="display:flex;gap:10px">';
+  h+='<div style="flex:1;min-width:0"><div style="font-size:9px;font-family:var(--fc);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px">Goles por partido</div>'+sv1+'</div>';
+  h+='<div style="flex:1;min-width:0"><div style="font-size:9px;font-family:var(--fc);font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);margin-bottom:3px">Goles por equipo</div>'+sv2+'</div>';
+  h+='</div>';
+  h+='<div style="display:flex;gap:12px;margin-top:4px;align-items:center;flex-wrap:wrap">';
+  h+='<span style="font-size:8px;color:var(--mut);font-family:var(--fc)"><span style="display:inline-block;width:12px;height:2px;background:var(--teal);vertical-align:middle;margin-right:3px"></span>Promedio</span>';
+  h+='<span style="font-size:8px;color:var(--mut);font-family:var(--fc)"><span style="display:inline-block;width:1px;height:8px;border-left:1px solid var(--mut);vertical-align:middle;margin-right:3px;opacity:.5"></span>Rango</span>';
+  h+='<span style="font-size:8px;color:var(--mut);font-family:var(--fc)"><svg width="6" height="6" style="vertical-align:middle;margin-right:3px"><circle cx="3" cy="3" r="2.5" fill="var(--ink2)" opacity=".45"/></svg>Partido</span>';
+  h+='<span style="font-size:8px;color:var(--mut);font-family:var(--fc)"><svg width="8" height="8" style="vertical-align:middle;margin-right:3px"><polygon points="4,0 8,8 0,8" fill="#e74c3c" opacity=".85"/></svg>Pron\u00f3stico</span>';
+  h+='</div></div>';
+
+  // Interactive update via closure (innerHTML doesn't execute <script> tags)
+  window._goalStatsSetup = (function(cats, mxM, mxT, _pL, _pT, _plW, _plH, hId, aId, g1Id, g2Id){
+    return function(){
+      var n=cats.length, bW=_plW/n;
+      function upd(){
+        var hv=parseInt(document.getElementById(hId).value,10), av=parseInt(document.getElementById(aId).value,10);
+        var g1=document.getElementById(g1Id), g2=document.getElementById(g2Id);
+        if(isNaN(hv)||isNaN(av)){if(g1)g1.innerHTML='';if(g2)g2.innerHTML='';return;}
+        var tot=hv+av, s1='', s2='';
+        var yM=_pT+_plH-(tot/mxM)*_plH; if(tot>mxM)yM=_pT-4;
+        s1+='<line x1="'+_pL+'" y1="'+yM+'" x2="'+(_pL+_plW)+'" y2="'+yM+'" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>';
+        for(var i=0;i<n;i++){var cx=_pL+bW*i+bW/2;
+          s1+='<polygon points="'+(cx-4)+','+yM+' '+(cx+4)+','+yM+' '+cx+','+(yM-6)+'" fill="#e74c3c" opacity="0.85"/>';}
+        s1+='<text x="'+(_pL+_plW)+'" y="'+(yM-3)+'" text-anchor="end" fill="#e74c3c" font-size="7" font-weight="700" font-family="var(--fc)">'+tot+'</text>';
+        if(g1)g1.innerHTML=s1;
+        var yH=_pT+_plH-(hv/mxT)*_plH, yA=_pT+_plH-(av/mxT)*_plH;
+        if(hv>mxT)yH=_pT-4; if(av>mxT)yA=_pT-4;
+        for(var i=0;i<n;i++){var cx=_pL+bW*i+bW/2;
+          s2+='<polygon points="'+(cx-6)+','+yH+' '+(cx-2)+','+yH+' '+(cx-4)+','+(yH-5)+'" fill="var(--teal2)" opacity="0.9"/>';
+          s2+='<polygon points="'+(cx+2)+','+yA+' '+(cx+6)+','+yA+' '+(cx+4)+','+(yA-5)+'" fill="var(--gold)" opacity="0.9"/>';}
+        s2+='<text x="'+(_pL+_plW)+'" y="'+(yH-3)+'" text-anchor="end" fill="var(--teal2)" font-size="7" font-weight="700" font-family="var(--fc)">'+hv+'</text>';
+        s2+='<text x="'+(_pL+_plW-18)+'" y="'+(yA-3)+'" text-anchor="end" fill="var(--gold)" font-size="7" font-weight="700" font-family="var(--fc)">'+av+'</text>';
+        if(g2)g2.innerHTML=s2;
+      }
+      document.getElementById(hId).addEventListener('input',upd);
+      document.getElementById(aId).addEventListener('input',upd);
+      upd();
+    };
+  })(categories,
+     Math.max(4,Math.max.apply(null,categories.map(function(c){return Math.max.apply(null,c.goals);}))),
+     Math.max(4,Math.max.apply(null,categories.map(function(c){return Math.max.apply(null,c.teamGoals);}))),
+     pL, pT, plW, plH, uid+'_h', uid+'_a', c1id+'_user', c2id+'_user');
+
+  return h;
 }
 
 function buildFriendliesSection(m){
@@ -1944,6 +1929,7 @@ function showHover(matchId, triggerEl){
   }
   _updateNavBtns(_hoverMid, 'hp-nav-prev', 'hp-nav-next');
   document.getElementById('hp-stats-sheet').innerHTML = buildStatsSheet(m);
+  if(window._goalStatsSetup) { window._goalStatsSetup(); window._goalStatsSetup = null; }
 
   var sorted = sortedModels(m.models);
   var cards = '';

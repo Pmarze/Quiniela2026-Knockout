@@ -632,35 +632,6 @@ main{margin-top:var(--navh);}
 .home-mrow-teams{flex:1;font-size:11px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
 .home-mrow-mod{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--teal);background:var(--td);padding:1px 5px;border-radius:var(--rsm);flex-shrink:0;}
 .home-mrow-pick{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--gold);background:var(--gd);padding:1px 5px;border-radius:var(--rsm);flex-shrink:0;}
-/* === SOÑADORA === */
-.son-chip{background:var(--pan2);border:1px solid var(--brd);color:var(--mutl);padding:4px 11px;border-radius:16px;font-size:11px;cursor:pointer;font-family:var(--fc);transition:all .15s;}
-.son-chip:hover{border-color:var(--teal);color:var(--teal);}
-.son-chip.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700;}
-.son-chip-friend:hover{border-color:#d4a017;color:#d4a017;}
-.son-chip-friend.active{background:#d4a017;border-color:#d4a017;color:#fff;font-weight:700;}
-.son-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px;}
-.son-champion{background:linear-gradient(120deg,var(--burg),#7a4c00 50%,#c49a1e);border-radius:10px;padding:20px 24px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;margin-bottom:4px;}
-.son-champ-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7);}
-.son-champ-name{font-family:var(--fc);font-size:28px;font-weight:800;color:#fff;}
-.son-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:10px;}
-.son-group{background:var(--pan2);border:1px solid var(--brd);border-radius:7px;overflow:hidden;}
-.son-g-hd{background:var(--nav);color:#fff;padding:4px 10px;font-size:10px;font-weight:800;letter-spacing:.5px;}
-.son-g-row{display:flex;align-items:center;gap:5px;padding:3px 8px;font-size:11px;border-top:1px solid var(--brd);}
-.son-g-row.q{background:rgba(8,126,139,.07);}
-.son-g-row.t3{background:rgba(201,150,14,.05);}
-.son-g-row.out{opacity:.38;}
-.son-g-pos{width:14px;text-align:center;flex-shrink:0;font-size:10px;}
-.son-g-team{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-size:10px;}
-.son-g-pts{font-family:var(--fc);font-weight:700;color:var(--teal);font-size:10px;flex-shrink:0;margin-left:2px;}
-.son-g-gd{font-family:var(--fc);font-size:9px;color:var(--mutl);flex-shrink:0;min-width:22px;text-align:right;}
-.son-bracket{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:6px;margin-top:8px;}
-.son-match{display:flex;align-items:center;gap:8px;background:var(--pan2);border:1px solid var(--brd);border-radius:6px;padding:7px 10px;}
-.son-m-n{font-family:var(--fc);font-size:9px;color:var(--mutl);width:20px;text-align:center;flex-shrink:0;}
-.son-m-t{flex:1;font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.son-m-t.r{text-align:right;}
-.son-m-t.win{color:var(--teal);font-weight:700;}
-.son-m-sc{font-family:var(--fc);font-size:13px;font-weight:700;color:var(--ink);flex-shrink:0;min-width:28px;text-align:center;}
-.son-empty{color:var(--mutl);text-align:center;padding:40px 0;font-size:13px;}
 
 /* MODEL DOC MODAL */
 #modeldoc-overlay{position:fixed;inset:0;background:rgba(13,27,42,.85);z-index:1200;
@@ -722,7 +693,6 @@ main{margin-top:var(--navh);}
   <button class="nlink active" id="nav-home"      onclick="showSec('home')">Inicio</button>
   <button class="nlink"        id="nav-quiniela"  onclick="showSec('quiniela')">Quiniela</button>
   <button class="nlink"        id="nav-amigos"    onclick="showSec('amigos')">vs</button>
-  <button class="nlink"        id="nav-sonadora"  onclick="showSec('sonadora')">Soñadora</button>
   <button class="nlink"        id="nav-guia"      onclick="showSec('guia')">Guía</button>
   <button class="nlink"        id="nav-validacion" onclick="showSec('validacion')">Validación</button>
   <button class="nlink"        id="nav-metodologia" onclick="showSec('metodologia')">Metodología</button>
@@ -738,7 +708,6 @@ main{margin-top:var(--navh);}
   <div class="sec active" id="sec-home"></div>
   <div class="sec"        id="sec-quiniela"></div>
   <div class="sec"        id="sec-amigos"></div>
-  <div class="sec"        id="sec-sonadora"></div>
   <div class="sec"        id="sec-guia"></div>
   <div class="sec"        id="sec-validacion"></div>
   <div class="sec"        id="sec-metodologia"></div>
@@ -864,7 +833,7 @@ main{margin-top:var(--navh);}
 const DATA = __DATA_JSON__;
 
 /* Private sections are a local UX lock. Public builds do not embed private data. */
-var PRIVATE_SECTIONS = {amigos:true, sonadora:true};
+var PRIVATE_SECTIONS = {amigos:true};
 function _access(){ return DATA.access || {}; }
 function _privateHash(){ return String(_access().private_hash || '').trim().toLowerCase(); }
 function _privateUnlocked(){ return localStorage.getItem('q2026_private_ok') === '1'; }
@@ -881,7 +850,6 @@ function _activateSection(id){
 }
 function _renderPrivateContent(id){
   if(id==='amigos') renderAmigos();
-  if(id==='sonadora') renderSonadora();
 }
 async function _sha256Hex(text){
   if(!window.crypto || !window.crypto.subtle) return '';
@@ -907,7 +875,7 @@ async function _unlockPrivateSection(id){
 function renderPrivateGate(id){
   var el = document.getElementById('sec-'+id);
   if(!el) return;
-  var title = id==='sonadora' ? 'Sonadora privada' : 'vs privado';
+  var title = 'vs privado';
   var body = _access().public_mode
     ? 'Esta seccion no se incluye en el dashboard publico. Para verla, genera un dashboard privado local con los datos de amigos.'
     : 'Esta seccion esta protegida en esta version local. Ingresa la contrasena para continuar.';
@@ -1023,7 +991,6 @@ function switchScoring(profileId){
   _currentRankCache = null;
   renderHome();
   renderQuiniela();
-  renderSonadora();
   renderAmigos();
   renderValidacion();
   setTimeout(filterPreds, 50);
@@ -4223,7 +4190,6 @@ document.addEventListener('DOMContentLoaded', function(){
   renderHome();
   renderQuiniela();
   renderPrivateShell('amigos');
-  renderPrivateShell('sonadora');
   renderGuia();
   renderValidacion();
   renderMetodologia();
@@ -4244,315 +4210,6 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 });
 
-/* ══════════════════ SOÑADORA: SIMULACIÓN ══════════════════ */
-function _sonAvg(match, modelIds){
-  var preds=(match.models||[]).filter(function(m){return modelIds.indexOf(m.id)>=0;});
-  if(!preds.length) preds=match.models||[];
-  if(!preds.length) return {p1:.34,px:.33,p2:.33,preds:[]};
-  var p1=0,px=0,p2=0;
-  preds.forEach(function(m){p1+=m.p1||0;px+=m.px||0;p2+=m.p2||0;});
-  return {p1:p1/preds.length,px:px/preds.length,p2:p2/preds.length,preds:preds};
-}
-function _sonSim(match, modelIds, allowDraw){
-  var a=_sonAvg(match,modelIds);
-  var out=allowDraw
-    ?(a.p1>=a.px&&a.p1>=a.p2?'H':a.px>=a.p1&&a.px>=a.p2?'D':'A')
-    :(a.p1>=a.p2?'H':'A');
-  var best=a.preds.filter(function(m){
-    var p=m.score.split('-'),h=+p[0],g=+p[1];
-    return (h>g?'H':h<g?'A':'D')===out;
-  }).sort(function(a,b){return b.conf-a.conf;})[0]
-   ||a.preds.sort(function(a,b){return b.conf-a.conf;})[0];
-  var pts=(best?best.score:(out==='H'?'1-0':out==='D'?'0-0':'0-1')).split('-');
-  var hg=+pts[0]||0,ag=+pts[1]||0;
-  if(out==='H'&&hg<=ag) hg=ag+1;
-  else if(out==='A'&&ag<=hg) ag=hg+1;
-  else if(out==='D'){var avg=Math.ceil((hg+ag)/2);hg=avg;ag=avg;}
-  return {hg:hg,ag:ag,out:out};
-}
-/* Simulación solo con picks de amigo — sin fallback de modelo.
-   Devuelve {standings, results, thirds, champion, incomplete}.
-   incomplete=true si los grupos no están completos y no se puede resolver eliminatoria. */
-function runSonFriendSimulation(friendPickMap){
-  var results={}, standings={}, teamStats={};
-  DATA.matches.filter(function(m){return m.phase==='group';}).forEach(function(m){
-    ['home','away'].forEach(function(s){
-      if(!teamStats[m[s]]) teamStats[m[s]]={team:m[s],pts:0,gf:0,ga:0,gd:0,group:m.group,played:0};
-    });
-    var pickStr=friendPickMap[String(m.id)]||friendPickMap[String(m.num)];
-    if(!pickStr) return; // partido no pronosticado: no cuenta
-    var pp=pickStr.split('-');
-    var hg=parseInt(pp[0],10)||0, ag=parseInt(pp[1],10)||0;
-    var out=hg>ag?'H':hg<ag?'A':'D';
-    results[m.id]={hg:hg,ag:ag,out:out};
-    var h=teamStats[m.home],a=teamStats[m.away];
-    h.gf+=hg;h.ga+=ag;h.gd+=hg-ag;h.played++;
-    a.gf+=ag;a.ga+=hg;a.gd+=ag-hg;a.played++;
-    if(out==='H'){h.pts+=3;}else if(out==='D'){h.pts++;a.pts++;}else{a.pts+=3;}
-  });
-  // Só incluir grupos con al menos 1 partido pronosticado
-  Object.values(teamStats).forEach(function(t){
-    if(!standings[t.group]) standings[t.group]=[];
-    standings[t.group].push(t);
-  });
-  Object.keys(standings).forEach(function(g){
-    standings[g].sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);});
-  });
-  // Verificar si todos los grupos tienen los 3 partidos de cada equipo completos
-  var allGroups=12;
-  var complete=Object.keys(standings).length===allGroups&&
-    Object.values(standings).every(function(grp){
-      return grp.length===4&&grp.every(function(t){return t.played===3;});
-    });
-  var thirds=[], usedT={};
-  if(complete){
-    thirds=Object.keys(standings).map(function(g){
-      return Object.assign({},standings[g][2],{group:g});
-    }).sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);}).slice(0,8);
-    function resolve2(name){
-      if(!name) return '?';
-      var m2;
-      m2=name.match(/^Winner Group ([A-L])$/);
-      if(m2) return ((standings[m2[1]]||[])[0]||{}).team||name;
-      m2=name.match(/^Runner-up Group ([A-L])$/);
-      if(m2) return ((standings[m2[1]]||[])[1]||{}).team||name;
-      m2=name.match(/^3rd Group (.+)$/);
-      if(m2){
-        var eligible=m2[1].split('/');
-        for(var i=0;i<thirds.length;i++){
-          if(eligible.indexOf(thirds[i].group)>=0&&!usedT[thirds[i].team]){
-            usedT[thirds[i].team]=true; return thirds[i].team;
-          }
-        }
-        return name;
-      }
-      m2=name.match(/^Winner Match (\d+)$/);
-      if(m2){var r2=results[+m2[1]];return r2?r2.winner||name:name;}
-      return name;
-    }
-    // Usar el mejor modelo disponible para elimineatorias (amigo no tiene picks de esa fase)
-    var bestMod=[_cachedBestModelId()];
-    ['r32','r16','qf','sf','third','final'].forEach(function(phase){
-      DATA.matches.filter(function(m){return m.phase===phase;}).forEach(function(m){
-        var ht=resolve2(m.home),at=resolve2(m.away);
-        var r=_sonSim(m,bestMod,false);
-        r.homeTeam=ht;r.awayTeam=at;r.winner=r.out==='H'?ht:at;
-        results[m.id]=r;
-      });
-    });
-  }
-  var fin=DATA.matches.find(function(m){return m.phase==='final';});
-  return {standings:standings,results:results,thirds:thirds,
-          champion:fin&&results[fin.id]?results[fin.id].winner:'?',
-          incomplete:!complete};
-}
-function _sonSimHybrid(match, modelIds, allowDraw, friendPickMap){
-  var pickStr=(friendPickMap||{})[String(match.id)]||(friendPickMap||{})[String(match.num)];
-  if(pickStr){
-    var pp=pickStr.split('-');
-    var hg=parseInt(pp[0],10)||0,ag=parseInt(pp[1],10)||0;
-    var out=hg>ag?'H':hg<ag?'A':'D';
-    if(!allowDraw&&out==='D'){
-      var av=_sonAvg(match,modelIds.length?modelIds:['weighted_points_ensemble']);
-      out=av.p1>=av.p2?'H':'A';
-    }
-    return {hg:hg,ag:ag,out:out};
-  }
-  return _sonSim(match,modelIds.length?modelIds:['weighted_points_ensemble'],allowDraw);
-}
-function runSonSimulation(modelIds, friendPickMap){
-  friendPickMap=friendPickMap||{};
-  var effectiveModels=modelIds.length?modelIds:['weighted_points_ensemble'];
-  var results={},standings={},teamStats={};
-  // Fase de grupos
-  DATA.matches.filter(function(m){return m.phase==='group';}).forEach(function(m){
-    ['home','away'].forEach(function(s){
-      if(!teamStats[m[s]]) teamStats[m[s]]={team:m[s],pts:0,gf:0,ga:0,gd:0,group:m.group};
-    });
-    var r=_sonSimHybrid(m,effectiveModels,true,friendPickMap); results[m.id]=r;
-    var h=teamStats[m.home],a=teamStats[m.away];
-    h.gf+=r.hg;h.ga+=r.ag;h.gd+=r.hg-r.ag;
-    a.gf+=r.ag;a.ga+=r.hg;a.gd+=r.ag-r.hg;
-    if(r.out==='H'){h.pts+=3;}else if(r.out==='D'){h.pts++;a.pts++;}else{a.pts+=3;}
-  });
-  Object.values(teamStats).forEach(function(t){
-    if(!standings[t.group]) standings[t.group]=[];
-    standings[t.group].push(t);
-  });
-  Object.keys(standings).forEach(function(g){
-    standings[g].sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);});
-  });
-  // Top 8 terceros
-  var thirds=Object.keys(standings).map(function(g){
-    return Object.assign({},standings[g][2],{group:g});
-  }).sort(function(a,b){return (b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf);}).slice(0,8);
-  var usedT={};
-  // Resolver nombre de equipo
-  function resolve(name){
-    if(!name) return '?';
-    var m2;
-    m2=name.match(/^Winner Group ([A-L])$/);
-    if(m2) return ((standings[m2[1]]||[])[0]||{}).team||name;
-    m2=name.match(/^Runner-up Group ([A-L])$/);
-    if(m2) return ((standings[m2[1]]||[])[1]||{}).team||name;
-    m2=name.match(/^3rd Group (.+)$/);
-    if(m2){
-      var eligible=m2[1].split('/');
-      for(var i=0;i<thirds.length;i++){
-        if(eligible.indexOf(thirds[i].group)>=0&&!usedT[thirds[i].team]){
-          usedT[thirds[i].team]=true; return thirds[i].team;
-        }
-      }
-      return name;
-    }
-    m2=name.match(/^Winner Match (\d+)$/);
-    if(m2){var r2=results[+m2[1]];return r2?r2.winner||name:name;}
-    return name;
-  }
-  // Fases eliminatorias
-  ['r32','r16','qf','sf','third','final'].forEach(function(phase){
-    DATA.matches.filter(function(m){return m.phase===phase;}).forEach(function(m){
-      var ht=resolve(m.home),at=resolve(m.away);
-      var r=_sonSimHybrid(m,effectiveModels,false,friendPickMap);
-      r.homeTeam=ht; r.awayTeam=at;
-      r.winner=r.out==='H'?ht:at;
-      results[m.id]=r;
-    });
-  });
-  var fin=DATA.matches.find(function(m){return m.phase==='final';});
-  return {standings:standings,results:results,thirds:thirds,
-          champion:fin&&results[fin.id]?results[fin.id].winner:'?'};
-}
-
-/* ══════════════════ RENDER: SOÑADORA ══════════════════ */
-function renderSonadora(){
-  var el=document.getElementById('sec-sonadora');
-  var allModels=[];
-  DATA.matches.forEach(function(m){
-    (m.models||[]).forEach(function(mod){
-      if(!allModels.find(function(x){return x.id===mod.id;}))
-        allModels.push({id:mod.id});
-    });
-  });
-  // Ordenar por rendimiento de backtest (pts desc), modelos sin backtest al final
-  var btMap={};
-  (DATA.backtest.metrics||[]).forEach(function(bm){btMap[bm.model]=bm.pts;});
-  allModels.sort(function(a,b){
-    var pa=btMap[a.id]!=null?btMap[a.id]:-1;
-    var pb=btMap[b.id]!=null?btMap[b.id]:-1;
-    return pb-pa;
-  });
-  var chips=allModels.map(function(mod){
-    var pts=btMap[mod.id];
-    var label=modelDisplayName(mod.id)+(pts!=null?' <span style="font-size:9px;opacity:.7">'+pts+'p</span>':'');
-    return '<button class="son-chip" data-mid="'+mod.id+'" onclick="_sonToggle(this)" title="'+mod.id+'">'+
-      label+'</button>';
-  }).join('');
-  var friendSection='';
-  var friendsWithPicks=(DATA.friends||[]).filter(function(f){return Object.keys(f.picks||{}).length>0;});
-  if(friendsWithPicks.length){
-    var fchips=friendsWithPicks.map(function(f){
-      var n=Object.keys(f.picks||{}).length;
-      return '<button class="son-chip son-chip-friend" data-fid="'+f.id+'" onclick="_sonToggle(this)" title="'+esc(f.name)+' ('+n+' picks)">'+
-        esc(f.name)+' <span style="font-size:9px;opacity:.7">'+n+'p</span></button>';
-    }).join('');
-    friendSection=
-      '<div style="margin-top:12px;font-size:10px;color:var(--mutl);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Amigos</div>'+
-      '<div class="son-chips">'+fchips+'</div>';
-  }
-  el.innerHTML=
-    '<div style="padding:20px 20px 0">'+
-    '<div class="sdiv"><div class="sdiv-t">Soñadora · Simulación del Torneo</div><div class="sdiv-l"></div></div>'+
-    '<div style="font-size:12px;color:var(--mutl);margin:6px 0 10px">'+
-    'Selecciona modelos y/o amigos para simular el torneo. Los picks de amigos tienen prioridad; '+
-    'partidos sin pick usan el modelo de respaldo.</div>'+
-    '<div style="font-size:10px;color:var(--mutl);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Modelos</div>'+
-    '<div class="son-chips">'+chips+'</div>'+
-    friendSection+
-    '</div>'+
-    '<div id="son-result" style="padding:8px 20px 28px"><div class="son-empty">Selecciona al menos un modelo o amigo para ver la simulación.</div></div>';
-}
-function _sonToggle(btn){
-  btn.classList.toggle('active');
-  _sonRender();
-}
-function _sonRender(){
-  var selModels=Array.from(document.querySelectorAll('.son-chip[data-mid].active')).map(function(b){return b.dataset.mid;});
-  var selFriends=Array.from(document.querySelectorAll('.son-chip[data-fid].active')).map(function(b){return b.dataset.fid;});
-  var el=document.getElementById('son-result');
-  if(!selModels.length&&!selFriends.length){el.innerHTML='<div class="son-empty">Selecciona al menos un modelo o amigo para ver la simulación.</div>';return;}
-  var friendPickMap={};
-  if(selFriends.length&&DATA.friends){
-    selFriends.forEach(function(fid){
-      var f=DATA.friends.find(function(x){return x.id===fid;});
-      if(f&&f.picks) Object.keys(f.picks).forEach(function(k){if(!friendPickMap[k]) friendPickMap[k]=f.picks[k];});
-    });
-  }
-  var friendOnlyMode=(selModels.length===0&&selFriends.length>0);
-  var sim;
-  if(friendOnlyMode){
-    var totalPicks=Object.keys(friendPickMap).length;
-    if(totalPicks===0){
-      el.innerHTML='<div class="son-empty">'+
-        (selFriends.length===1?'Este amigo':'Estos amigos')+
-        ' aún no ha registrado ningún pronóstico.</div>';
-      return;
-    }
-    sim=runSonFriendSimulation(friendPickMap);
-  } else {
-    sim=runSonSimulation(selModels,friendPickMap);
-  }
-  var html=sim.incomplete?'':'<div class="son-champion"><div class="son-champ-label">🏆 Campeón Simulado</div><div class="son-champ-name">'+esc(sim.champion)+'</div></div>';
-  // Grupos
-  var groupKeys=Object.keys(sim.standings).sort();
-  if(groupKeys.length){
-  html+='<div class="sdiv"><div class="sdiv-t">Fase de Grupos</div><div class="sdiv-l"></div></div>';
-  html+='<div class="son-groups">';
-  groupKeys.forEach(function(g){
-    html+='<div class="son-group"><div class="son-g-hd">GRUPO '+g+'</div>';
-    sim.standings[g].forEach(function(t,i){
-      var isT3=sim.thirds.findIndex(function(q){return q.team===t.team;})>=0;
-      var cls=i<2?'q':(isT3?'t3':'out');
-      var icon=i===0?'①':i===1?'②':(isT3?'✦':'·');
-      html+='<div class="son-g-row '+cls+'">'+
-        '<span class="son-g-pos">'+icon+'</span>'+
-        '<span class="son-g-team" title="'+esc(t.team)+'">'+esc(t.team)+'</span>'+
-        '<span class="son-g-pts">'+t.pts+'p</span>'+
-        '<span class="son-g-gd">'+(t.gd>=0?'+':'')+t.gd+'</span></div>';
-    });
-    html+='</div>';
-  });
-  html+='</div>';
-  } // end groupKeys.length
-  // Eliminatorias
-  if(sim.incomplete){
-    html+='<div style="margin-top:16px;padding:12px 16px;background:var(--pan2);border:1px solid var(--brd);border-radius:var(--rmd);font-size:12px;color:var(--mutl)">'+
-      'ℹ️ &nbsp;Las fases eliminatorias no están disponibles hasta que se completen los pronósticos de toda la fase de grupos ('+
-      Object.keys(sim.standings).length+'/12 grupos con datos).</div>';
-  } else {
-    [{id:'r32',label:'Dieciseisavos de Final'},{id:'r16',label:'Octavos de Final'},
-     {id:'qf',label:'Cuartos de Final'},{id:'sf',label:'Semifinales'},
-     {id:'third',label:'Tercer Puesto'},{id:'final',label:'FINAL'}
-    ].forEach(function(ph){
-      var pms=DATA.matches.filter(function(m){return m.phase===ph.id;});
-      if(!pms.length) return;
-      html+='<div class="sdiv" style="margin-top:16px"><div class="sdiv-t">'+ph.label+'</div><div class="sdiv-l"></div></div>';
-      html+='<div class="son-bracket">';
-      pms.forEach(function(m){
-        var r=sim.results[m.id]; if(!r) return;
-        var hw=r.out==='H',aw=r.out==='A';
-        html+='<div class="son-match">'+
-          '<span class="son-m-n">'+m.num+'</span>'+
-          '<span class="son-m-t'+(hw?' win':'')+'">'+esc(r.homeTeam||m.home)+'</span>'+
-          '<span class="son-m-sc">'+r.hg+'-'+r.ag+'</span>'+
-          '<span class="son-m-t r'+(aw?' win':'')+'">'+esc(r.awayTeam||m.away)+'</span>'+
-          '</div>';
-      });
-      html+='</div>';
-    });
-  }
-  el.innerHTML=html;
-}
 </script>
 </body>
 </html>

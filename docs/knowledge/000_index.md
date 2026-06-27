@@ -53,3 +53,4 @@ Esta carpeta guarda conocimientos acumulados del proyecto. Cada nota se numera i
 - [039 - Handoff dashboard y operacion 2026 live](039_handoff_dashboard_y_operacion_2026_live.md)
 - [040 - Publicacion publica, amigos visibles y fuentes privadas](040_publicacion_publica_dashboard_privado.md)
 - [041 - GitHub Pages y automatizacion diaria](041_pages_y_automatizacion_diaria.md)
+- [042 - Handoff: segundo repositorio para fases eliminatorias](042_handoff_knockout_repo.md)

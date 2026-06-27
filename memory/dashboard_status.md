@@ -97,7 +97,7 @@ Default generation includes friend picks:
 - `python scripts\generate_dashboard.py`
 - writes `docs/index.html`
 - loads `data/ui/friends_quinielas.json` when present
-- keeps `vs` and `Soñadora` visible online and locally
+- keeps `vs` visible online and locally (Soñadora removed 2026-06-27)
 
 Friend-free generation is explicit:
 

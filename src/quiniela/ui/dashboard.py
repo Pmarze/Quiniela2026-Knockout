@@ -745,7 +745,7 @@ def _build_unified_payload(
         "friends":  friends or [],
         "access": {
             "public_mode": bool(public_mode),
-            "private_sections": ["amigos", "sonadora"],
+            "private_sections": ["amigos"],
             "private_hash": (private_access_hash or "").strip(),
         },
         "scoring":  {

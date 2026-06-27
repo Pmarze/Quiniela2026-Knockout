@@ -53,7 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--private-access-hash",
         default=os.environ.get("QUINIELA_PRIVATE_ACCESS_HASH", ""),
-        help="Hash SHA-256 opcional para bloquear vs/Soñadora en builds privados.",
+        help="Hash SHA-256 opcional para bloquear secciones privadas en builds locales.",
     )
     parser.add_argument(
         "--scoring-config",

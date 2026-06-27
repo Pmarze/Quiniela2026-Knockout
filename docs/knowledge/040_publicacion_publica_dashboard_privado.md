@@ -8,7 +8,7 @@ El repositorio se prepara para publicarse con el dashboard completo:
 
 - `docs/index.html` puede incluir `DATA.friends`.
 - `data/ui/friends_quinielas.json` puede versionarse porque contiene picks de comparacion aceptados como publicos.
-- `vs` y `Sonadora` deben verse igual en local y en la pagina web.
+- `vs` debe verse igual en local y en la pagina web.
 - El enlace/ID de Google Sheets sigue siendo privado y no debe versionarse.
 
 ## Google Sheets de amigos
@@ -43,7 +43,7 @@ python scripts\check_public_dashboard.py docs\index.html
 Resultado esperado:
 
 - `docs/index.html` incluye amigos si existe `data/ui/friends_quinielas.json`.
-- `vs` y `Sonadora` estan disponibles en web y local.
+- `vs` esta disponible en web y local.
 - `scripts/check_public_dashboard.py` valida que no haya URL de Google Sheets, tokens, llaves privadas ni rutas locales.
 
 Version sin amigos, solo si se pide explicitamente:

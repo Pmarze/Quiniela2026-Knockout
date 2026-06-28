@@ -62,6 +62,8 @@ data/ui/*
 !data/ui/.gitkeep
 !data/ui/friends_quinielas.json
 !data/ui/prediction_overrides.json
+!data/ui/scoring_*/
+!data/ui/scoring_*/prediction_overrides.json
 
 # Generated dashboards and reports. Rebuild with scripts/generate_*.py.
 outputs/*

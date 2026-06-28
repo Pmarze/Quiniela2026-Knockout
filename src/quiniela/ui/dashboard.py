@@ -711,8 +711,11 @@ def _build_unified_payload(
             alt_models: dict[str, Any] = {}
             for sid, ov in alt_matches.items():
                 alt_qpick = ov.get("quiniela_pick") or {}
+                raw_model_preds = ov.get("model_predictions") or []
+                if not alt_qpick.get("score") and not raw_model_preds:
+                    continue
                 alt_model_preds = []
-                for amp in ov.get("model_predictions", []):
+                for amp in raw_model_preds:
                     alt_model_preds.append({
                         "id":    amp.get("model_id", ""),
                         "score": amp.get("score") or "—",

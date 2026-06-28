@@ -1245,6 +1245,99 @@ function buildModelGoalHistogram(m, models){
   html += '</div></div></div>';
   return html;
 }
+function buildKnockoutPanel(m){
+  var ko = m.knockout;
+  if(!ko || !ko.consensus) return '';
+  var c = ko.consensus;
+  var pA = c.consensus_p_a_advances || 0;
+  var pB = c.consensus_p_b_advances || 0;
+  var pET = c.avg_p_et || 0;
+  var pPens = c.avg_p_pens || 0;
+  var nET = c.n_predict_et || 0;
+  var nPens = c.n_predict_penalties || 0;
+  var nMod = c.n_models || 1;
+  var pathLabel = {regulation:'90 min',et:'Tiempo extra',penalties:'Penales'};
+  var cPath = pathLabel[c.consensus_path] || c.consensus_path;
+
+  function pctBar(pLeft, pMid, pRight, lbl, lblL, lblR, colL, colR){
+    var wL = Math.max(2, Math.round(pLeft*100));
+    var wM = Math.max(1, Math.round(pMid*100));
+    var wR = Math.max(2, Math.round(pRight*100));
+    var tot = wL+wM+wR; wL=Math.round(wL/tot*100); wM=Math.round(wM/tot*100); wR=100-wL-wM;
+    return '<div style="margin:4px 0 2px;font-size:9px;font-weight:600;color:var(--mut)">'+lbl+'</div>'+
+      '<div style="display:flex;height:18px;border-radius:4px;overflow:hidden;font-size:8px;font-weight:700;line-height:18px;text-align:center">'+
+      '<div style="width:'+wL+'%;background:'+colL+';color:#fff" title="'+lblL+': '+(pLeft*100).toFixed(1)+'%">'+(pLeft>=.05?(pLeft*100).toFixed(0)+'%':'')+'</div>'+
+      '<div style="width:'+wM+'%;background:var(--mut);color:#fff">'+(pMid>=.05?(pMid*100).toFixed(0)+'%':'')+'</div>'+
+      '<div style="width:'+wR+'%;background:'+colR+';color:#fff" title="'+lblR+': '+(pRight*100).toFixed(1)+'%">'+(pRight>=.05?(pRight*100).toFixed(0)+'%':'')+'</div>'+
+      '</div>';
+  }
+
+  var p90A = 1-pET-0; // approx from consensus; use per_model avg
+  var avg90A=0, avg90B=0, avgETA=0, avgETB=0;
+  var pm = ko.per_model || [];
+  pm.forEach(function(r){ avg90A+=r.p_a_wins_90||0; avg90B+=r.p_b_wins_90||0; avgETA+=r.p_a_wins_et||0; avgETB+=r.p_b_wins_et||0; });
+  if(pm.length){ avg90A/=pm.length; avg90B/=pm.length; avgETA/=pm.length; avgETB/=pm.length; }
+
+  var html = '<div class="chart-card" style="grid-column:1/-1">';
+  html += '<div class="chart-title" style="display:flex;align-items:center;gap:6px">'+
+    '<span style="font-size:14px">&#9917;</span> Resolución Eliminatoria'+
+    '<span style="font-size:9px;color:var(--mut);font-weight:400">'+nMod+' modelos</span></div>';
+
+  html += pctBar(avg90A, pET, avg90B, '90 Minutos', m.home, m.away, 'var(--blu)', 'var(--cor)');
+
+  if(pET >= 0.05){
+    var pETonly = pET - pPens;
+    html += pctBar(avgETA, pPens/Math.max(pET,.01), avgETB,
+      'Tiempo Extra (P='+( pET*100).toFixed(0)+'%)', m.home, m.away, 'var(--teal)', '#c0392b');
+  }
+
+  if(pPens >= 0.03){
+    html += '<div style="margin:4px 0 2px;font-size:9px;font-weight:600;color:var(--mut)">Penales (P='+(pPens*100).toFixed(0)+'%)</div>';
+    html += '<div style="display:flex;height:14px;border-radius:3px;overflow:hidden;font-size:8px;font-weight:700;line-height:14px;text-align:center">'+
+      '<div style="width:50%;background:var(--blu);color:#fff">50%</div>'+
+      '<div style="width:50%;background:var(--cor);color:#fff">50%</div></div>';
+    html += '<div style="font-size:8px;color:var(--mut);text-align:center;margin-top:1px">Tasa conv. simétrica por defecto</div>';
+  }
+
+  html += '<div style="margin:8px 0 2px;font-size:9px;font-weight:600;color:var(--mut)">Probabilidad de avanzar</div>';
+  var wA = Math.max(5, Math.round(pA*100));
+  var wB = 100-wA;
+  html += '<div style="display:flex;height:22px;border-radius:4px;overflow:hidden;font-size:10px;font-weight:800;line-height:22px;text-align:center">'+
+    '<div style="width:'+wA+'%;background:var(--blu);color:#fff">'+(pA*100).toFixed(0)+'% '+m.home+'</div>'+
+    '<div style="width:'+wB+'%;background:var(--cor);color:#fff">'+m.away+' '+(pB*100).toFixed(0)+'%</div></div>';
+
+  html += '<div style="font-size:9px;color:var(--mut);margin-top:4px">Camino más probable: <strong>'+cPath+'</strong> · '+
+    nET+'/'+nMod+' predicen ET · '+nPens+'/'+nMod+' predicen penales</div>';
+
+  // Per-model consensus table
+  if(pm.length > 0){
+    html += '<details style="margin-top:6px"><summary style="font-size:9px;cursor:pointer;color:var(--teal);font-weight:600">Detalle por modelo</summary>';
+    html += '<table style="width:100%;font-size:8px;border-collapse:collapse;margin-top:4px"><thead><tr style="border-bottom:1px solid var(--bd)">'+
+      '<th style="text-align:left;padding:2px 4px">Modelo</th>'+
+      '<th style="text-align:right;padding:2px 4px">P(ET)</th>'+
+      '<th style="text-align:right;padding:2px 4px">P(Pen)</th>'+
+      '<th style="text-align:right;padding:2px 4px">Avanza '+m.home+'</th>'+
+      '<th style="text-align:right;padding:2px 4px">Avanza '+m.away+'</th>'+
+      '<th style="text-align:left;padding:2px 4px">Camino</th></tr></thead><tbody>';
+    pm.forEach(function(r){
+      var path = r.most_likely_path || '';
+      var pathStr = path.replace(/_[ab]$/,'');
+      pathStr = pathLabel[pathStr] || pathStr;
+      var who = path.endsWith('_a') ? m.home : m.away;
+      html += '<tr style="border-bottom:1px solid var(--bd2)">'+
+        '<td style="padding:2px 4px">'+modelDisplayName(r.model_id)+'</td>'+
+        '<td style="text-align:right;padding:2px 4px">'+(r.p_reaches_et*100).toFixed(0)+'%</td>'+
+        '<td style="text-align:right;padding:2px 4px">'+(r.p_reaches_penalties*100).toFixed(0)+'%</td>'+
+        '<td style="text-align:right;padding:2px 4px;color:var(--blu)">'+(r.p_a_advances*100).toFixed(0)+'%</td>'+
+        '<td style="text-align:right;padding:2px 4px;color:var(--cor)">'+(r.p_b_advances*100).toFixed(0)+'%</td>'+
+        '<td style="padding:2px 4px">'+pathStr+' ('+who+')</td></tr>';
+    });
+    html += '</tbody></table></details>';
+  }
+
+  html += '</div>';
+  return html;
+}
 function buildStatsSheet(m){
   var allModels = sortedModels(m.models || [], true);
   var models = _hoverTop5
@@ -1254,6 +1347,7 @@ function buildStatsSheet(m){
     ? '<div style="font-size:9px;color:var(--teal);padding:2px 0 6px;font-weight:600">Filtrado: top 5 modelos por rendimiento combinado</div>'
     : '';
   return filterNote+'<div class="chart-grid">'+
+    buildKnockoutPanel(m)+
     buildScatterChart(m, models)+
     buildHeatmapChart(m, models)+
     buildGoalStatsCharts(m)+
@@ -1616,7 +1710,7 @@ function buildGoalStatsCharts(m){
     catMap[key].teamGoals.push(g.a);
   }
 
-  var phaseLabels = {group:'Fase de Grupos',r16:'Octavos',qf:'Cuartos',sf:'Semifinal','3rd':'3er Lugar',final:'Final'};
+  var phaseLabels = {group:'Fase de Grupos',r32:'Dieciseisavos',r16:'Octavos',qf:'Cuartos',sf:'Semifinal','3rd':'3er Lugar',final:'Final'};
 
   // Infer matchday per group
   var groupIndexes = {};
@@ -3030,7 +3124,7 @@ function renderValidacion(){
     '<div class="pred-filters">'+
     buildMs('year','Año', bk.years.map(function(y){ return {v:String(y),l:String(y)}; }))+
     buildMs('model','Modelo', bk.metrics.map(function(m){ return {v:m.model,l:m.model.replace(/_/g,' ')}; }))+
-    buildMs('phase','Fase',[{v:'group',l:'Grupos'},{v:'r16',l:'Octavos'},{v:'qf',l:'Cuartos'},{v:'sf',l:'Semifinales'},{v:'final',l:'Final'}])+
+    buildMs('phase','Fase',[{v:'group',l:'Grupos'},{v:'r32',l:'Dieciseisavos'},{v:'r16',l:'Octavos'},{v:'qf',l:'Cuartos'},{v:'sf',l:'Semifinales'},{v:'final',l:'Final'}])+
     '<span style="font-size:11px;color:var(--mut)">Pasa el mouse sobre una fila para ver detalle</span>'+
     '</div>'+
     '<div class="pred-wrap"><table class="pred-tbl"><thead><tr>'+

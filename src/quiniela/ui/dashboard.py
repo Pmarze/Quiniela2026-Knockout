@@ -37,12 +37,15 @@ _FAMILY_BY_MODEL_ID: dict[str, dict[str, str]] = {
 }
 
 _STAGE_TO_PHASE: dict[str, str] = {
-    "group":       "group",
-    "round_of_16": "r16",
-    "quarter":     "qf",
-    "semi":        "sf",
-    "final":       "final",
-    "third_place": "3rd",
+    "group":        "group",
+    "round_of_32":  "r32",
+    "round_of_16":  "r16",
+    "quarter":      "qf",
+    "quarter_final": "qf",
+    "semi":         "sf",
+    "semi_final":   "sf",
+    "final":        "final",
+    "third_place":  "3rd",
 }
 
 _FRIENDLY_PREP_WINDOW_START = "2026-06-01"
@@ -660,6 +663,7 @@ def _build_unified_payload(
                 "prob":  qprob,
             },
             "frozen": bool(overrides.get("frozen_pick", False)),
+            "knockout": overrides.get("knockout_resolution"),
             "models": models_out,
             "friendlies": {
                 "home": home_friendlies.get("matches", []),

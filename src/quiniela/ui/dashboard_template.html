@@ -2659,8 +2659,9 @@ function renderHome(){
     'Modelo activo: <strong style="color:var(--teal)">'+modelDisplayName(_cachedBestModelId())+'</strong></div>'+
     '</div>'+
 
-    /* === DERECHA: Próximos partidos === */
-    '<div style="background:var(--pan);border:1px solid var(--brd);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--ssm)">'+
+    /* === DERECHA: Próximos partidos + Cuadro eliminatorio === */
+    '<div>'+
+    '<div style="background:var(--pan);border:1px solid var(--brd);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--ssm);margin-bottom:14px">'+
     '<div style="background:var(--teal);padding:10px 14px;display:flex;align-items:center;justify-content:space-between">'+
     '<span style="font-family:var(--fc);font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:white">Próximos Partidos</span>'+
     '<span style="font-size:10px;color:rgba(255,255,255,.85)">'+(_nextDates.length>0?_nextDates.join(' · '):'sin partidos')+'</span>'+
@@ -2671,9 +2672,11 @@ function renderHome(){
     '<span><span style="color:var(--teal);font-weight:700">■</span> Pick del modelo</span>'+
     '</div></div>'+
 
+    buildKnockoutBracket()+
+
     '</div>'+
 
-    buildKnockoutBracket()+
+    '</div>'+
 
     '';
 

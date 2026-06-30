@@ -160,7 +160,7 @@ scripts/security_scan_publish.py      # Scan de seguridad
 ### Entorno
 ```
 Conda env: quiniela2026
-Python: C:\Users\pablo\.conda\envs\quiniela2026\python.exe
+Python: (conda env quiniela2026 python interpreter)
 Dependencias clave: torch, numpy, scipy, pandas, pyyaml, openpyxl
 ```
 

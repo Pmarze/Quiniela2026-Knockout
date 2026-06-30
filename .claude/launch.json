@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "dashboard",
-      "runtimeExecutable": "python",
+      "runtimeExecutable": "C:\\Users\\pablo\\.conda\\envs\\quiniela2026\\python.exe",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "docs"],
       "port": 8765
     }

@@ -32,8 +32,8 @@ git lfs install
 ## 2. Clonar
 
 ```powershell
-git clone https://github.com/Pmarze/Quiniela2026.git
-cd quiniela2026
+git clone https://github.com/Pmarze/Quiniela2026-Knockout.git
+cd Quiniela2026-Knockout
 git lfs pull
 ```
 
@@ -182,7 +182,7 @@ Archivos no compartibles:
 La pagina publica vive en:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 El dashboard publicado es:

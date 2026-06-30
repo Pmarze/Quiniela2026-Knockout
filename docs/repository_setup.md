@@ -120,7 +120,7 @@ https://github.com/Pmarze/Quiniela2026
 La pagina publicada vive en:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 La seccion siguiente queda como referencia historica si se recrea el repo desde cero.

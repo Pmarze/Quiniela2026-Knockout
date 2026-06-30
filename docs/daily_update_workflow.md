@@ -278,7 +278,7 @@ GitHub Pages esta habilitado para el repo con `build_type=workflow`.
 URL publica:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 Ultima verificacion de publicacion:
@@ -304,7 +304,7 @@ Create Pages site failed. Resource not accessible by integration
 revisar que Pages este habilitado como `workflow`. Con GitHub CLI autenticado y permisos de admin:
 
 ```powershell
-gh api -X POST repos/Pmarze/Quiniela2026/pages -f build_type=workflow
+gh api -X POST repos/Pmarze/Quiniela2026-Knockout/pages -f build_type=workflow
 ```
 
 Si ya existe el sitio, GitHub puede responder conflicto; en ese caso solo revisar/actualizar desde Settings -> Pages o con API.
@@ -364,7 +364,7 @@ Despues del push a `main`, confirmar deploy:
 ```powershell
 gh run list --workflow "Deploy Dashboard to GitHub Pages" --branch main --limit 3
 gh run watch <RUN_ID> --exit-status
-$response = Invoke-WebRequest -Uri 'https://pmarze.github.io/Quiniela2026/' -UseBasicParsing
+$response = Invoke-WebRequest -Uri 'https://pmarze.github.io/Quiniela2026-Knockout/' -UseBasicParsing
 $response.StatusCode
 ```
 

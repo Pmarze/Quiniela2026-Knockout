@@ -15,7 +15,7 @@ The local dashboard is implemented as an offline HTML artifact generated from Py
 Public URL:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 Primary generated outputs:
@@ -122,7 +122,7 @@ Latest validation in this context:
 - `python scripts\check_public_dashboard.py docs\index.html` -> OK, 104 matches, 5 friends.
 - `python scripts\security_scan_publish.py` -> OK, 220 files scanned.
 - GitHub Pages deploy at commit `26d76ea` -> success.
-- Public HTTP check for `https://pmarze.github.io/Quiniela2026/` -> `200`.
+- Public HTTP check for `https://pmarze.github.io/Quiniela2026-Knockout/` -> `200`.
 
 Daily automation details are in:
 

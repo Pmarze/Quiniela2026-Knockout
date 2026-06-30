@@ -1,6 +1,6 @@
-# Quiniela2026
+# Quiniela2026-Knockout
 
-Proyecto para estimar pronosticos de quiniela del Mundial 2026 con modelos modulares de goles, backtesting historico, simulacion Monte Carlo, redes neuronales y dashboards publicos/locales.
+Proyecto para estimar pronosticos de quiniela del Mundial 2026 con modelos modulares de goles, backtesting historico, simulacion Monte Carlo, redes neuronales y dashboards publicos/locales. Este repositorio extiende el proyecto base con una capa de eliminatorias (knockout) que ajusta modelos para fases de mata-mata, incluyendo tiempo extra y penaltis.
 
 El contexto general vive en [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md). La documentacion tecnica vive en [docs/](docs/), y las decisiones incrementales en [docs/knowledge/000_index.md](docs/knowledge/000_index.md).
 
@@ -17,6 +17,9 @@ Implementado:
 - Ensambles ponderados con optimizacion por backtest 2018/2022.
 - Dashboard publico de seguimiento del torneo, incluyendo comparacion de quinielas de amigos.
 - Dashboard local de validacion historica.
+- Capa de knockout: ajustes de goles, inflacion de empates, resolucion de tiempo extra y penaltis.
+- Cuadro eliminatorio circular interactivo con banderas (R32 → Final).
+- Perfiles de puntuacion alternativos (5-3-1 clasica, 3-1-0 simple).
 
 Modelo de quiniela activo por defecto:
 
@@ -51,7 +54,7 @@ python scripts\generate_validation_dashboard.py
 Dashboard publico:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 El dashboard publico se genera en:

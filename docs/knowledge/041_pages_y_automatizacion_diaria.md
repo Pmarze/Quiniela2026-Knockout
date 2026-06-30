@@ -9,7 +9,7 @@ El repositorio ya es publico y la pagina de GitHub Pages quedo habilitada y veri
 URL publica:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 Estado verificado:
@@ -42,7 +42,7 @@ Create Pages site failed. Resource not accessible by integration
 Se habilito Pages con GitHub CLI autenticado:
 
 ```powershell
-gh api -X POST repos/Pmarze/Quiniela2026/pages -f build_type=workflow
+gh api -X POST repos/Pmarze/Quiniela2026-Knockout/pages -f build_type=workflow
 ```
 
 Despues se lanzo el deploy manual:
@@ -149,7 +149,7 @@ Validar deploy:
 ```powershell
 gh run list --workflow "Deploy Dashboard to GitHub Pages" --branch main --limit 3
 gh run watch <RUN_ID> --exit-status
-$response = Invoke-WebRequest -Uri 'https://pmarze.github.io/Quiniela2026/' -UseBasicParsing
+$response = Invoke-WebRequest -Uri 'https://pmarze.github.io/Quiniela2026-Knockout/' -UseBasicParsing
 $response.StatusCode
 ```
 

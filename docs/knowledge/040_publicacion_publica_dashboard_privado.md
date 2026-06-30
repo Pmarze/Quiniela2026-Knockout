@@ -75,7 +75,7 @@ GitHub Pages quedo habilitado con `build_type=workflow`.
 URL publica:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 Ultima publicacion verificada:

@@ -6,7 +6,7 @@
 Key current context:
 
 - Public repo/dashboard publication is allowed.
-- GitHub Pages is live at `https://pmarze.github.io/Quiniela2026/`.
+- GitHub Pages is live at `https://pmarze.github.io/Quiniela2026-Knockout/`.
 - Friend picks in `data/ui/friends_quinielas.json` are allowed to be public.
 - Google Sheets source link/ID and other credentials stay local/private.
 - Read `docs/knowledge/040_publicacion_publica_dashboard_privado.md` before publication/security changes.

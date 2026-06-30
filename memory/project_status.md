@@ -23,7 +23,7 @@ Scoring priority:
 The repo is public and the dashboard is live on GitHub Pages:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 Versioned:

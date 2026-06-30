@@ -610,6 +610,24 @@ main{margin-top:var(--navh);}
 .home-fr-sel-lnk{font-size:11px;text-transform:none;letter-spacing:0;color:var(--teal);cursor:pointer;font-weight:500;}
 .home-fr-sel-lnk:hover{text-decoration:underline;}
 
+/* KNOCKOUT BRACKET */
+.ko-bracket{background:var(--pan);border:1px solid var(--brd);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--ssm);margin-bottom:20px;}
+.ko-bracket-hd{background:var(--burg);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.ko-bracket-hd span{font-family:var(--fc);font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:white;}
+.ko-bracket svg{display:block;margin:0 auto;}
+.ko-bracket svg text{font-family:var(--fc);fill:var(--ink);pointer-events:none;}
+.ko-bracket svg .bk-line{stroke:var(--brd);stroke-width:1.2;fill:none;}
+.ko-bracket svg .bk-line-played{stroke:var(--teal);stroke-width:2;fill:none;}
+.ko-bracket svg .bk-node{cursor:pointer;}
+.ko-bracket svg .bk-node:hover circle{stroke-width:3;filter:brightness(1.2);}
+.ko-bracket svg .bk-circ{fill:var(--pan2);stroke:var(--brd);stroke-width:1.5;}
+.ko-bracket svg .bk-circ-played{fill:var(--pan2);stroke:var(--teal);stroke-width:2;}
+.ko-bracket svg .bk-circ-winner{fill:var(--pan2);stroke:var(--grn);stroke-width:2.5;}
+.ko-bracket svg .bk-circ-loser{fill:var(--pan2);stroke:var(--brd);stroke-width:1.5;}
+.ko-bracket svg .bk-label{font-size:7px;fill:var(--mut);text-anchor:middle;font-weight:600;letter-spacing:.3px;}
+.ko-bracket svg .bk-trophy{font-size:28px;text-anchor:middle;dominant-baseline:central;}
+.ko-bracket svg .bk-abbr{font-weight:700;text-anchor:middle;pointer-events:none;}
+
 /* SCORING SELECTOR */
 .scoring-sel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
   color:rgba(255,255,255,.85);border-radius:var(--rsm);padding:5px 8px;cursor:pointer;font-size:11px;font-weight:600;
@@ -2387,6 +2405,121 @@ function showCurrentModelHover(modelId, mode, el){
   document.getElementById('val-hover').classList.add('vis');
 }
 
+/* ══════════════════ KNOCKOUT BRACKET BUILDER ══════════════════ */
+function buildKnockoutBracket(){
+  var mMap={};DATA.matches.forEach(function(m){mMap[m.num]=m;});
+  if(!mMap[73])return '';
+  var FC={'South Africa':'za','Canada':'ca','Germany':'de','Paraguay':'py',
+    'Netherlands':'nl','Morocco':'ma','Brazil':'br','Japan':'jp',
+    'France':'fr','Sweden':'se','Ivory Coast':'ci','Norway':'no',
+    'Mexico':'mx','Ecuador':'ec','England':'gb-eng',
+    'Democratic Republic of the Congo':'cd','DR Congo':'cd','United States':'us',
+    'Bosnia and Herzegovina':'ba','Belgium':'be','Senegal':'sn',
+    'Portugal':'pt','Croatia':'hr','Spain':'es','Austria':'at',
+    'Switzerland':'ch','Algeria':'dz','Argentina':'ar',
+    'Cape Verde':'cv','Colombia':'co','Ghana':'gh',
+    'Australia':'au','Egypt':'eg'};
+  var AB={'South Africa':'RSA','Canada':'CAN','Germany':'GER','Paraguay':'PAR',
+    'Netherlands':'NED','Morocco':'MAR','Brazil':'BRA','Japan':'JPN',
+    'France':'FRA','Sweden':'SWE','Ivory Coast':'CIV','Norway':'NOR',
+    'Mexico':'MEX','Ecuador':'ECU','England':'ENG',
+    'Democratic Republic of the Congo':'COD','DR Congo':'COD','United States':'USA',
+    'Bosnia and Herzegovina':'BIH','Belgium':'BEL','Senegal':'SEN',
+    'Portugal':'POR','Croatia':'CRO','Spain':'ESP','Austria':'AUT',
+    'Switzerland':'SUI','Algeria':'ALG','Argentina':'ARG',
+    'Cape Verde':'CPV','Colombia':'COL','Ghana':'GHA',
+    'Australia':'AUS','Egypt':'EGY'};
+  function ab(n){return AB[n]||(n||'').slice(0,3).toUpperCase();}
+  function flagUrl(n){var c=FC[n];return c?'https://flagcdn.com/w80/'+c+'.png':'';}
+  var MR=[
+    [74,77,73,75,83,84,81,82,76,78,79,80,86,88,85,87],
+    [89,90,93,94,91,92,95,96],
+    [97,98,99,100],
+    [101,102],
+    [104]
+  ];
+  var ADV={74:[89,'h'],77:[89,'a'],73:[90,'h'],75:[90,'a'],83:[93,'h'],84:[93,'a'],
+    81:[94,'h'],82:[94,'a'],76:[91,'h'],78:[91,'a'],79:[92,'h'],80:[92,'a'],
+    86:[95,'h'],88:[95,'a'],85:[96,'h'],87:[96,'a'],
+    89:[97,'h'],90:[97,'a'],93:[98,'h'],94:[98,'a'],
+    91:[99,'h'],92:[99,'a'],95:[100,'h'],96:[100,'a'],
+    97:[101,'h'],98:[101,'a'],99:[102,'h'],100:[102,'a'],
+    101:[104,'h'],102:[104,'a']};
+  var WC={};
+  function gw(mn){
+    if(WC[mn]!==undefined)return WC[mn];
+    var m=mMap[mn];if(!m||!m.result){WC[mn]=null;return null;}
+    var a=ADV[mn];
+    if(a){var nx=mMap[a[0]];if(nx){var t=a[1]==='h'?nx.home:nx.away;
+      if(t&&t.indexOf('Winner')<0&&t.indexOf('Loser')<0){WC[mn]=t;return t;}}}
+    var p=m.result.split('-'),h=+p[0],w=+p[1];
+    if(h>w){WC[mn]=m.home;return m.home;}
+    if(w>h){WC[mn]=m.away;return m.away;}
+    WC[mn]=null;return null;
+  }
+  var SZ=540,CX=SZ/2,P2=Math.PI*2;
+  var RR=[226,182,138,94,52],NR=[13,15,17,19,21];
+  var NC=[32,16,8,4,2];
+  var AG=[];
+  var a0=[];for(var i=0;i<32;i++)a0.push(i*P2/32);AG.push(a0);
+  for(var L=1;L<5;L++){var aL=[];for(var j=0;j<NC[L];j++)aL.push((AG[L-1][2*j]+AG[L-1][2*j+1])/2);AG.push(aL);}
+  function xy(r,a){return[CX+r*Math.sin(a),CX-r*Math.cos(a)];}
+  function ff(v){return v.toFixed(1);}
+  var TD=[];
+  var t0=[];
+  for(var i=0;i<32;i++){var mi=Math.floor(i/2),mn=MR[0][mi],m=mMap[mn]||{};
+    t0.push({n:(i%2===0)?(m.home||''):(m.away||''),mn:mn});}
+  TD.push(t0);
+  for(var L=1;L<5;L++){var tL=[];
+    for(var j=0;j<NC[L];j++){var w=gw(MR[L-1][j]);
+      tL.push({n:w||'',mn:MR[L][Math.floor(j/2)],ht:!!w});}
+    TD.push(tL);}
+  var sv=[];
+  sv.push('<svg viewBox="0 0 '+SZ+' '+SZ+'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="width:100%;max-width:500px">');
+  sv.push('<defs><clipPath id="bk-clip" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath></defs>');
+  for(var L=0;L<4;L++){
+    for(var j=0;j<NC[L+1];j++){
+      var cA=AG[L][2*j],cB=AG[L][2*j+1];
+      var rO=RR[L]-NR[L],rI=RR[L+1]+NR[L+1],rM=(RR[L]+RR[L+1])/2;
+      var pA=xy(rO,cA),pB=xy(rO,cB),pM=xy(rM,(cA+cB)/2),pI=xy(rI,AG[L+1][j]);
+      var cl=TD[L+1][j].ht?'bk-line-played':'bk-line';
+      sv.push('<line x1="'+ff(pA[0])+'" y1="'+ff(pA[1])+'" x2="'+ff(pM[0])+'" y2="'+ff(pM[1])+'" class="'+cl+'"/>');
+      sv.push('<line x1="'+ff(pB[0])+'" y1="'+ff(pB[1])+'" x2="'+ff(pM[0])+'" y2="'+ff(pM[1])+'" class="'+cl+'"/>');
+      sv.push('<line x1="'+ff(pM[0])+'" y1="'+ff(pM[1])+'" x2="'+ff(pI[0])+'" y2="'+ff(pI[1])+'" class="'+cl+'"/>');
+    }
+  }
+  for(var L=0;L<5;L++){
+    for(var i=0;i<NC[L];i++){
+      var t=TD[L][i],p=xy(RR[L],AG[L][i]),r=NR[L];
+      var cls='bk-circ',isLoser=false;
+      if(L===0){
+        var w=gw(t.mn),pl=mMap[t.mn]&&mMap[t.mn].result;
+        if(pl){if(w===t.n)cls='bk-circ-winner';else if(w){cls='bk-circ-loser';isLoser=true;}}
+      }else if(t.ht){
+        var w2=t.mn?gw(t.mn):null,cm=mMap[t.mn];
+        if(cm&&cm.result){if(w2===t.n)cls='bk-circ-winner';else if(w2){cls='bk-circ-loser';isLoser=true;}else cls='bk-circ-played';}
+        else cls='bk-circ-played';
+      }
+      var mid=mMap[t.mn]?mMap[t.mn].id:null;
+      var fUrl=t.n?flagUrl(t.n):'';
+      sv.push('<g class="bk-node"'+(mid?' onclick="showHover('+mid+',this)"':'')+(isLoser?' style="opacity:.4"':'')+'>');
+      sv.push('<circle cx="'+ff(p[0])+'" cy="'+ff(p[1])+'" r="'+r+'" class="'+cls+'"/>');
+      if(fUrl){
+        var d=r*2;
+        sv.push('<image href="'+fUrl+'" x="'+ff(p[0]-r)+'" y="'+ff(p[1]-r)+'" width="'+d+'" height="'+d+'" clip-path="url(#bk-clip)" preserveAspectRatio="xMidYMid slice"/>');
+      } else if(t.n){
+        sv.push('<text x="'+ff(p[0])+'" y="'+ff(p[1]+r*0.35)+'" class="bk-abbr" style="font-size:'+(r-4)+'px;fill:var(--ink)">'+ab(t.n)+'</text>');
+      }
+      sv.push('</g>');
+    }
+  }
+  sv.push('<text x="'+CX+'" y="'+CX+'" class="bk-trophy">🏆</text>');
+  sv.push('</svg>');
+  return '<div class="ko-bracket">'+
+    '<div class="ko-bracket-hd"><span>Cuadro Eliminatorio</span><span style="font-size:10px;font-weight:400;opacity:.75">R32 → Final</span></div>'+
+    '<div style="padding:16px;display:flex;justify-content:center;background:var(--pan)">'+sv.join('')+'</div></div>';
+}
+
 /* ══════════════════ RENDER: INICIO ══════════════════ */
 function renderHome(){
   var el = document.getElementById('sec-home');
@@ -2539,6 +2672,8 @@ function renderHome(){
     '</div></div>'+
 
     '</div>'+
+
+    buildKnockoutBracket()+
 
     '';
 

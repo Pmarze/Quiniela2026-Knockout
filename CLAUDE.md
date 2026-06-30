@@ -66,7 +66,7 @@ No usar `python ...` a secas desde el Bash tool: resuelve al Python del sistema 
 La pagina publica vive en:
 
 ```text
-https://pmarze.github.io/Quiniela2026/
+https://pmarze.github.io/Quiniela2026-Knockout/
 ```
 
 El HTML publicado esta en:
@@ -168,7 +168,7 @@ gh run watch <RUN_ID> --exit-status
 Verificacion publica:
 
 ```powershell
-$response = Invoke-WebRequest -Uri 'https://pmarze.github.io/Quiniela2026/' -UseBasicParsing
+$response = Invoke-WebRequest -Uri 'https://pmarze.github.io/Quiniela2026-Knockout/' -UseBasicParsing
 $response.StatusCode
 ```
 

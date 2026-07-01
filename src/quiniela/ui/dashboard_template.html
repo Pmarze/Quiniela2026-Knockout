@@ -3248,11 +3248,12 @@ function buildCumulativeChart(){
 
 function renderValidacion(){
   var el = document.getElementById('sec-validacion');
-  var bk = DATA.backtest;
-  var bestMp   = bk.metrics.slice().sort(function(a,b){ return b.pts-a.pts; })[0];
-  var bestProb = bk.metrics.slice().sort(function(a,b){ return b.pts_prob-a.pts_prob; })[0];
+  var bk = DATA.backtest || {};
+  var hasBacktest = bk.metrics && bk.metrics.length > 0;
+  var bestMp   = hasBacktest ? bk.metrics.slice().sort(function(a,b){ return b.pts-a.pts; })[0] : null;
+  var bestProb = hasBacktest ? bk.metrics.slice().sort(function(a,b){ return b.pts_prob-a.pts_prob; })[0] : null;
   el.innerHTML =
-    '<div class="pg-hd"><div class="pg-title">Validación Histórica</div><div class="pg-sub">Backtest · '+bk.years.join(', ')+' · ID: '+bk.run_id+'</div></div>'+
+    '<div class="pg-hd"><div class="pg-title">Validación Histórica</div><div class="pg-sub">Backtest · '+(bk.years||[]).join(', ')+' · ID: '+(bk.run_id||'—')+'</div></div>'+
 
     '<div class="sdiv"><div class="sdiv-t">Torneo 2026 · Actual</div><div class="sdiv-l"></div></div>'+
     (function(){
@@ -3276,6 +3277,7 @@ function renderValidacion(){
         '</div>';
     })() +
 
+    (hasBacktest ? (
     '<div class="sdiv"><div class="sdiv-t">Ranking comparativo · Backtest histórico</div><div class="sdiv-l"></div></div>'+
     '<div class="krow">'+
     '<div class="kpi"><div class="kpi-l">Modelos</div><div class="kpi-v">'+bk.metrics.length+'</div></div>'+
@@ -3302,7 +3304,8 @@ function renderValidacion(){
     '<th>Partido</th><th>Año</th><th>Fase</th><th>Real</th><th>#</th>'+
     '<th style="background:rgba(201,150,14,.08)">Mejor Max Pts.</th><th style="background:rgba(201,150,14,.08)">Pts</th>'+
     '<th style="background:rgba(8,126,139,.06)">Mejor Más Probable</th><th style="background:rgba(8,126,139,.06)">Pts</th>'+
-    '<th>Prom.</th></tr></thead><tbody id="pred-tbody"></tbody></table></div></div>';
+    '<th>Prom.</th></tr></thead><tbody id="pred-tbody"></tbody></table></div></div>'
+    ) : '<div style="color:var(--mut);font-size:13px;margin:16px 0">Sin datos de backtest histórico. Ejecuta el backtest para generar métricas comparativas.</div>');
 }
 
 /* ══════════════════ RENDER: GUÍA ══════════════════ */

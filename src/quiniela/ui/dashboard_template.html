@@ -1266,16 +1266,49 @@ function buildModelGoalHistogram(m, models){
 function buildKnockoutPanel(m){
   var ko = m.knockout;
   if(!ko || !ko.consensus) return '';
-  var c = ko.consensus;
-  var pA = c.consensus_p_a_advances || 0;
-  var pB = c.consensus_p_b_advances || 0;
-  var pET = c.avg_p_et || 0;
-  var pPens = c.avg_p_pens || 0;
-  var nET = c.n_predict_et || 0;
-  var nPens = c.n_predict_penalties || 0;
-  var nMod = c.n_models || 1;
   var pathLabel = {regulation:'90 min',et:'Tiempo extra',penalties:'Penales'};
-  var cPath = pathLabel[c.consensus_path] || c.consensus_path;
+
+  var pm = ko.per_model || [];
+  if(_hoverTop5 && pm.length){
+    var top5ids = getTop5ModelIds();
+    pm = pm.filter(function(r){ return top5ids.indexOf(r.model_id)>=0; });
+  }
+
+  var nMod = pm.length || ko.consensus.n_models || 1;
+  var pA=0, pB=0, pET=0, pPens=0, avg90A=0, avg90B=0, avgETA=0, avgETB=0;
+  var pathVotes = {};
+  var nET=0, nPens=0;
+
+  if(pm.length){
+    pm.forEach(function(r){
+      pA += r.p_a_advances||0;
+      pB += r.p_b_advances||0;
+      pET += r.p_reaches_et||0;
+      pPens += r.p_reaches_penalties||0;
+      avg90A += r.p_a_wins_90||0;
+      avg90B += r.p_b_wins_90||0;
+      avgETA += r.p_a_wins_et||0;
+      avgETB += r.p_b_wins_et||0;
+      if(r.p_reaches_et >= 0.25) nET++;
+      if(r.p_reaches_penalties >= 0.10) nPens++;
+      var bp = (r.most_likely_path||'regulation').replace(/_[ab]$/,'');
+      pathVotes[bp] = (pathVotes[bp]||0) + 1;
+    });
+    pA/=nMod; pB/=nMod; pET/=nMod; pPens/=nMod;
+    avg90A/=nMod; avg90B/=nMod; avgETA/=nMod; avgETB/=nMod;
+  } else {
+    var c = ko.consensus;
+    pA = c.consensus_p_a_advances||0; pB = c.consensus_p_b_advances||0;
+    pET = c.avg_p_et||0; pPens = c.avg_p_pens||0;
+    nET = c.n_predict_et||0; nPens = c.n_predict_penalties||0;
+    pathVotes[c.consensus_path||'regulation'] = 1;
+  }
+
+  var cPath = ''; var maxV = 0;
+  for(var pk in pathVotes){ if(pathVotes[pk]>maxV){ maxV=pathVotes[pk]; cPath=pk; } }
+  cPath = pathLabel[cPath] || cPath;
+
+  var p90 = Math.max(0, 1 - pET);
 
   function pctBar(pLeft, pMid, pRight, lbl, lblL, lblR, colL, colR){
     var wL = Math.max(2, Math.round(pLeft*100));
@@ -1290,21 +1323,22 @@ function buildKnockoutPanel(m){
       '</div>';
   }
 
-  var p90A = 1-pET-0; // approx from consensus; use per_model avg
-  var avg90A=0, avg90B=0, avgETA=0, avgETB=0;
-  var pm = ko.per_model || [];
-  pm.forEach(function(r){ avg90A+=r.p_a_wins_90||0; avg90B+=r.p_b_wins_90||0; avgETA+=r.p_a_wins_et||0; avgETB+=r.p_b_wins_et||0; });
-  if(pm.length){ avg90A/=pm.length; avg90B/=pm.length; avgETA/=pm.length; avgETB/=pm.length; }
-
   var html = '<div class="chart-card" style="grid-column:1/-1">';
   html += '<div class="chart-title" style="display:flex;align-items:center;gap:6px">'+
     '<span style="font-size:14px">&#9917;</span> Resolución Eliminatoria'+
     '<span style="font-size:9px;color:var(--mut);font-weight:400">'+nMod+' modelos</span></div>';
 
+  html += '<div style="display:flex;align-items:center;gap:10px;margin:4px 0 6px">'+
+    '<div style="display:flex;align-items:center;gap:4px">'+
+    '<div style="width:8px;height:8px;border-radius:50%;background:var(--grn)"></div>'+
+    '<span style="font-size:11px;font-weight:700;color:var(--fg)">P(90 min) = '+(p90*100).toFixed(0)+'%</span></div>'+
+    '<div style="flex:1;height:6px;border-radius:3px;background:var(--bd);overflow:hidden">'+
+    '<div style="width:'+(p90*100).toFixed(0)+'%;height:100%;border-radius:3px;background:var(--grn)"></div></div>'+
+    '<span style="font-size:9px;color:var(--mut)">P(ET+Pen) = '+(pET*100).toFixed(0)+'%</span></div>';
+
   html += pctBar(avg90A, pET, avg90B, '90 Minutos', m.home, m.away, 'var(--blu)', 'var(--cor)');
 
   if(pET >= 0.05){
-    var pETonly = pET - pPens;
     html += pctBar(avgETA, pPens/Math.max(pET,.01), avgETB,
       'Tiempo Extra (P='+( pET*100).toFixed(0)+'%)', m.home, m.away, 'var(--teal)', '#c0392b');
   }
@@ -1327,7 +1361,6 @@ function buildKnockoutPanel(m){
   html += '<div style="font-size:9px;color:var(--mut);margin-top:4px">Camino más probable: <strong>'+cPath+'</strong> · '+
     nET+'/'+nMod+' predicen ET · '+nPens+'/'+nMod+' predicen penales</div>';
 
-  // Per-model consensus table
   if(pm.length > 0){
     html += '<details style="margin-top:6px"><summary style="font-size:9px;cursor:pointer;color:var(--teal);font-weight:600">Detalle por modelo</summary>';
     html += '<table style="width:100%;font-size:8px;border-collapse:collapse;margin-top:4px"><thead><tr style="border-bottom:1px solid var(--bd)">'+
@@ -3336,7 +3369,30 @@ function renderGuia(){
     '<div class="gcard-body">Campo editable en el hover y el modal. Escribe el resultado que <strong>registraste en tu quiniela externa</strong>. Se guarda automáticamente. Permite comparar tu pick vs la recomendación del modelo.</div></div>'+
     '<div class="gcard"><div class="gcard-hd"><div class="gcard-icon" style="background:var(--cord);color:var(--cor);font-size:20px">🔒</div><div><div class="gcard-title">Congelado</div><div class="gcard-tag">frozen_pick</div></div></div>'+
     '<div class="gcard-body">Cuando un partido ya se jugó, el pick queda <strong>congelado</strong> para no modificarlo retroactivamente. Garantiza que la quiniela sea auditable.</div></div>'+
-    '</div>';
+    '</div>'+
+
+    '<div class="sdiv"><div class="sdiv-t">Resolución Eliminatoria</div><div class="sdiv-l"></div></div>'+
+    '<div style="max-width:820px;margin-bottom:24px"><div class="gcard"><div class="gcard-body" style="padding-top:14px">'+
+    '<p style="margin:0 0 10px;font-size:12px;line-height:1.5">En fase eliminatoria los partidos no terminan en empate: si el marcador está igualado a los 90 minutos, se juega <strong>tiempo extra</strong> y, de persistir el empate, <strong>penales</strong>. El sistema modela estas extensiones para estimar quién avanza.</p>'+
+
+    '<div class="rule-row"><div class="rule-pts" style="color:var(--grn);font-size:11px;min-width:70px">P(90 min)</div><div class="rule-desc">Probabilidad de que el partido se defina en los 90 minutos reglamentarios, sin necesidad de tiempo extra. Se calcula como <strong>1 − P(ET)</strong>. Un valor alto indica que los modelos esperan un ganador claro en tiempo regular.</div></div>'+
+    '<div class="rule-row"><div class="rule-pts" style="color:var(--teal);font-size:11px;min-width:70px">P(ET)</div><div class="rule-desc">Probabilidad de llegar a tiempo extra. Refleja cuántos escenarios de la matriz de marcadores terminan en empate a 90 min. Incluye la posibilidad de definirse en ET o avanzar a penales.</div></div>'+
+    '<div class="rule-row"><div class="rule-pts" style="color:var(--cor);font-size:11px;min-width:70px">P(Pen)</div><div class="rule-desc">Probabilidad de llegar a penales. Es un subconjunto de P(ET): primero se empata a 90 min, luego se empata también en ET. Por defecto se usa tasa de conversión simétrica (50/50).</div></div>'+
+    '<div class="rule-row"><div class="rule-pts" style="color:var(--blu);font-size:11px;min-width:70px">Avanzar</div><div class="rule-desc">Probabilidad total de que cada equipo avance a la siguiente ronda, sumando todos los caminos posibles: ganar en 90 min + ganar en ET + ganar en penales.</div></div>'+
+
+    '<div style="margin:14px 0 6px;font-size:11px;font-weight:700;color:var(--fg)">¿Cómo se ajustan los resultados para eliminatoria?</div>'+
+    '<p style="margin:0 0 8px;font-size:12px;line-height:1.5">El sistema aplica dos ajustes automáticos a las predicciones base de cada modelo cuando el partido es eliminatorio:</p>'+
+    '<div class="rule-row"><div class="rule-pts" style="color:var(--mut);font-size:10px;min-width:70px">Deflactor</div><div class="rule-desc"><strong>Goal deflator (0.92)</strong>: reduce los goles esperados un 8%, reflejando que los equipos juegan más conservador en eliminación directa.</div></div>'+
+    '<div class="rule-row"><div class="rule-pts" style="color:var(--mut);font-size:10px;min-width:70px">Inflación X</div><div class="rule-desc"><strong>Draw inflation (1.15)</strong>: aumenta la probabilidad de empate un 15% (máx. 60%), compensando la tendencia táctica defensiva de eliminatorias.</div></div>'+
+    '<p style="margin:8px 0 8px;font-size:12px;line-height:1.5">Sobre esa matriz ajustada se simulan las extensiones: <strong>tiempo extra</strong> usa el 33% de los xG de 90 min como tasa de gol para 30 minutos adicionales (Poisson). <strong>Penales</strong> se simulan con cadena de Markov a 5 rondas + muerte súbita, tasa de conversión 75%.</p>'+
+
+    '<div style="margin:14px 0 6px;font-size:11px;font-weight:700;color:var(--fg)">¿Cómo interpretar el marcador predicho?</div>'+
+    '<p style="margin:0 0 8px;font-size:12px;line-height:1.5">El marcador que muestra el sistema (TOP o Max Puntos) es siempre el <strong>marcador a 90 minutos</strong>. Si el modelo predice 1-1, significa que espera empate al cierre del tiempo reglamentario. Para saber quién avanza, consulta la barra de «Probabilidad de avanzar» y el «Camino más probable».</p>'+
+    '<p style="margin:0 0 8px;font-size:12px;line-height:1.5">Ejemplo: si el pick es <strong>1-1</strong> y P(avanza Local)=62%, el modelo espera empate a 90 min pero cree que el local se impone en la extensión. Tu quiniela registra 1-1 (el resultado oficial de 90 min).</p>'+
+
+    '<div style="margin:14px 0 6px;font-size:11px;font-weight:700;color:var(--fg)">Filtro Top 5</div>'+
+    '<p style="margin:0;font-size:12px;line-height:1.5">Cuando activas el botón <strong>Top 5</strong>, la resolución eliminatoria se recalcula usando solo los 5 modelos con más puntos de quiniela acumulados en partidos jugados. Esto sesga las probabilidades hacia los modelos que mejor han predicho hasta ahora, dando una lectura de «los más confiables piensan que…».</p>'+
+    '</div></div></div>';
 }
 
 function renderMetodologia(){

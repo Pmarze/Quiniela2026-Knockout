@@ -1711,11 +1711,13 @@ function buildFriendlyTeamBlock(teamName, rows, tournamentRows){
   if(tournamentRows.length){
     html += '<div style="padding:3px 8px;background:rgba(30,128,80,.12);border-bottom:1px solid var(--brd);font-size:9px;font-weight:700;color:var(--grn);letter-spacing:.5px">MUNDIAL 2026</div>';
     tournamentRows.forEach(function(r){
+      var oppRk = _fifaRank(r.opponent);
+      var rkBadge = oppRk<999 ? '<span style="font-size:8px;color:var(--mut);font-weight:600;margin-left:3px" title="FIFA Ranking">#'+oppRk+'</span>' : '';
       html += '<div class="friendly-row">'+
         '<div class="friendly-date">'+fdate(r.date)+'</div>'+
         '<div class="friendly-res '+friendlyResultClass(r.result)+'">'+esc(r.result)+'</div>'+
         '<div>'+
-          '<div class="friendly-main" title="'+esc(r.opponent||'')+'"><span class="friendly-side">'+friendlySideLabel(r.side)+'</span>'+esc(r.opponent||'')+'</div>'+
+          '<div class="friendly-main" title="'+esc(r.opponent||'')+'"><span class="friendly-side">'+friendlySideLabel(r.side)+'</span>'+esc(r.opponent||'')+rkBadge+'</div>'+
           '<div class="friendly-venue">'+esc(r.group||'Fase de grupos')+'</div>'+
         '</div>'+
         '<div class="friendly-score">'+esc(r.score||'')+'</div>'+
@@ -1728,11 +1730,13 @@ function buildFriendlyTeamBlock(teamName, rows, tournamentRows){
     }
     rows.forEach(function(r){
       var venue = r.venue ? esc(r.venue) : 'Sede no registrada';
+      var oppRk = _fifaRank(r.opponent);
+      var rkBadge = oppRk<999 ? '<span style="font-size:8px;color:var(--mut);font-weight:600;margin-left:3px" title="FIFA Ranking">#'+oppRk+'</span>' : '';
       html += '<div class="friendly-row">'+
         '<div class="friendly-date">'+fdate(r.date)+'</div>'+
         '<div class="friendly-res '+friendlyResultClass(r.result)+'">'+esc(r.result)+'</div>'+
         '<div>'+
-          '<div class="friendly-main" title="'+esc(r.opponent||'')+'"><span class="friendly-side">'+friendlySideLabel(r.side)+'</span>'+esc(r.opponent||'')+'</div>'+
+          '<div class="friendly-main" title="'+esc(r.opponent||'')+'"><span class="friendly-side">'+friendlySideLabel(r.side)+'</span>'+esc(r.opponent||'')+rkBadge+'</div>'+
           '<div class="friendly-venue" title="'+venue+'">'+venue+'</div>'+
         '</div>'+
         '<div class="friendly-score">'+esc(r.score||'')+'</div>'+

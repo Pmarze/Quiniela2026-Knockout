@@ -7,24 +7,22 @@
       "version": "v2026-06-07"
     },
     {
+      "model_id": "neural_hybrid_v2",
+      "path": "neural_hybrid_v2/v2026-07-04",
+      "published_at_utc": "2026-07-04T06:40:52Z",
+      "version": "v2026-07-04"
+    },
+    {
       "model_id": "neural_scoreline_mlp",
       "path": "neural_scoreline_mlp/v2026-06-07",
       "published_at_utc": "2026-06-08T23:08:23Z",
       "version": "v2026-06-07"
     },
     {
-      "model_id": "neural_hybrid_v2",
-      "path": "neural_hybrid_v2/v2026-06-07_3-1-0",
-      "published_at_utc": "2026-06-11T09:37:00Z",
-      "scoring_profile": "3-1-0",
-      "version": "v2026-06-07_3-1-0"
-    },
-    {
       "model_id": "neural_scoreline_mlp",
-      "path": "neural_scoreline_mlp/v2026-06-07_3-1-0",
-      "published_at_utc": "2026-06-11T09:37:00Z",
-      "scoring_profile": "3-1-0",
-      "version": "v2026-06-07_3-1-0"
+      "path": "neural_scoreline_mlp/v2026-07-04",
+      "published_at_utc": "2026-07-04T06:40:44Z",
+      "version": "v2026-07-04"
     }
   ]
 }

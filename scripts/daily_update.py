@@ -42,6 +42,7 @@ DAILY_GIT_FILES = [
     "docs/index.html",
     "data/ui/prediction_overrides.json",
     "data/ui/friends_quinielas.json",
+    "configs/knockout.yaml",
 ]
 
 
@@ -171,6 +172,7 @@ def main() -> int:
         if not args.skip_download:
             steps.append("1. run_daily.py (descarga + canónico + estado)")
         if not args.skip_models:
+            steps.append("1b. calibrate_knockout.py (goal_deflator, draw_inflation)")
             steps.append("2. run_model.py (modelos → prediction_overrides.json)")
         if not args.skip_friends:
             steps.append("3. build_friends_quinielas.py (Google Sheets → friends_quinielas.json)")
@@ -187,6 +189,16 @@ def main() -> int:
     if args.skip_download:
         run_daily_cmd.append("--skip-download")
     _run("Paso 1 · Descarga de datos + canónico + estado", run_daily_cmd)
+
+    # -- Paso 1b: calibración knockout --------------------------
+    if args.skip_models:
+        _banner(f"[{_ts()}] Paso 1b · Calibración knockout: OMITIDO (--skip-models)")
+    else:
+        _run(
+            "Paso 1b · Calibración knockout (goal_deflator, draw_inflation)",
+            [PYTHON, "scripts/calibrate_knockout.py"],
+            warn_only=True,
+        )
 
     # -- Paso 2: modelos ---------------------------------------
     if args.skip_models:

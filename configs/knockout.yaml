@@ -1,11 +1,11 @@
 {
-  "goal_deflator": 0.92,
-  "draw_inflation": 1.15,
+  "goal_deflator": 1.02,
+  "draw_inflation": 1.04,
   "et_lambda_fraction": 0.33,
   "default_penalty_conversion": 0.75,
   "max_goals_et": 4,
   "et_display_threshold": 0.25,
-  "penalties_display_threshold": 0.10,
+  "penalties_display_threshold": 0.1,
   "enabled": true,
   "operative_window": "90min"
 }

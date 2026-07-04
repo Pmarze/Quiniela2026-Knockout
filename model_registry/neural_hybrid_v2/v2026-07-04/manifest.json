@@ -1,0 +1,39 @@
+{
+  "files": [
+    {
+      "bytes": 12733,
+      "path": "metadata.json",
+      "sha256": "4ca1e93e9f8a6b0ecc01a07a590047da4e2593bb3ac2eb8c6a0f9541ae1e1967"
+    },
+    {
+      "bytes": 491,
+      "path": "metrics.json",
+      "sha256": "a75ee164d23248f76df26bf06888934caf8f6402f2dbd2c4bd3fd18f0ba18ae4"
+    },
+    {
+      "bytes": 565,
+      "path": "metrics_live.json",
+      "sha256": "8e6cfa7b735e27d9c8f8f258d565b9a8c28461dc73dddec540bdb2e1d99e00bf"
+    },
+    {
+      "bytes": 19851905,
+      "path": "model.pt",
+      "sha256": "c622650b8dac11600bba77cee260a1119a39bd688ffe1798898b934352873bb8"
+    },
+    {
+      "bytes": 4831,
+      "path": "training_log.csv",
+      "sha256": "4712570fd33b43d680db9f60962f2423ee088501b4aa70925e6a77036b3db888"
+    },
+    {
+      "bytes": 1852,
+      "path": "training_summary.json",
+      "sha256": "a1b022cb24e7382e527f4f3c84f0c37b78f2cf0f3112c675bc1c1547d9d06f89"
+    }
+  ],
+  "model_id": "neural_hybrid_v2",
+  "notes": "Re-trained from scratch with 49k matches including 2026 WC group+R32 history. Final exact=12.7%, ev_pts=1.33.",
+  "published_at_utc": "2026-07-04T06:40:52Z",
+  "source_dir": "D:\\Quiniela_Eliminatorias2026\\data\\models\\neural_hybrid_v2\\latest",
+  "version": "v2026-07-04"
+}

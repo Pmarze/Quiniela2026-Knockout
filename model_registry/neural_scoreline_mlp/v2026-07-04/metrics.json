@@ -1,0 +1,15 @@
+{
+  "best_epoch": 5,
+  "ev_exact_accuracy": 0.13002653602776076,
+  "ev_mean_points": 1.3170034700959379,
+  "ev_outcome_accuracy": 0.5719534598897734,
+  "exact_accuracy": 0.1239028373137375,
+  "loss": 1.6690059745280104,
+  "matrix_outcome_accuracy": 0.5866503368034293,
+  "outcome_accuracy": 0.5858338436415595,
+  "outcome_temperature": 1.161171,
+  "scoreline_temperature": 1.070138,
+  "top_mean_points": 1.2608695652173914,
+  "train_examples": 44091,
+  "valid_examples": 4899
+}

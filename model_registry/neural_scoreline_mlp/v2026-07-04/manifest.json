@@ -1,0 +1,39 @@
+{
+  "files": [
+    {
+      "bytes": 10997,
+      "path": "metadata.json",
+      "sha256": "8870cd0fe9a954480a34c143cb7bed224be9997dce1d4b94c707aa7d0d5920b1"
+    },
+    {
+      "bytes": 491,
+      "path": "metrics.json",
+      "sha256": "8faf7f55bd1c86e46636025c045cffea032b239f59eaf023b2c9cc109a4e421e"
+    },
+    {
+      "bytes": 586,
+      "path": "metrics_live.json",
+      "sha256": "1cf9128c94b21bc8b4553a5991ce67def5fcd2a2579506b9d638f6e1ded23a93"
+    },
+    {
+      "bytes": 360653,
+      "path": "model.pt",
+      "sha256": "b19a899ee936af017f6506b1772fdbeacd39c356109739610f14d09037727896"
+    },
+    {
+      "bytes": 4008,
+      "path": "training_log.csv",
+      "sha256": "7f442fe3d583a308365c45633ead64aee4a87659cd5399885a872b8269132d1b"
+    },
+    {
+      "bytes": 1815,
+      "path": "training_summary.json",
+      "sha256": "6a53f575bf067cc2e363fb97b90f2d7da5c8fe49473c8351e67d70a68be012e3"
+    }
+  ],
+  "model_id": "neural_scoreline_mlp",
+  "notes": "Re-trained from scratch with 49k matches including 2026 WC group+R32 history. Backtest fold 2018 exact=10.9%, fold 2022 exact=4.7%.",
+  "published_at_utc": "2026-07-04T06:40:44Z",
+  "source_dir": "D:\\Quiniela_Eliminatorias2026\\data\\models\\neural_scoreline\\latest",
+  "version": "v2026-07-04"
+}

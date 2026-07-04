@@ -1,0 +1,58 @@
+{
+  "artifact_dir": "D:\\Quiniela_Eliminatorias2026\\data\\models\\neural_scoreline\\latest",
+  "created_at_utc": "2026-07-04T06:21:50Z",
+  "device": "cuda",
+  "final": {
+    "best_epoch": 5,
+    "ev_exact_accuracy": 0.13002653602776076,
+    "ev_mean_points": 1.3170034700959379,
+    "ev_outcome_accuracy": 0.5719534598897734,
+    "exact_accuracy": 0.1239028373137375,
+    "loss": 1.6690059745280104,
+    "matrix_outcome_accuracy": 0.5866503368034293,
+    "outcome_accuracy": 0.5858338436415595,
+    "outcome_temperature": 1.161171,
+    "scoreline_temperature": 1.070138,
+    "top_mean_points": 1.2608695652173914,
+    "train_examples": 44091,
+    "valid_examples": 4899
+  },
+  "folds": [
+    {
+      "best_epoch": 5,
+      "ev_exact_accuracy": 0.078125,
+      "ev_mean_points": 1.078125,
+      "ev_outcome_accuracy": 0.421875,
+      "exact_accuracy": 0.109375,
+      "loss": 1.6967799663543701,
+      "matrix_outcome_accuracy": 0.546875,
+      "outcome_accuracy": 0.5625,
+      "outcome_temperature": 0.927813,
+      "scoreline_temperature": 0.968344,
+      "status": "ok",
+      "top_mean_points": 1.34375,
+      "train_examples": 40858,
+      "valid_examples": 64,
+      "year": 2018
+    },
+    {
+      "best_epoch": 3,
+      "ev_exact_accuracy": 0.0625,
+      "ev_mean_points": 0.953125,
+      "ev_outcome_accuracy": 0.453125,
+      "exact_accuracy": 0.046875,
+      "loss": 1.8248839378356934,
+      "matrix_outcome_accuracy": 0.5,
+      "outcome_accuracy": 0.5,
+      "outcome_temperature": 1.436007,
+      "scoreline_temperature": 1.274939,
+      "status": "ok",
+      "top_mean_points": 1.0625,
+      "train_examples": 44366,
+      "valid_examples": 64,
+      "year": 2022
+    }
+  ],
+  "model_id": "neural_scoreline_mlp",
+  "model_version": "0.2.0"
+}

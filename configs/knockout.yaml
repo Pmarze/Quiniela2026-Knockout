@@ -1,6 +1,6 @@
 {
-  "goal_deflator": 1.03,
-  "draw_inflation": 1.01,
+  "goal_deflator": 0.96,
+  "draw_inflation": 0.99,
   "et_lambda_fraction": 0.33,
   "default_penalty_conversion": 0.75,
   "max_goals_et": 4,

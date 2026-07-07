@@ -114,3 +114,6 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# Snapshots locales de predicciones (no versionados)
+data/ui/snapshots/

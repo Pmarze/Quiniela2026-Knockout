@@ -21,6 +21,7 @@ Opciones:
 from __future__ import annotations
 
 import argparse
+import shutil
 import subprocess
 import sys
 import time
@@ -173,6 +174,7 @@ def main() -> int:
             steps.append("1. run_daily.py (descarga + canónico + estado)")
         if not args.skip_models:
             steps.append("1b. calibrate_knockout.py (goal_deflator, draw_inflation)")
+            steps.append("1c. snapshot prediction_overrides.json → data/ui/snapshots/")
             steps.append("2. run_model.py (modelos → prediction_overrides.json)")
         if not args.skip_friends:
             steps.append("3. build_friends_quinielas.py (Google Sheets → friends_quinielas.json)")
@@ -199,6 +201,17 @@ def main() -> int:
             [PYTHON, "scripts/calibrate_knockout.py"],
             warn_only=True,
         )
+
+    # -- Paso 1c: snapshot de predicciones previas -------------
+    if not args.skip_models:
+        ui_src = PROJECT_ROOT / "data" / "ui" / "prediction_overrides.json"
+        if ui_src.exists():
+            snap_dir = PROJECT_ROOT / "data" / "ui" / "snapshots"
+            snap_dir.mkdir(parents=True, exist_ok=True)
+            snap_ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            snap_dst = snap_dir / f"prediction_overrides_{snap_ts}.json"
+            shutil.copy2(ui_src, snap_dst)
+            _banner(f"[{_ts()}] Paso 1c · Snapshot guardado: {snap_dst.name}")
 
     # -- Paso 2: modelos ---------------------------------------
     if args.skip_models:

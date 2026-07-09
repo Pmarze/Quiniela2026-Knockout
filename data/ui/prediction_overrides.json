@@ -1,6 +1,6 @@
 {
   "as_of_utc": "2026-07-08T07:32:59Z",
-  "generated_at_utc": "2026-07-09T07:02:04Z",
+  "generated_at_utc": "2026-07-09T07:08:00Z",
   "matches": {
     "1": {
       "frozen_pick": true,
@@ -998,7 +998,7 @@
           "top_score_probability": 0.19145023881875248
         }
       ],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": {
         "expected_points": 1.327129,
         "model_id": "weighted_exact_ensemble",
@@ -1010,25 +1010,25 @@
     "101": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": null
     },
     "102": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": null
     },
     "103": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": null
     },
     "104": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": null
     },
     "11": {
@@ -31136,7 +31136,7 @@
           "top_score_probability": 0.1657860227993205
         }
       ],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": {
         "expected_points": 1.282216,
         "model_id": "weighted_exact_ensemble",
@@ -31686,7 +31686,7 @@
           "top_score_probability": 0.19030118754167277
         }
       ],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": {
         "expected_points": 1.156024,
         "model_id": "weighted_exact_ensemble",
@@ -32235,7 +32235,7 @@
           "top_score_probability": 0.15270743289600183
         }
       ],
-      "notes": "prediction_run_id=pred_20260709T070119Z_699b492a",
+      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
       "quiniela_pick": {
         "expected_points": 1.164475,
         "model_id": "weighted_exact_ensemble",
@@ -32245,5 +32245,5 @@
       }
     }
   },
-  "prediction_run_id": "pred_20260709T070119Z_699b492a"
+  "prediction_run_id": "pred_20260709T070712Z_741c35be"
 }

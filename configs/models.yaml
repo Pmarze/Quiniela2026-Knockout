@@ -24,7 +24,7 @@
       "required": false
     },
     {
-      "active": true,
+      "active": false,
       "k_wc": 80.0,
       "k_continental": 35.0,
       "k_qualifier": 25.0,
@@ -39,7 +39,7 @@
       "max_goals": 8,
       "model_id": "elo_sdr_poisson",
       "model_version": "0.1.0",
-      "notes": "SDR-Elo Poisson (arXiv:2606.24171). Solo visualizacion, no en ensemble. Tuning: 200 configs aleatorias WC2018+2022, mejor WF=144pts/128p (vs baseline 159), exactos=16 (+4). k_wc=80 SAVE sdr_min_year=2006 n_lags=4 l2_xi=5.",
+      "notes": "SDR-Elo Poisson (arXiv:2606.24171). Solo visualizacion, no en ensemble. Tuning: 200 configs aleatorias WC2018+2022, mejor WF=144pts/128p (vs baseline 159), exactos=16 (+4). k_wc=80 SAVE sdr_min_year=2006 n_lags=4 l2_xi=5. DESACTIVADO 2026-07-09: outlier extremo en QF (ej. 0-2 MAR 80.8%).",
       "required": false
     },
     {

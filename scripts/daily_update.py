@@ -42,6 +42,7 @@ PYTHON = sys.executable  # mismo intérprete que ejecutó este script
 DAILY_GIT_FILES = [
     "docs/index.html",
     "data/ui/prediction_overrides.json",
+    "data/ui/scoring_3-1-0/prediction_overrides.json",
     "data/ui/friends_quinielas.json",
     "configs/knockout.yaml",
 ]
@@ -175,7 +176,8 @@ def main() -> int:
         if not args.skip_models:
             steps.append("1b. calibrate_knockout.py (goal_deflator, draw_inflation)")
             steps.append("1c. snapshot prediction_overrides.json → data/ui/snapshots/")
-            steps.append("2. run_model.py (modelos → prediction_overrides.json)")
+            steps.append("2a. run_model.py 5-3-1 (→ prediction_overrides.json)")
+            steps.append("2b. run_model.py 3-1-0 (→ scoring_3-1-0/prediction_overrides.json)")
         if not args.skip_friends:
             steps.append("3. build_friends_quinielas.py (Google Sheets → friends_quinielas.json)")
         steps.append("4. generate_dashboard.py (→ docs/index.html)")
@@ -217,7 +219,12 @@ def main() -> int:
     if args.skip_models:
         _banner(f"[{_ts()}] Paso 2 · Modelos: OMITIDO (--skip-models)")
     else:
-        _run("Paso 2 · Modelos de predicción", [PYTHON, "scripts/run_model.py"])
+        _run("Paso 2a · Modelos (perfil 5-3-1)", [PYTHON, "scripts/run_model.py"])
+        _run("Paso 2b · Modelos (perfil 3-1-0)", [
+            PYTHON, "scripts/run_model.py",
+            "--scoring-profile", "3-1-0",
+            "--ui-overrides", "data/ui/scoring_3-1-0/prediction_overrides.json",
+        ])
 
     # -- Paso 3: amigos (Google Sheets) -----------------------
     if args.skip_friends:

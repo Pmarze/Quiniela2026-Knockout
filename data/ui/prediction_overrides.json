@@ -1,6 +1,6 @@
 {
-  "as_of_utc": "2026-07-08T07:32:59Z",
-  "generated_at_utc": "2026-07-09T07:08:00Z",
+  "as_of_utc": "2026-07-09T22:23:04Z",
+  "generated_at_utc": "2026-07-09T22:30:21Z",
   "matches": {
     "1": {
       "frozen_pick": true,
@@ -585,20 +585,20 @@
             "p_reaches_penalties": 0.1252
           },
           {
-            "confidence": 0.7505,
+            "confidence": 0.7504,
             "match_id": "100",
             "model_id": "bayesian_monte_carlo_scoreline",
             "most_likely_path": "regulation_a",
-            "p_a_advances": 0.7505,
-            "p_a_wins_90": 0.6217,
+            "p_a_advances": 0.7504,
+            "p_a_wins_90": 0.6216,
             "p_a_wins_et": 0.3867,
             "p_a_wins_penalties": 0.5,
-            "p_b_advances": 0.2495,
+            "p_b_advances": 0.2496,
             "p_b_wins_90": 0.1699,
-            "p_b_wins_et": 0.151,
+            "p_b_wins_et": 0.1511,
             "p_b_wins_penalties": 0.5,
-            "p_draw_90": 0.2084,
-            "p_reaches_et": 0.2084,
+            "p_draw_90": 0.2085,
+            "p_reaches_et": 0.2085,
             "p_reaches_penalties": 0.0964
           },
           {
@@ -833,19 +833,19 @@
           "top_score_probability": 0.12008863031391422
         },
         {
-          "confidence": 0.6217,
+          "confidence": 0.6216,
           "expected_goals": "1.99-0.93",
-          "expected_points": 1.321958,
+          "expected_points": 1.321884,
           "family": "Monte Carlo limpio",
           "model_id": "bayesian_monte_carlo_scoreline",
-          "notes": "monte_carlo_simulations=1000000\nseed=3142994345\nsin Opta ni mercados externos\nrating_uncertainty_sd=25.0\nlambda_log_sigma=0.1\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "monte_carlo_simulations=1000000\nseed=3515690216\nsin Opta ni mercados externos\nrating_uncertainty_sd=25.0\nlambda_log_sigma=0.1\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2084471862,
-          "p_team_a_win": 0.6216875128,
-          "p_team_b_win": 0.169865301,
+          "p_draw": 0.2084703246,
+          "p_team_a_win": 0.6216163583,
+          "p_team_b_win": 0.1699133171,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.10719447053048396
+          "top_score_probability": 0.10719264810012963
         },
         {
           "confidence": 0.4945,
@@ -853,7 +853,7 @@
           "expected_points": 1.172875,
           "family": "Opta externo",
           "model_id": "opta_power_poisson",
-          "notes": "opta_source=2026-06-07T00:00:00Z\nsin rating Opta publico para Argentina; fallback Elo interno\nrating Opta estimado por ranking para Switzerland\nopta_live_updates=96\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "opta_source=2026-06-07T00:00:00Z\nsin rating Opta publico para Argentina; fallback Elo interno\nrating Opta estimado por ranking para Switzerland\nopta_live_updates=97\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
           "p_draw": 0.2437384894,
           "p_team_a_win": 0.4945161395,
@@ -865,17 +865,17 @@
         {
           "confidence": 0.5785,
           "expected_goals": "1.66-0.81",
-          "expected_points": 1.378878,
+          "expected_points": 1.378879,
           "family": "red neuronal hibrida",
           "model_id": "neural_hybrid_v2",
           "notes": "matriz calibrada por head 1X2\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2400505774,
-          "p_team_a_win": 0.5785288225,
-          "p_team_b_win": 0.1814206001,
+          "p_draw": 0.2400512268,
+          "p_team_a_win": 0.5785276776,
+          "p_team_b_win": 0.1814210956,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.14081868783209384
+          "top_score_probability": 0.14081914763845144
         },
         {
           "confidence": 0.6698,
@@ -910,77 +910,77 @@
         {
           "confidence": 0.5328,
           "expected_goals": "1.55-0.88",
-          "expected_points": 1.315561,
+          "expected_points": 1.31556,
           "family": "ponderador",
           "model_id": "weighted_ensemble",
           "notes": "ensemble_objective=weighted_ensemble\nensemble_weights={\"attack_defense_poisson\": 0.0655, \"bayesian_monte_carlo_scoreline\": 0.0016, \"bradley_terry_davidson\": 0.2335, \"draw_specialist\": 0.0151, \"elo_dixon_coles\": 0.0346, \"elo_poisson\": 0.0461, \"neural_hybrid_v2\": 0.5034, \"neural_scoreline_mlp\": 0.1002}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2532676838,
-          "p_team_a_win": 0.5327790657,
-          "p_team_b_win": 0.2139532504,
+          "p_draw": 0.2532680037,
+          "p_team_a_win": 0.5327783297,
+          "p_team_b_win": 0.2139536666,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.13712384117563628
+          "top_score_probability": 0.13712398206293205
         },
         {
           "confidence": 0.5456,
           "expected_goals": "1.59-0.87",
-          "expected_points": 1.329978,
+          "expected_points": 1.329966,
           "family": "ponderador puntos",
           "model_id": "weighted_points_ensemble",
-          "notes": "ensemble_objective=max_points\nensemble_weights={\"attack_defense_poisson\": 0.0354, \"bayesian_monte_carlo_scoreline\": 0.1152, \"bradley_terry_davidson\": 0.2354, \"draw_specialist\": 0.0056, \"elo_dixon_coles\": 0.0066, \"elo_poisson\": 0.0159, \"neural_hybrid_v2\": 0.4828, \"neural_scoreline_mlp\": 0.103}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "ensemble_objective=max_points\nensemble_weights={\"attack_defense_poisson\": 0.0354, \"bayesian_monte_carlo_scoreline\": 0.1152, \"bradley_terry_davidson\": 0.2355, \"draw_specialist\": 0.0056, \"elo_dixon_coles\": 0.0066, \"elo_poisson\": 0.0159, \"neural_hybrid_v2\": 0.4828, \"neural_scoreline_mlp\": 0.103}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2489647325,
-          "p_team_a_win": 0.5456469646,
-          "p_team_b_win": 0.2053883029,
+          "p_draw": 0.2489676602,
+          "p_team_a_win": 0.5456372691,
+          "p_team_b_win": 0.2053950706,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.13685109366730383
+          "top_score_probability": 0.1368507067838183
         },
         {
           "confidence": 0.5425,
           "expected_goals": "1.57-0.86",
-          "expected_points": 1.329439,
+          "expected_points": 1.329433,
           "family": "ponderador calibrado",
           "model_id": "calibrated_scoreline_ensemble",
           "notes": "ensemble_objective=calibrated_scoreline_distribution\nensemble_weights={\"attack_defense_poisson\": 0.0452, \"bayesian_monte_carlo_scoreline\": 0.049, \"bradley_terry_davidson\": 0.24, \"draw_specialist\": 0.0093, \"elo_dixon_coles\": 0.0504, \"elo_poisson\": 0.0191, \"neural_hybrid_v2\": 0.3952, \"neural_scoreline_mlp\": 0.1919}\nscoreline_calibration={\"high_goal_bonus\": 0.1278, \"low_score_penalty\": 0.376, \"matches\": 868, \"model_power\": 1.1374, \"prior_power\": 0.1951}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2506378653,
-          "p_team_a_win": 0.5424576099,
-          "p_team_b_win": 0.2069045248,
+          "p_draw": 0.2506391658,
+          "p_team_a_win": 0.5424532253,
+          "p_team_b_win": 0.2069076089,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.13793126096197952
+          "top_score_probability": 0.13793104873144854
         },
         {
           "confidence": 0.5532,
           "expected_goals": "1.56-0.80",
-          "expected_points": 1.369586,
+          "expected_points": 1.369584,
           "family": "ponderador 1X2",
           "model_id": "weighted_1x2_ensemble",
           "notes": "ensemble_objective=max_1x2\nensemble_weights={\"attack_defense_poisson\": 0.038, \"bayesian_monte_carlo_scoreline\": 0.017, \"bradley_terry_davidson\": 0.2417, \"draw_specialist\": 0.0014, \"elo_dixon_coles\": 0.0024, \"elo_poisson\": 0.0023, \"neural_hybrid_v2\": 0.4559, \"neural_scoreline_mlp\": 0.2414}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2525230788,
-          "p_team_a_win": 0.5531758524,
-          "p_team_b_win": 0.1943010689,
+          "p_draw": 0.2525237753,
+          "p_team_a_win": 0.5531738846,
+          "p_team_b_win": 0.1943023401,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.14728766756658418
+          "top_score_probability": 0.14728768958236504
         },
         {
           "confidence": 0.539,
           "expected_goals": "1.56-0.86",
-          "expected_points": 1.327129,
+          "expected_points": 1.327128,
           "family": "ponderador exacto",
           "model_id": "weighted_exact_ensemble",
           "notes": "ensemble_objective=max_exact_score\nensemble_weights={\"attack_defense_poisson\": 0.0002, \"bayesian_monte_carlo_scoreline\": 0.0046, \"bradley_terry_davidson\": 0.2132, \"draw_specialist\": 0.0003, \"elo_dixon_coles\": 0.0, \"elo_poisson\": 0.0003, \"neural_hybrid_v2\": 0.7814, \"neural_scoreline_mlp\": 0.0}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2521172735,
-          "p_team_a_win": 0.5389992131,
-          "p_team_b_win": 0.2088835134,
+          "p_draw": 0.2521179209,
+          "p_team_a_win": 0.5389977481,
+          "p_team_b_win": 0.208884331,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.13853012491355188
+          "top_score_probability": 0.13853041303153496
         },
         {
           "confidence": 0.8405,
@@ -998,37 +998,37 @@
           "top_score_probability": 0.19145023881875248
         }
       ],
-      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
+      "notes": "prediction_run_id=pred_20260709T222945Z_aac64692",
       "quiniela_pick": {
-        "expected_points": 1.327129,
+        "expected_points": 1.327128,
         "model_id": "weighted_exact_ensemble",
         "score": "1-0",
         "top_score": "1-0",
-        "top_score_probability": 0.1385301249
+        "top_score_probability": 0.138530413
       }
     },
     "101": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
+      "notes": "prediction_run_id=pred_20260709T222945Z_aac64692",
       "quiniela_pick": null
     },
     "102": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
+      "notes": "prediction_run_id=pred_20260709T222945Z_aac64692",
       "quiniela_pick": null
     },
     "103": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
+      "notes": "prediction_run_id=pred_20260709T222945Z_aac64692",
       "quiniela_pick": null
     },
     "104": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
+      "notes": "prediction_run_id=pred_20260709T222945Z_aac64692",
       "quiniela_pick": null
     },
     "11": {
@@ -30591,7 +30591,7 @@
       }
     },
     "97": {
-      "frozen_pick": false,
+      "frozen_pick": true,
       "knockout_resolution": {
         "consensus": {
           "avg_p_et": 0.2628,
@@ -31278,8 +31278,8 @@
             "model_id": "bayesian_monte_carlo_scoreline",
             "most_likely_path": "regulation_a",
             "p_a_advances": 0.6967,
-            "p_a_wins_90": 0.5671,
-            "p_a_wins_et": 0.3607,
+            "p_a_wins_90": 0.567,
+            "p_a_wins_et": 0.3606,
             "p_a_wins_penalties": 0.5,
             "p_b_advances": 0.3033,
             "p_b_wins_90": 0.2136,
@@ -31375,15 +31375,15 @@
             "p_reaches_penalties": 0.1427
           },
           {
-            "confidence": 0.6015,
+            "confidence": 0.6014,
             "match_id": "98",
             "model_id": "weighted_points_ensemble",
             "most_likely_path": "regulation_a",
-            "p_a_advances": 0.6015,
-            "p_a_wins_90": 0.4562,
+            "p_a_advances": 0.6014,
+            "p_a_wins_90": 0.4561,
             "p_a_wins_et": 0.2823,
             "p_a_wins_penalties": 0.5,
-            "p_b_advances": 0.3985,
+            "p_b_advances": 0.3986,
             "p_b_wins_90": 0.2768,
             "p_b_wins_et": 0.1942,
             "p_b_wins_penalties": 0.5,
@@ -31409,16 +31409,16 @@
             "p_reaches_penalties": 0.1416
           },
           {
-            "confidence": 0.5983,
+            "confidence": 0.5982,
             "match_id": "98",
             "model_id": "weighted_1x2_ensemble",
             "most_likely_path": "regulation_a",
-            "p_a_advances": 0.5983,
+            "p_a_advances": 0.5982,
             "p_a_wins_90": 0.4484,
             "p_a_wins_et": 0.273,
             "p_a_wins_penalties": 0.5,
-            "p_b_advances": 0.4017,
-            "p_b_wins_90": 0.2751,
+            "p_b_advances": 0.4018,
+            "p_b_wins_90": 0.2752,
             "p_b_wins_et": 0.1887,
             "p_b_wins_penalties": 0.5,
             "p_draw_90": 0.2765,
@@ -31521,19 +31521,19 @@
           "top_score_probability": 0.12071575456039958
         },
         {
-          "confidence": 0.5671,
+          "confidence": 0.567,
           "expected_goals": "1.91-1.09",
-          "expected_points": 1.237405,
+          "expected_points": 1.237323,
           "family": "Monte Carlo limpio",
           "model_id": "bayesian_monte_carlo_scoreline",
-          "notes": "monte_carlo_simulations=1000000\nseed=3196416822\nsin Opta ni mercados externos\nrating_uncertainty_sd=25.0\nlambda_log_sigma=0.1\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "monte_carlo_simulations=1000000\nseed=695475479\nsin Opta ni mercados externos\nrating_uncertainty_sd=25.0\nlambda_log_sigma=0.1\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2193150573,
-          "p_team_a_win": 0.5670968929,
-          "p_team_b_win": 0.2135880498,
+          "p_draw": 0.2193395307,
+          "p_team_a_win": 0.5670203133,
+          "p_team_b_win": 0.213640156,
           "score": "2-1",
           "top_score": "1-1",
-          "top_score_probability": 0.10258059862067456
+          "top_score_probability": 0.10259328493053116
         },
         {
           "confidence": 0.3882,
@@ -31541,7 +31541,7 @@
           "expected_points": 1.009226,
           "family": "Opta externo",
           "model_id": "opta_power_poisson",
-          "notes": "opta_source=2026-06-07T00:00:00Z\nsin rating Opta publico para Belgium; fallback Elo interno\nopta_live_updates=96\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "opta_source=2026-06-07T00:00:00Z\nsin rating Opta publico para Belgium; fallback Elo interno\nopta_live_updates=97\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
           "p_draw": 0.2555679046,
           "p_team_a_win": 0.3881531362,
@@ -31558,12 +31558,12 @@
           "model_id": "neural_hybrid_v2",
           "notes": "matriz calibrada por head 1X2\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2684642634,
-          "p_team_a_win": 0.4504597082,
-          "p_team_b_win": 0.2810760284,
+          "p_draw": 0.2684647499,
+          "p_team_a_win": 0.4504586333,
+          "p_team_b_win": 0.2810766168,
           "score": "1-0",
           "top_score": "1-1",
-          "top_score_probability": 0.12653224988512035
+          "top_score_probability": 0.12653241898385412
         },
         {
           "confidence": 0.5009,
@@ -31603,72 +31603,72 @@
           "model_id": "weighted_ensemble",
           "notes": "ensemble_objective=weighted_ensemble\nensemble_weights={\"attack_defense_poisson\": 0.066, \"bayesian_monte_carlo_scoreline\": 0.0016, \"bradley_terry_davidson\": 0.2451, \"draw_specialist\": 0.0157, \"elo_dixon_coles\": 0.0363, \"elo_poisson\": 0.0484, \"neural_hybrid_v2\": 0.4907, \"neural_scoreline_mlp\": 0.0963}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2705221428,
-          "p_team_a_win": 0.442936438,
-          "p_team_b_win": 0.2865414192,
+          "p_draw": 0.2705224493,
+          "p_team_a_win": 0.4429358767,
+          "p_team_b_win": 0.2865416741,
           "score": "1-0",
           "top_score": "1-1",
-          "top_score_probability": 0.1273184193274826
+          "top_score_probability": 0.12731851853417558
         },
         {
-          "confidence": 0.4562,
+          "confidence": 0.4561,
           "expected_goals": "1.39-1.02",
-          "expected_points": 1.181873,
+          "expected_points": 1.181859,
           "family": "ponderador puntos",
           "model_id": "weighted_points_ensemble",
-          "notes": "ensemble_objective=max_points\nensemble_weights={\"attack_defense_poisson\": 0.0356, \"bayesian_monte_carlo_scoreline\": 0.1177, \"bradley_terry_davidson\": 0.2436, \"draw_specialist\": 0.0058, \"elo_dixon_coles\": 0.0069, \"elo_poisson\": 0.0165, \"neural_hybrid_v2\": 0.4739, \"neural_scoreline_mlp\": 0.1001}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "ensemble_objective=max_points\nensemble_weights={\"attack_defense_poisson\": 0.0356, \"bayesian_monte_carlo_scoreline\": 0.1177, \"bradley_terry_davidson\": 0.2437, \"draw_specialist\": 0.0058, \"elo_dixon_coles\": 0.0069, \"elo_poisson\": 0.0165, \"neural_hybrid_v2\": 0.4739, \"neural_scoreline_mlp\": 0.1001}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2670864222,
-          "p_team_a_win": 0.4561514632,
-          "p_team_b_win": 0.2767621146,
+          "p_draw": 0.2670894906,
+          "p_team_a_win": 0.4561405352,
+          "p_team_b_win": 0.2767699742,
           "score": "1-0",
           "top_score": "1-1",
-          "top_score_probability": 0.12597217469364713
+          "top_score_probability": 0.12597338434052124
         },
         {
           "confidence": 0.4521,
           "expected_goals": "1.37-1.02",
-          "expected_points": 1.179789,
+          "expected_points": 1.179784,
           "family": "ponderador calibrado",
           "model_id": "calibrated_scoreline_ensemble",
           "notes": "ensemble_objective=calibrated_scoreline_distribution\nensemble_weights={\"attack_defense_poisson\": 0.0456, \"bayesian_monte_carlo_scoreline\": 0.051, \"bradley_terry_davidson\": 0.2565, \"draw_specialist\": 0.0099, \"elo_dixon_coles\": 0.0538, \"elo_poisson\": 0.0204, \"neural_hybrid_v2\": 0.3813, \"neural_scoreline_mlp\": 0.1816}\nscoreline_calibration={\"high_goal_bonus\": 0.1278, \"low_score_penalty\": 0.376, \"matches\": 868, \"model_power\": 1.1374, \"prior_power\": 0.1951}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2690167317,
-          "p_team_a_win": 0.4520824116,
-          "p_team_b_win": 0.2789008567,
+          "p_draw": 0.2690180081,
+          "p_team_a_win": 0.4520778114,
+          "p_team_b_win": 0.2789041805,
           "score": "1-0",
           "top_score": "1-1",
-          "top_score_probability": 0.1266380336916005
+          "top_score_probability": 0.1266385238107768
         },
         {
           "confidence": 0.4484,
           "expected_goals": "1.32-0.97",
-          "expected_points": 1.199316,
+          "expected_points": 1.199313,
           "family": "ponderador 1X2",
           "model_id": "weighted_1x2_ensemble",
           "notes": "ensemble_objective=max_1x2\nensemble_weights={\"attack_defense_poisson\": 0.0387, \"bayesian_monte_carlo_scoreline\": 0.0179, \"bradley_terry_davidson\": 0.2598, \"draw_specialist\": 0.0015, \"elo_dixon_coles\": 0.0026, \"elo_poisson\": 0.0024, \"neural_hybrid_v2\": 0.4455, \"neural_scoreline_mlp\": 0.2316}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2764887395,
-          "p_team_a_win": 0.4483617871,
-          "p_team_b_win": 0.2751494734,
+          "p_draw": 0.2764894867,
+          "p_team_a_win": 0.4483594096,
+          "p_team_b_win": 0.2751511037,
           "score": "1-0",
           "top_score": "1-0",
-          "top_score_probability": 0.13472770123944036
+          "top_score_probability": 0.1347278228026588
         },
         {
           "confidence": 0.4376,
           "expected_goals": "1.34-1.04",
-          "expected_points": 1.156024,
+          "expected_points": 1.156022,
           "family": "ponderador exacto",
           "model_id": "weighted_exact_ensemble",
           "notes": "ensemble_objective=max_exact_score\nensemble_weights={\"attack_defense_poisson\": 0.0002, \"bayesian_monte_carlo_scoreline\": 0.0047, \"bradley_terry_davidson\": 0.2185, \"draw_specialist\": 0.0003, \"elo_dixon_coles\": 0.0, \"elo_poisson\": 0.0003, \"neural_hybrid_v2\": 0.776, \"neural_scoreline_mlp\": 0.0}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "1",
-          "p_draw": 0.2716724716,
-          "p_team_a_win": 0.4376219851,
-          "p_team_b_win": 0.2907055433,
+          "p_draw": 0.2716729168,
+          "p_team_a_win": 0.4376206668,
+          "p_team_b_win": 0.2907064164,
           "score": "1-0",
           "top_score": "1-1",
-          "top_score_probability": 0.1277759761964789
+          "top_score_probability": 0.1277761310511709
         },
         {
           "confidence": 0.8391,
@@ -31686,13 +31686,13 @@
           "top_score_probability": 0.19030118754167277
         }
       ],
-      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
+      "notes": "prediction_run_id=pred_20260709T222945Z_aac64692",
       "quiniela_pick": {
-        "expected_points": 1.156024,
+        "expected_points": 1.156022,
         "model_id": "weighted_exact_ensemble",
         "score": "1-0",
         "top_score": "1-1",
-        "top_score_probability": 0.1277759762
+        "top_score_probability": 0.1277761311
       }
     },
     "99": {
@@ -31822,20 +31822,20 @@
             "p_reaches_penalties": 0.125
           },
           {
-            "confidence": 0.6983,
+            "confidence": 0.6984,
             "match_id": "99",
             "model_id": "bayesian_monte_carlo_scoreline",
             "most_likely_path": "regulation_b",
-            "p_a_advances": 0.3017,
-            "p_a_wins_90": 0.2123,
-            "p_a_wins_et": 0.1776,
+            "p_a_advances": 0.3016,
+            "p_a_wins_90": 0.2122,
+            "p_a_wins_et": 0.1775,
             "p_a_wins_penalties": 0.5,
-            "p_b_advances": 0.6983,
-            "p_b_wins_90": 0.5686,
-            "p_b_wins_et": 0.3614,
+            "p_b_advances": 0.6984,
+            "p_b_wins_90": 0.5688,
+            "p_b_wins_et": 0.3615,
             "p_b_wins_penalties": 0.5,
-            "p_draw_90": 0.2191,
-            "p_reaches_et": 0.2191,
+            "p_draw_90": 0.219,
+            "p_reaches_et": 0.219,
             "p_reaches_penalties": 0.101
           },
           {
@@ -31924,15 +31924,15 @@
             "p_reaches_penalties": 0.1308
           },
           {
-            "confidence": 0.6378,
+            "confidence": 0.6379,
             "match_id": "99",
             "model_id": "weighted_points_ensemble",
             "most_likely_path": "regulation_b",
-            "p_a_advances": 0.3622,
+            "p_a_advances": 0.3621,
             "p_a_wins_90": 0.2509,
             "p_a_wins_et": 0.1855,
             "p_a_wins_penalties": 0.5,
-            "p_b_advances": 0.6378,
+            "p_b_advances": 0.6379,
             "p_b_wins_90": 0.4957,
             "p_b_wins_et": 0.3073,
             "p_b_wins_penalties": 0.5,
@@ -32070,19 +32070,19 @@
           "top_score_probability": 0.11995483621782288
         },
         {
-          "confidence": 0.5686,
+          "confidence": 0.5688,
           "expected_goals": "1.08-1.91",
-          "expected_points": 1.239579,
+          "expected_points": 1.239695,
           "family": "Monte Carlo limpio",
           "model_id": "bayesian_monte_carlo_scoreline",
-          "notes": "monte_carlo_simulations=1000000\nseed=2460635266\nsin Opta ni mercados externos\nrating_uncertainty_sd=25.0\nlambda_log_sigma=0.1\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "monte_carlo_simulations=1000000\nseed=1382144374\nsin Opta ni mercados externos\nrating_uncertainty_sd=25.0\nlambda_log_sigma=0.1\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
-          "p_draw": 0.2190992092,
-          "p_team_a_win": 0.2122778585,
-          "p_team_b_win": 0.5686229323,
+          "p_draw": 0.2190335812,
+          "p_team_a_win": 0.2121977558,
+          "p_team_b_win": 0.568768663,
           "score": "1-2",
           "top_score": "1-1",
-          "top_score_probability": 0.10253617323992051
+          "top_score_probability": 0.10249762460273133
         },
         {
           "confidence": 0.4763,
@@ -32090,7 +32090,7 @@
           "expected_points": 1.144874,
           "family": "Opta externo",
           "model_id": "opta_power_poisson",
-          "notes": "opta_source=2026-06-07T00:00:00Z\nrating Opta estimado por ranking para Norway\nsin rating Opta publico para England; fallback Elo interno\nopta_live_updates=96\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
+          "notes": "opta_source=2026-06-07T00:00:00Z\nrating Opta estimado por ranking para Norway\nsin rating Opta publico para England; fallback Elo interno\nopta_live_updates=97\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
           "p_draw": 0.2469534936,
           "p_team_a_win": 0.2767963993,
@@ -32102,17 +32102,17 @@
         {
           "confidence": 0.4726,
           "expected_goals": "1.08-1.50",
-          "expected_points": 1.172161,
+          "expected_points": 1.172163,
           "family": "red neuronal hibrida",
           "model_id": "neural_hybrid_v2",
           "notes": "matriz calibrada por head 1X2\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
-          "p_draw": 0.2552614042,
-          "p_team_a_win": 0.2721647276,
-          "p_team_b_win": 0.4725738682,
+          "p_draw": 0.2552616851,
+          "p_team_a_win": 0.2721638105,
+          "p_team_b_win": 0.4725745043,
           "score": "0-1",
           "top_score": "1-1",
-          "top_score_probability": 0.12137509915304835
+          "top_score_probability": 0.12137521859593504
         },
         {
           "confidence": 0.705,
@@ -32147,77 +32147,77 @@
         {
           "confidence": 0.4852,
           "expected_goals": "1.02-1.50",
-          "expected_points": 1.207133,
+          "expected_points": 1.207134,
           "family": "ponderador",
           "model_id": "weighted_ensemble",
           "notes": "ensemble_objective=weighted_ensemble\nensemble_weights={\"attack_defense_poisson\": 0.0692, \"bayesian_monte_carlo_scoreline\": 0.0016, \"bradley_terry_davidson\": 0.2423, \"draw_specialist\": 0.0149, \"elo_dixon_coles\": 0.0345, \"elo_poisson\": 0.0464, \"neural_hybrid_v2\": 0.4855, \"neural_scoreline_mlp\": 0.1056}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
-          "p_draw": 0.2563645448,
-          "p_team_a_win": 0.2583987457,
-          "p_team_b_win": 0.4852367095,
+          "p_draw": 0.2563644904,
+          "p_team_a_win": 0.2583980896,
+          "p_team_b_win": 0.48523742,
           "score": "0-1",
           "top_score": "1-1",
-          "top_score_probability": 0.12167361285584723
+          "top_score_probability": 0.12167357901792236
         },
         {
           "confidence": 0.4957,
           "expected_goals": "1.01-1.54",
-          "expected_points": 1.219622,
+          "expected_points": 1.219633,
           "family": "ponderador puntos",
           "model_id": "weighted_points_ensemble",
           "notes": "ensemble_objective=max_points\nensemble_weights={\"attack_defense_poisson\": 0.0368, \"bayesian_monte_carlo_scoreline\": 0.1156, \"bradley_terry_davidson\": 0.2418, \"draw_specialist\": 0.0055, \"elo_dixon_coles\": 0.0066, \"elo_poisson\": 0.016, \"neural_hybrid_v2\": 0.4706, \"neural_scoreline_mlp\": 0.107}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
-          "p_draw": 0.253382502,
-          "p_team_a_win": 0.2508979316,
-          "p_team_b_win": 0.4957195664,
+          "p_draw": 0.2533740738,
+          "p_team_a_win": 0.2508865748,
+          "p_team_b_win": 0.4957393513,
           "score": "0-1",
           "top_score": "1-1",
-          "top_score_probability": 0.12033588896275968
+          "top_score_probability": 0.1203322389237487
         },
         {
           "confidence": 0.5048,
           "expected_goals": "0.99-1.55",
-          "expected_points": 1.239263,
+          "expected_points": 1.239268,
           "family": "ponderador calibrado",
           "model_id": "calibrated_scoreline_ensemble",
           "notes": "ensemble_objective=calibrated_scoreline_distribution\nensemble_weights={\"attack_defense_poisson\": 0.0482, \"bayesian_monte_carlo_scoreline\": 0.0486, \"bradley_terry_davidson\": 0.2497, \"draw_specialist\": 0.0091, \"elo_dixon_coles\": 0.0497, \"elo_poisson\": 0.019, \"neural_hybrid_v2\": 0.3716, \"neural_scoreline_mlp\": 0.204}\nscoreline_calibration={\"high_goal_bonus\": 0.1278, \"low_score_penalty\": 0.376, \"matches\": 868, \"model_power\": 1.1374, \"prior_power\": 0.1951}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
-          "p_draw": 0.2527004078,
-          "p_team_a_win": 0.242475098,
-          "p_team_b_win": 0.5048244942,
+          "p_draw": 0.2526970672,
+          "p_team_a_win": 0.2424703353,
+          "p_team_b_win": 0.5048325975,
           "score": "0-1",
           "top_score": "0-1",
-          "top_score_probability": 0.12292989100603036
+          "top_score_probability": 0.12292818586042835
         },
         {
           "confidence": 0.5199,
           "expected_goals": "0.93-1.55",
-          "expected_points": 1.27846,
+          "expected_points": 1.278462,
           "family": "ponderador 1X2",
           "model_id": "weighted_1x2_ensemble",
           "notes": "ensemble_objective=max_1x2\nensemble_weights={\"attack_defense_poisson\": 0.0404, \"bayesian_monte_carlo_scoreline\": 0.0169, \"bradley_terry_davidson\": 0.2508, \"draw_specialist\": 0.0014, \"elo_dixon_coles\": 0.0024, \"elo_poisson\": 0.0023, \"neural_hybrid_v2\": 0.4305, \"neural_scoreline_mlp\": 0.2555}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
-          "p_draw": 0.2527665457,
-          "p_team_a_win": 0.22734354,
-          "p_team_b_win": 0.5198899143,
+          "p_draw": 0.2527652356,
+          "p_team_a_win": 0.2273416662,
+          "p_team_b_win": 0.5198930982,
           "score": "0-1",
           "top_score": "0-1",
-          "top_score_probability": 0.12985919762214962
+          "top_score_probability": 0.12985861803644708
         },
         {
           "confidence": 0.4589,
           "expected_goals": "1.07-1.44",
-          "expected_points": 1.164475,
+          "expected_points": 1.164477,
           "family": "ponderador exacto",
           "model_id": "weighted_exact_ensemble",
           "notes": "ensemble_objective=max_exact_score\nensemble_weights={\"attack_defense_poisson\": 0.0002, \"bayesian_monte_carlo_scoreline\": 0.0046, \"bradley_terry_davidson\": 0.2185, \"draw_specialist\": 0.0003, \"elo_dixon_coles\": 0.0, \"elo_poisson\": 0.0003, \"neural_hybrid_v2\": 0.776, \"neural_scoreline_mlp\": 0.0}\nknockout_goal_deflator=0.96\nknockout_draw_inflation=0.99",
           "outcome": "2",
-          "p_draw": 0.2610843615,
-          "p_team_a_win": 0.2799722849,
-          "p_team_b_win": 0.4589433536,
+          "p_draw": 0.2610842734,
+          "p_team_a_win": 0.2799711892,
+          "p_team_b_win": 0.4589445374,
           "score": "0-1",
           "top_score": "1-1",
-          "top_score_probability": 0.12390256662437645
+          "top_score_probability": 0.12390251562347757
         },
         {
           "confidence": 0.7622,
@@ -32235,15 +32235,15 @@
           "top_score_probability": 0.15270743289600183
         }
       ],
-      "notes": "prediction_run_id=pred_20260709T070712Z_741c35be",
+      "notes": "prediction_run_id=pred_20260709T222945Z_aac64692",
       "quiniela_pick": {
-        "expected_points": 1.164475,
+        "expected_points": 1.164477,
         "model_id": "weighted_exact_ensemble",
         "score": "0-1",
         "top_score": "1-1",
-        "top_score_probability": 0.1239025666
+        "top_score_probability": 0.1239025156
       }
     }
   },
-  "prediction_run_id": "pred_20260709T070712Z_741c35be"
+  "prediction_run_id": "pred_20260709T222945Z_aac64692"
 }

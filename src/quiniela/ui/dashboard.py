@@ -19,6 +19,7 @@ from quiniela.storage.sqlite_store import SQLiteStore
 _FAMILY_BY_MODEL_ID: dict[str, dict[str, str]] = {
     "baseline_poisson":               {"family": "CONTROL",          "fb": "fb-ctrl"},
     "elo_poisson":                    {"family": "FUERZA+GOLES",     "fb": "fb-fgol"},
+    "elo_sdr_poisson":                {"family": "SDR-ELO",          "fb": "fb-fgol"},
     "elo_dixon_coles":                {"family": "MARCADORES BAJOS", "fb": "fb-mba"},
     "attack_defense_poisson":         {"family": "ATAQUE/DEFENSA",   "fb": "fb-atd"},
     "draw_specialist":                {"family": "EMPATES",          "fb": "fb-emp"},

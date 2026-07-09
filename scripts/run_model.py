@@ -39,6 +39,7 @@ from quiniela.models.common import (
 )
 from quiniela.models.neural_scoreline_mlp import run_neural_scoreline_mlp
 from quiniela.models.neural_hybrid_v2 import run_neural_hybrid_v2
+from quiniela.models.elo_sdr_poisson import run_elo_sdr_poisson
 from quiniela.knockout import (
     apply_knockout_adjustments,
     build_knockout_consensus,
@@ -57,6 +58,7 @@ MODEL_RUNNERS = {
     "draw_specialist": run_draw_specialist,
     "elo_dixon_coles": run_elo_dixon_coles,
     "elo_poisson": run_elo_poisson,
+    "elo_sdr_poisson": run_elo_sdr_poisson,
     "neural_hybrid_v2": run_neural_hybrid_v2,
     "neural_scoreline_mlp": run_neural_scoreline_mlp,
     "opta_power_poisson": run_opta_power_poisson,
@@ -67,6 +69,7 @@ MODEL_RUNNERS = {
 MODEL_FAMILIES = {
     "baseline_poisson": "control",
     "elo_poisson": "fuerza+goles",
+    "elo_sdr_poisson": "SDR-Elo Poisson",
     "elo_dixon_coles": "marcadores bajos",
     "attack_defense_poisson": "ataque/defensa",
     "bayesian_monte_carlo_scoreline": "Monte Carlo limpio",

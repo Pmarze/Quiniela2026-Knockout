@@ -2037,37 +2037,37 @@ function buildEtPanel(m, compact){
     var n = aetCounts[score];
     var pctV = Math.round(n/nModels*100);
     var isTop = score === et.pick_aet;
-    aetPills += '<span style="display:inline-flex;align-items:center;gap:2px;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;font-family:var(--fc);'+(isTop?'background:rgba(0,210,211,.15);color:var(--teal)':'background:var(--pan2);color:var(--mut)')+'">'+score+' <span style="font-size:7px;font-weight:600;opacity:.7">'+pctV+'%</span></span> ';
+    aetPills += '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:800;font-family:var(--fc);'+(isTop?'background:rgba(0,210,211,.25);color:#00e8e8;border:1px solid rgba(0,210,211,.4)':'background:rgba(255,255,255,.08);color:#8899aa;border:1px solid rgba(255,255,255,.1)')+'">'+score+' <span style="font-size:8px;font-weight:600;opacity:.8">'+pctV+'%</span></span> ';
   });
-  var sz = compact ? {title:8,score:16,label:7,ev:7,gap:8,pad:'5px 8px',mt:6,bar:20} : {title:9,score:20,label:8,ev:8,gap:12,pad:'8px 10px',mt:8,bar:24};
-  var h = '<div style="margin-top:'+sz.mt+'px;padding:'+sz.pad+';background:linear-gradient(135deg,rgba(0,210,211,.06),rgba(201,150,14,.06));border:1px solid rgba(0,210,211,.18);border-radius:8px">';
-  h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">';
-  h += '<span style="font-size:'+sz.title+'px;font-weight:700;font-family:var(--fc);letter-spacing:.5px;text-transform:uppercase;color:var(--teal)">Quiniela Knockout</span>';
-  h += '<span style="font-size:7px;font-family:var(--fc);color:var(--mut);opacity:.7">'+nModels+' modelos</span>';
+  var sz = compact ? {title:9,score:18,label:8,ev:8,gap:8,pad:'8px 10px',mt:6} : {title:10,score:22,label:9,ev:9,gap:12,pad:'10px 12px',mt:8};
+  var h = '<div style="margin-top:'+sz.mt+'px;padding:'+sz.pad+';background:#1a2332;border:1.5px solid #00d2d3;border-radius:8px;box-shadow:0 2px 12px rgba(0,210,211,.15)">';
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+  h += '<span style="font-size:'+sz.title+'px;font-weight:800;font-family:var(--fc);letter-spacing:.8px;text-transform:uppercase;color:#00d2d3">Quiniela Knockout</span>';
+  h += '<span style="font-size:8px;font-family:var(--fc);color:#8899aa;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:3px">'+nModels+' modelos</span>';
   h += '</div>';
   // Two columns
   h += '<div style="display:flex;gap:'+sz.gap+'px;align-items:stretch">';
   // 90min column
-  h += '<div style="flex:1;text-align:center;padding:4px 0;background:rgba(201,150,14,.08);border-radius:6px">';
-  h += '<div style="font-size:'+sz.label+'px;color:var(--mut);font-family:var(--fc);font-weight:600;margin-bottom:2px">Resultado 90 min</div>';
-  h += '<div style="font-size:'+sz.score+'px;font-weight:800;font-family:var(--fc);color:var(--gold);line-height:1.1">'+et.pick_90min+'</div>';
-  h += '<div style="font-size:'+sz.ev+'px;color:var(--mut);font-family:var(--fc);margin-top:1px">EV '+et.ep_90min.toFixed(3)+'</div>';
-  h += '<div style="font-size:7px;color:var(--mut);font-family:var(--fc);opacity:.7;margin-top:2px">'+top90N+'/'+nModels+' modelos</div>';
+  h += '<div style="flex:1;text-align:center;padding:8px 6px;background:#2a1f0a;border:1px solid rgba(201,150,14,.35);border-radius:6px">';
+  h += '<div style="font-size:'+sz.label+'px;color:#c9960e;font-family:var(--fc);font-weight:700;margin-bottom:4px">Resultado 90 min</div>';
+  h += '<div style="font-size:'+sz.score+'px;font-weight:900;font-family:var(--fc);color:#f0c040;line-height:1.1;text-shadow:0 0 8px rgba(240,192,64,.3)">'+et.pick_90min+'</div>';
+  h += '<div style="font-size:'+sz.ev+'px;color:#bbb;font-family:var(--fc);margin-top:3px">EV '+et.ep_90min.toFixed(3)+'</div>';
+  h += '<div style="font-size:8px;color:#8899aa;font-family:var(--fc);margin-top:3px">'+top90N+'/'+nModels+' modelos</div>';
   h += '</div>';
   // Divider
-  h += '<div style="width:1px;background:var(--brd);align-self:stretch;opacity:.5"></div>';
+  h += '<div style="width:2px;background:linear-gradient(180deg,transparent,#00d2d3,transparent);align-self:stretch"></div>';
   // AET column
-  h += '<div style="flex:1;text-align:center;padding:4px 0;background:rgba(0,210,211,.08);border-radius:6px">';
-  h += '<div style="font-size:'+sz.label+'px;color:var(--mut);font-family:var(--fc);font-weight:600;margin-bottom:2px">Resultado 90+ET</div>';
-  h += '<div style="font-size:'+sz.score+'px;font-weight:800;font-family:var(--fc);color:var(--teal);line-height:1.1">'+et.pick_aet+'</div>';
-  h += '<div style="font-size:'+sz.ev+'px;color:var(--mut);font-family:var(--fc);margin-top:1px">EV '+et.ep_aet.toFixed(3)+'</div>';
-  h += '<div style="margin-top:3px">'+aetPills+'</div>';
+  h += '<div style="flex:1;text-align:center;padding:8px 6px;background:#0a2328;border:1px solid rgba(0,210,211,.35);border-radius:6px">';
+  h += '<div style="font-size:'+sz.label+'px;color:#00d2d3;font-family:var(--fc);font-weight:700;margin-bottom:4px">Resultado 90+ET</div>';
+  h += '<div style="font-size:'+sz.score+'px;font-weight:900;font-family:var(--fc);color:#00e8e8;line-height:1.1;text-shadow:0 0 8px rgba(0,232,232,.3)">'+et.pick_aet+'</div>';
+  h += '<div style="font-size:'+sz.ev+'px;color:#bbb;font-family:var(--fc);margin-top:3px">EV '+et.ep_aet.toFixed(3)+'</div>';
+  h += '<div style="margin-top:5px">'+aetPills+'</div>';
   h += '</div>';
   h += '</div>';
   // Footer explanation
-  h += '<div style="font-size:7px;color:var(--mut);font-family:var(--fc);margin-top:5px;opacity:.65;line-height:1.3">';
-  h += 'Pick 90min: optimizado con draw_inflation (LOO-CV, 18 partidos ET). ';
-  h += 'Pick AET: modelo Poisson condicional con ET. ';
+  h += '<div style="font-size:8px;color:#8899aa;font-family:var(--fc);margin-top:6px;line-height:1.4">';
+  h += 'Pick 90min optimizado con draw_inflation (LOO-CV, 18 partidos ET). ';
+  h += 'Pick AET: modelo Poisson condicional. ';
   h += 'Consenso AET muestra distribución entre modelos.';
   h += '</div>';
   h += '</div>';

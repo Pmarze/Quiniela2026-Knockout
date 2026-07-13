@@ -282,6 +282,24 @@ def compute_et_dual_picks(
     aet_np = _build_aet_matrix(base_np, la_def, lb_def, intensity, asymmetry, collapse_prob, max_goals)
     pick_aet = _optimal_pick_from_np(aet_np, scoring)
 
+    # AET 1X2 probabilities
+    aet_p1 = sum(aet_np[a][b] for a in range(aet_np.shape[0]) for b in range(aet_np.shape[1]) if a > b)
+    aet_px = sum(aet_np[a][a] for a in range(aet_np.shape[0]))
+    aet_p2 = sum(aet_np[a][b] for a in range(aet_np.shape[0]) for b in range(aet_np.shape[1]) if a < b)
+    if aet_px >= aet_p1 and aet_px >= aet_p2:
+        aet_out = "X"
+    elif aet_p1 > aet_p2:
+        aet_out = "1"
+    else:
+        aet_out = "2"
+    aet_top_a, aet_top_b, aet_top_prob = 0, 0, 0.0
+    for a in range(aet_np.shape[0]):
+        for b in range(aet_np.shape[1]):
+            if aet_np[a][b] > aet_top_prob:
+                aet_top_prob = aet_np[a][b]
+                aet_top_a, aet_top_b = a, b
+    aet_top = f"{aet_top_a}-{aet_top_b}"
+
     # Top score from inflated matrix
     top_score = max(inflated_matrix["scores"], key=inflated_matrix["scores"].get)
 
@@ -325,4 +343,11 @@ def compute_et_dual_picks(
         "p2": round(tp2, 4),
         "out": out,
         "ko_resolution": ko_dict,
+        "aet_score": pick_aet["score"],
+        "aet_top": aet_top,
+        "aet_ev": pick_aet["expected_points"],
+        "aet_p1": round(aet_p1, 4),
+        "aet_px": round(aet_px, 4),
+        "aet_p2": round(aet_p2, 4),
+        "aet_out": aet_out,
     }

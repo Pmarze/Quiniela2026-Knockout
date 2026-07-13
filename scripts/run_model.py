@@ -615,6 +615,11 @@ def write_ui_overrides(
                             "p1": p.get("p1", 0), "px": p.get("px", 0), "p2": p.get("p2", 0),
                             "out": p.get("out", "X"),
                             "ko_resolution": p.get("ko_resolution"),
+                            "aet_score": p.get("aet_score", p["pick_aet"]),
+                            "aet_top": p.get("aet_top", p["pick_aet"]),
+                            "aet_ev": p.get("aet_ev", p.get("ep_aet", 0)),
+                            "aet_p1": p.get("aet_p1", 0), "aet_px": p.get("aet_px", 0),
+                            "aet_p2": p.get("aet_p2", 0), "aet_out": p.get("aet_out", "1"),
                         }
                         for mid, p in model_picks.items()
                     },

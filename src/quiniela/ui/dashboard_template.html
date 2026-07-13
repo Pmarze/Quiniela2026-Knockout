@@ -2269,15 +2269,39 @@ function showHover(matchId, triggerEl){
     cards += '<span class="fb '+mod.fb+'" style="font-size:8px">'+mod.family+'</span>';
     cards += '</div>';
     cards += '<div class="hp-mc-sc">';
-    cards += '<div class="hp-mc-cell"><div class="hp-mc-cl">Marcador más probable</div><div class="hp-mc-cv prob">'+mod.top+'</div></div>';
-    cards += '<div class="hp-mc-cell"><div class="hp-mc-cl">Marcador para maximizar quiniela</div><div class="hp-mc-cv max">'+mod.score+'</div></div>';
+    if(_etCalActive && m.et_dual_pick && m.et_dual_pick.per_model){
+      cards += '<div class="hp-mc-cell" style="position:relative"><div class="hp-mc-cl" style="color:#f0c040">90min - Prob</div><div class="hp-mc-cv prob">'+mod.top+'</div></div>';
+      cards += '<div class="hp-mc-cell" style="position:relative"><div class="hp-mc-cl" style="color:#f0c040">90min - Pick</div><div class="hp-mc-cv max">'+mod.score+'</div></div>';
+    } else {
+      cards += '<div class="hp-mc-cell"><div class="hp-mc-cl">Marcador más probable</div><div class="hp-mc-cv prob">'+mod.top+'</div></div>';
+      cards += '<div class="hp-mc-cell"><div class="hp-mc-cl">Marcador para maximizar quiniela</div><div class="hp-mc-cv max">'+mod.score+'</div></div>';
+    }
     cards += '</div>';
-    cards += '<div class="hp-mc-stats">xG: '+mod.xg+' · EV: '+mod.ev.toFixed(3)+eff+'</div>';
+    if(_etCalActive && m.et_dual_pick && m.et_dual_pick.per_model && m.et_dual_pick.per_model[mod.id]){
+      var aetD = m.et_dual_pick.per_model[mod.id];
+      cards += '<div class="hp-mc-sc" style="border-top:1px solid rgba(0,210,211,.2);margin-top:2px;padding-top:2px">';
+      cards += '<div class="hp-mc-cell"><div class="hp-mc-cl" style="color:#00e8e8">AET - Prob</div><div class="hp-mc-cv prob" style="color:#00e8e8">'+(aetD.aet_top||aetD.pick_aet)+'</div></div>';
+      cards += '<div class="hp-mc-cell"><div class="hp-mc-cl" style="color:#00e8e8">AET - Pick</div><div class="hp-mc-cv max" style="color:#00e8e8">'+(aetD.aet_score||aetD.pick_aet)+'</div></div>';
+      cards += '</div>';
+      cards += '<div class="hp-mc-stats" style="color:#f0c040">90min xG: '+mod.xg+' · EV: '+mod.ev.toFixed(3)+eff+'</div>';
+      cards += '<div class="hp-mc-stats" style="color:#00e8e8;margin-top:0">AET EV: '+(aetD.aet_ev||aetD.ep_aet||0).toFixed(3)+'</div>';
+    } else {
+      cards += '<div class="hp-mc-stats">xG: '+mod.xg+' · EV: '+mod.ev.toFixed(3)+eff+'</div>';
+    }
     cards += '<div style="display:flex;gap:4px;padding:0 8px 4px">';
     cards += '<span style="flex:1;text-align:center;padding:2px 0;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);'+(mod.out==='1'?'background:rgba(30,128,80,.15);color:var(--grn)':'background:var(--pan2);color:var(--mut)')+'">1 '+pct(mod.p1)+'</span>';
     cards += '<span style="flex:1;text-align:center;padding:2px 0;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);'+(mod.out==='X'?'background:rgba(201,150,14,.15);color:#c9960e':'background:var(--pan2);color:var(--mut)')+'">X '+pct(mod.px)+'</span>';
     cards += '<span style="flex:1;text-align:center;padding:2px 0;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);'+(mod.out==='2'?'background:rgba(30,128,80,.15);color:var(--grn)':'background:var(--pan2);color:var(--mut)')+'">2 '+pct(mod.p2)+'</span>';
     cards += '</div>';
+    if(_etCalActive && m.et_dual_pick && m.et_dual_pick.per_model && m.et_dual_pick.per_model[mod.id]){
+      var aetM = m.et_dual_pick.per_model[mod.id];
+      cards += '<div style="display:flex;gap:4px;padding:0 8px 4px;border-top:1px dashed rgba(0,210,211,.2);margin-top:2px;padding-top:3px">';
+      cards += '<span style="font-size:8px;font-weight:700;color:#00e8e8;font-family:var(--fc);padding:2px 3px">AET</span>';
+      cards += '<span style="flex:1;text-align:center;padding:2px 0;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);'+(aetM.aet_out==='1'?'background:rgba(0,180,180,.15);color:#00e8e8':'background:var(--pan2);color:var(--mut)')+'">1 '+pct(aetM.aet_p1||0)+'</span>';
+      cards += '<span style="flex:1;text-align:center;padding:2px 0;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);'+(aetM.aet_out==='X'?'background:rgba(0,180,180,.15);color:#00e8e8':'background:var(--pan2);color:var(--mut)')+'">X '+pct(aetM.aet_px||0)+'</span>';
+      cards += '<span style="flex:1;text-align:center;padding:2px 0;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);'+(aetM.aet_out==='2'?'background:rgba(0,180,180,.15);color:#00e8e8':'background:var(--pan2);color:var(--mut)')+'">2 '+pct(aetM.aet_p2||0)+'</span>';
+      cards += '</div>';
+    }
     if(mod.notes) cards += '<div class="hp-mc-note" title="'+esc(mod.notes)+'">'+esc(mod.notes.split('\n')[0])+'</div>';
     cards += '</div>';
   });
@@ -2354,8 +2378,13 @@ function openModal(matchId){
     rows += '<tr>';
     rows += '<td style="font-family:var(--fc);font-weight:700;color:var(--mutl);text-align:center">'+(i+1)+'</td>';
     rows += '<td><div class="mname">'+mod.id.replace(/_/g,' ')+'</div><span class="fb '+mod.fb+'">'+mod.family+'</span></td>';
-    rows += '<td><span class="sp sp-p">'+mod.top+'</span></td>';
-    rows += '<td><span class="sp sp-m">'+mod.score+'</span></td>';
+    if(_etCalActive && m.et_dual_pick && m.et_dual_pick.per_model){
+      rows += '<td><span class="sp sp-p" style="border-color:#f0c040">'+mod.top+'</span></td>';
+      rows += '<td><span class="sp sp-m" style="border-color:#f0c040">'+mod.score+'</span></td>';
+    } else {
+      rows += '<td><span class="sp sp-p">'+mod.top+'</span></td>';
+      rows += '<td><span class="sp sp-m">'+mod.score+'</span></td>';
+    }
     rows += '<td style="font-family:var(--fc);font-size:12px;color:var(--ink2)">'+mod.xg+'</td>';
     rows += '<td style="font-family:var(--fc);font-size:11px;white-space:nowrap">'+
       '<span style="padding:1px 4px;border-radius:2px;'+(mod.out==='1'?'background:rgba(30,128,80,.15);color:var(--grn);font-weight:700':'color:var(--mut)')+'">'+pct(mod.p1)+'</span> '+
@@ -2365,6 +2394,23 @@ function openModal(matchId){
     rows += '<td style="font-family:var(--fc);font-size:12px;color:var(--ink2)">'+mod.ev.toFixed(3)+'</td>';
     rows += '<td class="td-notes">'+esc(mod.notes)+'</td>';
     rows += '</tr>';
+    if(_etCalActive && m.et_dual_pick && m.et_dual_pick.per_model && m.et_dual_pick.per_model[mod.id]){
+      var aetR = m.et_dual_pick.per_model[mod.id];
+      rows += '<tr style="background:rgba(0,210,211,.05);border-top:none">';
+      rows += '<td style="text-align:center;font-size:9px;font-weight:700;color:#00e8e8;font-family:var(--fc)">AET</td>';
+      rows += '<td style="font-size:10px;color:#00e8e8;font-family:var(--fc)">post tiempo extra</td>';
+      rows += '<td><span class="sp sp-p" style="border-color:#00e8e8;color:#00e8e8">'+(aetR.aet_top||aetR.pick_aet)+'</span></td>';
+      rows += '<td><span class="sp sp-m" style="border-color:#00e8e8;color:#00e8e8">'+(aetR.aet_score||aetR.pick_aet)+'</span></td>';
+      rows += '<td></td>';
+      rows += '<td style="font-family:var(--fc);font-size:11px;white-space:nowrap">'+
+        '<span style="padding:1px 4px;border-radius:2px;'+(aetR.aet_out==='1'?'background:rgba(0,180,180,.15);color:#00e8e8;font-weight:700':'color:var(--mut)')+'">'+pct(aetR.aet_p1||0)+'</span> '+
+        '<span style="padding:1px 4px;border-radius:2px;'+(aetR.aet_out==='X'?'background:rgba(0,180,180,.15);color:#00e8e8;font-weight:700':'color:var(--mut)')+'">'+pct(aetR.aet_px||0)+'</span> '+
+        '<span style="padding:1px 4px;border-radius:2px;'+(aetR.aet_out==='2'?'background:rgba(0,180,180,.15);color:#00e8e8;font-weight:700':'color:var(--mut)')+'">'+pct(aetR.aet_p2||0)+'</span>'+
+        '</td>';
+      rows += '<td style="font-family:var(--fc);font-size:12px;color:#00e8e8">'+(aetR.aet_ev||aetR.ep_aet||0).toFixed(3)+'</td>';
+      rows += '<td></td>';
+      rows += '</tr>';
+    }
   });
   document.getElementById('m-tbody').innerHTML = rows;
   setModalSheet('stats');

@@ -1,0 +1,18 @@
+{
+  "best_params": {
+    "intensity": 0.5,
+    "asymmetry": 0.0,
+    "collapse_prob": 0.0,
+    "draw_inflation": 3.375
+  },
+  "best_loo_score": 76.0,
+  "best_insample_params": {
+    "intensity": 0.5,
+    "asymmetry": 0.0,
+    "collapse_prob": 0.0,
+    "draw_inflation": 3.375
+  },
+  "best_insample_score": 76.0,
+  "n_matches": 18,
+  "elapsed_seconds": 2853.871584892273
+}

@@ -665,6 +665,7 @@ def _build_unified_payload(
             },
             "frozen": bool(overrides.get("frozen_pick", False)),
             "knockout": overrides.get("knockout_resolution"),
+            "et_dual_pick": overrides.get("et_dual_pick"),
             "models": models_out,
             "friendlies": {
                 "home": home_friendlies.get("matches", []),

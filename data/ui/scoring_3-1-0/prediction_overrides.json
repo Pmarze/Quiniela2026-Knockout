@@ -1,6 +1,6 @@
 {
   "as_of_utc": "2026-07-12T05:46:00Z",
-  "generated_at_utc": "2026-07-12T05:54:28Z",
+  "generated_at_utc": "2026-07-13T02:18:45Z",
   "matches": {
     "1": {
       "frozen_pick": true,
@@ -990,6 +990,74 @@
       }
     },
     "101": {
+      "et_dual_pick": {
+        "ep_90min": 1.137,
+        "ep_aet": 0.6456,
+        "per_model": {
+          "attack_defense_poisson": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "bayesian_monte_carlo_scoreline": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "bradley_terry_davidson": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "calibrated_scoreline_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-0"
+          },
+          "draw_specialist": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "elo_dixon_coles": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "elo_poisson": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "neural_hybrid_v2": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-0"
+          },
+          "neural_scoreline_mlp": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-1"
+          },
+          "opta_power_poisson": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "similar_match_knn_scoreline": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "weighted_1x2_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-0"
+          },
+          "weighted_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-0"
+          },
+          "weighted_exact_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-0"
+          },
+          "weighted_points_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-0"
+          }
+        },
+        "pick_90min": "1-1",
+        "pick_aet": "2-0"
+      },
       "frozen_pick": false,
       "knockout_resolution": {
         "consensus": {
@@ -1521,7 +1589,7 @@
           "top_score_probability": 0.12092521151544007
         }
       ],
-      "notes": "prediction_run_id=pred_20260712T055343Z_0f3c5c3b",
+      "notes": "prediction_run_id=pred_20260713T021813Z_6bbc7fb4",
       "quiniela_pick": {
         "expected_points": 0.595974,
         "model_id": "weighted_exact_ensemble",
@@ -1531,6 +1599,74 @@
       }
     },
     "102": {
+      "et_dual_pick": {
+        "ep_90min": 1.1252,
+        "ep_aet": 0.4991,
+        "per_model": {
+          "attack_defense_poisson": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-0"
+          },
+          "bayesian_monte_carlo_scoreline": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "bradley_terry_davidson": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-1"
+          },
+          "calibrated_scoreline_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "draw_specialist": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "elo_dixon_coles": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "elo_poisson": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "neural_hybrid_v2": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-0"
+          },
+          "neural_scoreline_mlp": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "opta_power_poisson": {
+            "pick_90min": "1-1",
+            "pick_aet": "1-2"
+          },
+          "similar_match_knn_scoreline": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "weighted_1x2_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "weighted_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          },
+          "weighted_exact_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "2-1"
+          },
+          "weighted_points_ensemble": {
+            "pick_90min": "1-1",
+            "pick_aet": "0-2"
+          }
+        },
+        "pick_90min": "1-1",
+        "pick_aet": "2-1"
+      },
       "frozen_pick": false,
       "knockout_resolution": {
         "consensus": {
@@ -2061,7 +2197,7 @@
           "top_score_probability": 0.1228159455985208
         }
       ],
-      "notes": "prediction_run_id=pred_20260712T055343Z_0f3c5c3b",
+      "notes": "prediction_run_id=pred_20260713T021813Z_6bbc7fb4",
       "quiniela_pick": {
         "expected_points": 0.449327,
         "model_id": "weighted_exact_ensemble",
@@ -2073,13 +2209,13 @@
     "103": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260712T055343Z_0f3c5c3b",
+      "notes": "prediction_run_id=pred_20260713T021813Z_6bbc7fb4",
       "quiniela_pick": null
     },
     "104": {
       "frozen_pick": false,
       "model_predictions": [],
-      "notes": "prediction_run_id=pred_20260712T055343Z_0f3c5c3b",
+      "notes": "prediction_run_id=pred_20260713T021813Z_6bbc7fb4",
       "quiniela_pick": null
     },
     "11": {
@@ -33245,5 +33381,5 @@
       }
     }
   },
-  "prediction_run_id": "pred_20260712T055343Z_0f3c5c3b"
+  "prediction_run_id": "pred_20260713T021813Z_6bbc7fb4"
 }

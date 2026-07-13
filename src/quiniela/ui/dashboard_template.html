@@ -748,6 +748,7 @@ main{margin-top:var(--navh);}
       <div><div class="hp-ql">Resultado Real</div><div class="hp-qs" id="hp-real-score">—</div></div>
       <span class="hp-pts-badge" id="hp-pts-badge"></span>
     </div>
+    <div id="hp-et-panel" style="display:none"></div>
   </div>
   <div class="hp-body">
     <div class="sheet-nav">
@@ -776,6 +777,7 @@ main{margin-top:var(--navh);}
       <div class="m-ibox" id="m-ibox"></div>
       <div class="m-cols">
         <div class="m-qpan" id="m-qpan"></div>
+        <div id="m-et-panel" style="display:none"></div>
         <div>
           <div class="sheet-nav">
             <button class="sheet-btn" onclick="setModalSheet('stats')" title="Graficos">&lsaquo;</button>
@@ -2043,6 +2045,21 @@ function showHover(matchId, triggerEl){
   } else {
     hpResult.style.display = 'none';
   }
+  var hpEt = document.getElementById('hp-et-panel');
+  if(m.et_dual_pick && !m.frozen){
+    var et = m.et_dual_pick;
+    hpEt.innerHTML =
+      '<div style="margin:6px 0;padding:5px 8px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:6px">'+
+      '<div style="font-size:8px;font-weight:700;font-family:var(--fc);letter-spacing:.5px;text-transform:uppercase;color:var(--grn);margin-bottom:3px">Picks Knockout (ET)</div>'+
+      '<div style="display:flex;gap:10px;align-items:center">'+
+        '<div style="text-align:center"><div style="font-size:7px;color:rgba(255,255,255,.5);font-family:var(--fc)">90 min</div><div style="font-size:15px;font-weight:800;font-family:var(--fc);color:var(--gold)">'+et.pick_90min+'</div></div>'+
+        '<div style="width:1px;height:20px;background:rgba(255,255,255,.15)"></div>'+
+        '<div style="text-align:center"><div style="font-size:7px;color:rgba(255,255,255,.5);font-family:var(--fc)">90+ET</div><div style="font-size:15px;font-weight:800;font-family:var(--fc);color:var(--teal)">'+et.pick_aet+'</div></div>'+
+      '</div></div>';
+    hpEt.style.display = '';
+  } else {
+    hpEt.style.display = 'none';
+  }
   _updateNavBtns(_hoverMid, 'hp-nav-prev', 'hp-nav-next');
   document.getElementById('hp-stats-sheet').innerHTML = buildStatsSheet(m);
   if(window._goalStatsSetup) { window._goalStatsSetup(); window._goalStatsSetup = null; }
@@ -2127,6 +2144,22 @@ function openModal(matchId){
       '<span style="flex:1;text-align:center;padding:2px 0;border-radius:3px;font-size:10px;font-weight:700;font-family:var(--fc);'+(bq.out==='2'?'background:rgba(30,128,80,.25);color:#2ecc71':'background:rgba(255,255,255,.08);color:rgba(255,255,255,.45)')+'">2 '+pct(bq.p2)+'</span>'+
     '</div>'+
     '</div>';
+  var etPanel = document.getElementById('m-et-panel');
+  if(m.et_dual_pick && !m.frozen){
+    var et = m.et_dual_pick;
+    etPanel.innerHTML =
+      '<div style="margin-top:6px;padding:6px 8px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:6px">'+
+      '<div style="font-size:9px;font-weight:700;font-family:var(--fc);letter-spacing:.5px;text-transform:uppercase;color:var(--grn);margin-bottom:4px">Picks Knockout (modelo ET)</div>'+
+      '<div style="display:flex;gap:12px;align-items:center">'+
+        '<div style="text-align:center"><div style="font-size:8px;color:var(--mut);font-family:var(--fc)">90 min</div><div style="font-size:18px;font-weight:800;font-family:var(--fc);color:var(--gold)">'+et.pick_90min+'</div><div style="font-size:8px;color:var(--mut);font-family:var(--fc)">EV '+et.ep_90min.toFixed(3)+'</div></div>'+
+        '<div style="width:1px;height:28px;background:var(--brd)"></div>'+
+        '<div style="text-align:center"><div style="font-size:8px;color:var(--mut);font-family:var(--fc)">90+ET</div><div style="font-size:18px;font-weight:800;font-family:var(--fc);color:var(--teal)">'+et.pick_aet+'</div><div style="font-size:8px;color:var(--mut);font-family:var(--fc)">EV '+et.ep_aet.toFixed(3)+'</div></div>'+
+      '</div></div>';
+    etPanel.style.display = '';
+  } else {
+    etPanel.style.display = 'none';
+    etPanel.innerHTML = '';
+  }
   _updateNavBtns(_modalMid, 'm-nav-prev', 'm-nav-next');
   document.getElementById('m-stats-sheet').innerHTML = buildStatsSheet(m);
   var sorted = sortedModels(m.models);

@@ -633,6 +633,8 @@ main{margin-top:var(--navh);}
   color:rgba(255,255,255,.85);border-radius:var(--rsm);padding:5px 8px;cursor:pointer;font-size:11px;font-weight:600;
   font-family:var(--fc);letter-spacing:.3px;flex-shrink:0;appearance:auto;outline:none;}
 .scoring-sel option{background:var(--dark);color:white;}
+#et-cal-btn{appearance:none;transition:all .15s;}
+#et-cal-btn.et-active{background:rgba(240,180,40,.2);border-color:#f0b428;color:#f0c040;text-shadow:0 0 6px rgba(240,180,40,.3);}
 
 /* DARK MODE TOGGLE */
 .dm-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
@@ -716,6 +718,7 @@ main{margin-top:var(--navh);}
   <button class="nlink"        id="nav-metodologia" onclick="showSec('metodologia')">Metodología</button>
   <div class="nmeta">
     <select id="scoring-sel" class="scoring-sel" onchange="switchScoring(this.value)" style="display:none"></select>
+    <button id="et-cal-btn" class="scoring-sel" onclick="toggleEtCalibration()" style="display:none" title="Ver predicciones con calibracion ET (draw_inflation 3.375x)">ET Cal</button>
     <span class="npill npill-off" id="npill-live">LIVE: 0</span>
     <span class="ndate" id="ndate"></span>
     <button class="dm-btn" id="dm-btn" onclick="toggleDark()">☀️ Light</button>
@@ -934,6 +937,8 @@ function _fifaRank(name){ return FIFA_RANK[name]||999; }
 var SCORING_ACTIVE = (DATA.scoring||{}).active || '5-3-1';
 var SCORING_PROFILES = (DATA.scoring||{}).profiles || {};
 var _origMatchData = null;
+var _etCalActive = false;
+var _origEtData = null;
 var _origBacktestMetrics = null;
 
 function _recalcBacktestMetrics(){
@@ -993,10 +998,13 @@ function _initScoringSelector(){
     sel.value = saved;
     if(saved !== SCORING_ACTIVE) switchScoring(saved);
   }
+  var hasEt = DATA.matches.some(function(m){ return m.et_dual_pick && m.et_dual_pick.per_model; });
+  if(hasEt) document.getElementById('et-cal-btn').style.display = '';
 }
 
 function switchScoring(profileId){
   if(!SCORING_PROFILES[profileId]) return;
+  if(_etCalActive) toggleEtCalibration();
   if(!_origMatchData){
     _origMatchData = JSON.parse(JSON.stringify(DATA.matches.map(function(m){
       return { id:m.id, quiniela:m.quiniela, models:m.models.map(function(mod){ return {id:mod.id,score:mod.score,ev:mod.ev,out:mod.out}; }) };
@@ -1048,6 +1056,120 @@ function _applyMatchScoring(profileId, defaultProfile){
       if(mod){ mod.score=am.score; mod.ev=am.ev; mod.out=_outcomeFromScore(am.score); }
     });
   });
+}
+
+/* ══════════════════ ET CALIBRATION TOGGLE ══════════════════ */
+function toggleEtCalibration(){
+  var btn = document.getElementById('et-cal-btn');
+  if(!_origEtData){
+    _origEtData = [];
+    DATA.matches.forEach(function(m){
+      var et = m.et_dual_pick;
+      if(!et || !et.per_model || m.frozen) return;
+      var snap = {
+        id: m.id,
+        quiniela: JSON.parse(JSON.stringify(m.quiniela)),
+        knockout: m.knockout ? JSON.parse(JSON.stringify(m.knockout)) : null,
+        models: m.models.map(function(mod){
+          return {id:mod.id, score:mod.score, ev:mod.ev, out:mod.out, top:mod.top, p1:mod.p1, px:mod.px, p2:mod.p2};
+        })
+      };
+      _origEtData.push(snap);
+    });
+  }
+  _etCalActive = !_etCalActive;
+  if(_etCalActive){
+    _origEtData.forEach(function(snap){
+      var m = DATA.matches.find(function(x){ return x.id===snap.id; });
+      if(!m) return;
+      var et = m.et_dual_pick;
+      if(!et || !et.per_model) return;
+      m.models.forEach(function(mod){
+        var etd = et.per_model[mod.id];
+        if(!etd) return;
+        mod.score = etd.score;
+        mod.ev = etd.ev;
+        mod.out = etd.out;
+        mod.top = etd.top;
+        mod.p1 = etd.p1;
+        mod.px = etd.px;
+        mod.p2 = etd.p2;
+      });
+      var prefMod = m.models.find(function(x){ return x.id === m.quiniela.model; });
+      if(prefMod){
+        m.quiniela.score = prefMod.score;
+        m.quiniela.ev = prefMod.ev;
+        m.quiniela.out = prefMod.out || _outcomeFromScore(prefMod.score);
+        m.quiniela.top = prefMod.top;
+        var maxP = Math.max(prefMod.p1||0, prefMod.px||0, prefMod.p2||0);
+        m.quiniela.prob = maxP;
+      }
+      if(m.knockout && et.per_model){
+        var koModels = Object.keys(et.per_model);
+        var koPerModel = [];
+        koModels.forEach(function(mid){
+          var kr = et.per_model[mid].ko_resolution;
+          if(kr) koPerModel.push(kr);
+        });
+        if(koPerModel.length > 0){
+          var cons = {};
+          var fields = ['p_draw_90','p_a_wins_90','p_b_wins_90','p_reaches_et',
+            'p_a_wins_et','p_b_wins_et','p_reaches_penalties',
+            'p_a_wins_penalties','p_b_wins_penalties','p_a_advances','p_b_advances'];
+          fields.forEach(function(f){ cons[f] = 0; });
+          koPerModel.forEach(function(r){
+            fields.forEach(function(f){ cons[f] += (r[f]||0); });
+          });
+          var n = koPerModel.length;
+          fields.forEach(function(f){ cons[f] = Math.round(cons[f]/n * 10000)/10000; });
+          var paths = {
+            regulation_a: cons.p_a_wins_90, regulation_b: cons.p_b_wins_90,
+            et_a: cons.p_reaches_et * cons.p_a_wins_et, et_b: cons.p_reaches_et * cons.p_b_wins_et,
+            penalties_a: cons.p_reaches_penalties * cons.p_a_wins_penalties,
+            penalties_b: cons.p_reaches_penalties * cons.p_b_wins_penalties
+          };
+          var bestPath = 'regulation_a';
+          Object.keys(paths).forEach(function(k){ if(paths[k]>paths[bestPath]) bestPath=k; });
+          cons.most_likely_path = bestPath;
+          cons.n_models = n;
+          cons.confidence = Math.max(cons.p_a_advances, cons.p_b_advances);
+          m.knockout = { consensus: cons, per_model: koPerModel };
+        }
+      }
+    });
+    btn.classList.add('et-active');
+    btn.textContent = 'ET Cal ON';
+  } else {
+    _origEtData.forEach(function(snap){
+      var m = DATA.matches.find(function(x){ return x.id===snap.id; });
+      if(!m) return;
+      m.quiniela.score = snap.quiniela.score;
+      m.quiniela.ev = snap.quiniela.ev;
+      m.quiniela.out = snap.quiniela.out;
+      m.quiniela.model = snap.quiniela.model;
+      m.quiniela.top = snap.quiniela.top;
+      m.quiniela.prob = snap.quiniela.prob;
+      if(snap.knockout) m.knockout = JSON.parse(JSON.stringify(snap.knockout));
+      snap.models.forEach(function(om){
+        var mod = m.models.find(function(x){ return x.id===om.id; });
+        if(mod){
+          mod.score=om.score; mod.ev=om.ev; mod.out=om.out; mod.top=om.top;
+          mod.p1=om.p1; mod.px=om.px; mod.p2=om.p2;
+        }
+      });
+    });
+    btn.classList.remove('et-active');
+    btn.textContent = 'ET Cal';
+  }
+  _bestModelIdCache = null;
+  _currentRankCache = null;
+  renderHome();
+  renderQuiniela();
+  renderAmigos();
+  renderValidacion();
+  setTimeout(filterPreds, 50);
+  if(_hoverMid) showHover(_hoverMid, _hoverTriggerEl);
+  if(_modalMid) openModal(_modalMid);
 }
 
 /* ══════════════════ HELPERS ══════════════════ */

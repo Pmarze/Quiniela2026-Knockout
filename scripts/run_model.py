@@ -607,7 +607,15 @@ def write_ui_overrides(
                     "pick_aet": preferred_et["pick_aet"],
                     "ep_aet": preferred_et["ep_aet"],
                     "per_model": {
-                        mid: {"pick_90min": p["pick_90min"], "pick_aet": p["pick_aet"]}
+                        mid: {
+                            "pick_90min": p["pick_90min"], "pick_aet": p["pick_aet"],
+                            "score": p.get("score", p["pick_90min"]),
+                            "top": p.get("top", p["pick_90min"]),
+                            "ev": p.get("ev", p.get("ep_90min", 0)),
+                            "p1": p.get("p1", 0), "px": p.get("px", 0), "p2": p.get("p2", 0),
+                            "out": p.get("out", "X"),
+                            "ko_resolution": p.get("ko_resolution"),
+                        }
                         for mid, p in model_picks.items()
                     },
                 }

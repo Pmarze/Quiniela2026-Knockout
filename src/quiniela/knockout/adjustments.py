@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import json
 import math
 from pathlib import Path
@@ -7,6 +8,7 @@ from typing import Any
 
 import numpy as np
 
+from quiniela.knockout.resolver import resolve_knockout_outcome
 from quiniela.models.common import (
     ModelContext,
     ModelPrediction,
@@ -280,10 +282,47 @@ def compute_et_dual_picks(
     aet_np = _build_aet_matrix(base_np, la_def, lb_def, intensity, asymmetry, collapse_prob, max_goals)
     pick_aet = _optimal_pick_from_np(aet_np, scoring)
 
+    # Top score from inflated matrix
+    top_score = max(inflated_matrix["scores"], key=inflated_matrix["scores"].get)
+
+    # Outcome from inflated 1X2
+    if inflated_draw >= tp1 and inflated_draw >= tp2:
+        out = "X"
+    elif tp1 > tp2:
+        out = "1"
+    else:
+        out = "2"
+
+    # Knockout resolution under ET calibration
+    ko_dict = None
+    dummy = dataclasses.replace(
+        prediction,
+        selected_score=pick_90["score"],
+        selected_expected_points=pick_90["expected_points"],
+        top_score=top_score,
+        expected_goals_a=la_def,
+        expected_goals_b=lb_def,
+        p_team_a_win=tp1,
+        p_draw=inflated_draw,
+        p_team_b_win=tp2,
+        score_matrix=inflated_matrix,
+    )
+    ko_res = resolve_knockout_outcome(dummy, knockout_config)
+    if ko_res:
+        ko_dict = ko_res.to_dict()
+
     return {
         "pick_90min": pick_90["score"],
         "ep_90min": pick_90["expected_points"],
         "pick_aet": pick_aet["score"],
         "ep_aet": pick_aet["expected_points"],
         "et_params": params,
+        "score": pick_90["score"],
+        "top": top_score,
+        "ev": pick_90["expected_points"],
+        "p1": round(tp1, 4),
+        "px": round(inflated_draw, 4),
+        "p2": round(tp2, 4),
+        "out": out,
+        "ko_resolution": ko_dict,
     }

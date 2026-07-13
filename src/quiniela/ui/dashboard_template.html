@@ -1065,7 +1065,7 @@ function toggleEtCalibration(){
     _origEtData = [];
     DATA.matches.forEach(function(m){
       var et = m.et_dual_pick;
-      if(!et || !et.per_model || m.frozen) return;
+      if(!et || !et.per_model) return;
       var snap = {
         id: m.id,
         quiniela: JSON.parse(JSON.stringify(m.quiniela)),

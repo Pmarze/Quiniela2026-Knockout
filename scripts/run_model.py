@@ -293,6 +293,7 @@ def main() -> int:
             knockout_resolutions=knockout_resolutions if knockout_enabled else {},
             knockout_config=knockout_config if knockout_enabled else {},
             et_dual_picks=et_dual_picks if knockout_enabled else {},
+            scoring_config=scoring_config,
         )
         print(f"ui_overrides: {ui_path}")
     else:
@@ -511,6 +512,95 @@ def _current_pick_score(
     return 0.0, 0, 0
 
 
+def _backfill_et_for_frozen(
+    matches: dict[str, Any],
+    knockout_config: dict[str, Any],
+    scoring_config: dict[str, Any],
+) -> None:
+    from quiniela.models.common import build_score_matrix
+    for sid, mdata in matches.items():
+        if not mdata.get("frozen_pick"):
+            continue
+        if mdata.get("et_dual_pick"):
+            continue
+        if not mdata.get("knockout_resolution"):
+            continue
+        model_preds = mdata.get("model_predictions") or []
+        if not model_preds:
+            continue
+        et_per_model: dict[str, dict[str, Any]] = {}
+        for mp in model_preds:
+            mid = mp.get("model_id", "")
+            xg_str = mp.get("expected_goals", "")
+            if not xg_str or "-" not in xg_str:
+                continue
+            parts = xg_str.split("-")
+            try:
+                xg_a, xg_b = float(parts[0]), float(parts[1])
+            except (ValueError, IndexError):
+                continue
+            max_goals = 8
+            score_matrix = build_score_matrix(xg_a, xg_b, max_goals)
+            dummy = ModelPrediction(
+                prediction_run_id="backfill",
+                as_of_utc="",
+                model_id=mid,
+                model_version="0",
+                match_id=sid,
+                source_match_id=sid,
+                match_number=None,
+                team_a=None,
+                team_b=None,
+                kickoff_utc=None,
+                input_snapshot_id="",
+                tournament_state_id="",
+                training_data_version="",
+                expected_goals_a=xg_a,
+                expected_goals_b=xg_b,
+                p_team_a_win=mp.get("p_team_a_win", 0.33),
+                p_draw=mp.get("p_draw", 0.33),
+                p_team_b_win=mp.get("p_team_b_win", 0.33),
+                score_matrix=score_matrix,
+                top_score=mp.get("top_score"),
+                top_score_probability=mp.get("top_score_probability"),
+                selected_score=mp.get("score"),
+                selected_expected_points=mp.get("expected_points"),
+                status="ok",
+                is_evaluation_candidate=False,
+                mask_reason=None,
+                warnings=[],
+            )
+            dual = compute_et_dual_picks(dummy, knockout_config, scoring_config)
+            if dual:
+                et_per_model[mid] = dual
+        if not et_per_model:
+            continue
+        preferred_et = next(iter(et_per_model.values()))
+        mdata["et_dual_pick"] = {
+            "pick_90min": preferred_et["pick_90min"],
+            "ep_90min": preferred_et["ep_90min"],
+            "pick_aet": preferred_et["pick_aet"],
+            "ep_aet": preferred_et["ep_aet"],
+            "per_model": {
+                mid: {
+                    "pick_90min": p["pick_90min"], "pick_aet": p["pick_aet"],
+                    "score": p.get("score", p["pick_90min"]),
+                    "top": p.get("top", p["pick_90min"]),
+                    "ev": p.get("ev", p.get("ep_90min", 0)),
+                    "p1": p.get("p1", 0), "px": p.get("px", 0), "p2": p.get("p2", 0),
+                    "out": p.get("out", "X"),
+                    "ko_resolution": p.get("ko_resolution"),
+                    "aet_score": p.get("aet_score", p["pick_aet"]),
+                    "aet_top": p.get("aet_top", p["pick_aet"]),
+                    "aet_ev": p.get("aet_ev", p.get("ep_aet", 0)),
+                    "aet_p1": p.get("aet_p1", 0), "aet_px": p.get("aet_px", 0),
+                    "aet_p2": p.get("aet_p2", 0), "aet_out": p.get("aet_out", "1"),
+                }
+                for mid, p in et_per_model.items()
+            },
+        }
+
+
 def write_ui_overrides(
     ui_path: Path,
     context: ModelContext,
@@ -519,6 +609,7 @@ def write_ui_overrides(
     knockout_resolutions: dict[str, list[KnockoutResolution]] | None = None,
     knockout_config: dict[str, Any] | None = None,
     et_dual_picks: dict[str, dict[str, Any]] | None = None,
+    scoring_config: dict[str, Any] | None = None,
 ) -> None:
     existing = _load_existing_ui_overrides(ui_path)
     existing_matches = existing.get("matches", {})
@@ -624,6 +715,8 @@ def write_ui_overrides(
                         for mid, p in model_picks.items()
                     },
                 }
+
+    _backfill_et_for_frozen(matches, knockout_config or {}, scoring_config or {})
 
     for emid, edata in existing_matches.items():
         if emid not in matches:

@@ -1137,6 +1137,10 @@ function toggleHoverTop5(){
   if(hs) hs.innerHTML=buildStatsSheet(m);
   var ms=document.getElementById('m-stats-sheet');
   if(ms) ms.innerHTML=buildStatsSheet(m);
+  var hpEt=document.getElementById('hp-et-panel');
+  if(hpEt){var eh=buildEtPanel(m,true);if(eh){hpEt.innerHTML=eh;hpEt.style.display='';}else{hpEt.style.display='none';}}
+  var mEt=document.getElementById('m-et-panel');
+  if(mEt){var emh=buildEtPanel(m,false);if(emh){mEt.innerHTML=emh;mEt.style.display='';}else{mEt.style.display='none';}}
 }
 
 /* MATCH STATS SHEETS */
@@ -2010,9 +2014,16 @@ function bestQuiniela(m){
 function buildEtPanel(m, compact){
   if(!m.et_dual_pick || m.frozen) return '';
   var et = m.et_dual_pick;
-  var pm = et.per_model || {};
-  var modelIds = Object.keys(pm);
+  var pmAll = et.per_model || {};
+  var modelIds = Object.keys(pmAll);
+  if(_hoverTop5){
+    var top5 = getTop5ModelIds();
+    modelIds = modelIds.filter(function(id){ return top5.indexOf(id)>=0; });
+  }
+  var pm = {};
+  modelIds.forEach(function(id){ pm[id] = pmAll[id]; });
   var nModels = modelIds.length;
+  var filterLabel = _hoverTop5 ? 'top 5' : 'todos';
   // Consensus for AET pick
   var aetCounts = {};
   modelIds.forEach(function(mid){
@@ -2043,7 +2054,7 @@ function buildEtPanel(m, compact){
   var h = '<div style="margin-top:'+sz.mt+'px;padding:'+sz.pad+';background:#1a2332;border:1.5px solid #00d2d3;border-radius:8px;box-shadow:0 2px 12px rgba(0,210,211,.15)">';
   h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
   h += '<span style="font-size:'+sz.title+'px;font-weight:800;font-family:var(--fc);letter-spacing:.8px;text-transform:uppercase;color:#00d2d3">Quiniela Knockout</span>';
-  h += '<span style="font-size:8px;font-family:var(--fc);color:#8899aa;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:3px">'+nModels+' modelos</span>';
+  h += '<span style="font-size:8px;font-family:var(--fc);color:'+(_hoverTop5?'#00d2d3':'#8899aa')+';background:rgba(255,255,255,.08);padding:2px 6px;border-radius:3px">'+nModels+' modelos'+ (_hoverTop5?' (top 5)':'') +'</span>';
   h += '</div>';
   // Two columns
   h += '<div style="display:flex;gap:'+sz.gap+'px;align-items:stretch">';

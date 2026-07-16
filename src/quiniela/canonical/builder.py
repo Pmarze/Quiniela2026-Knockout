@@ -66,6 +66,7 @@ def build_canonical_dataset(
             timezone_config=timezone_config,
             teams_by_source_id={row["primary_source_team_id"]: row for row in teams},
         )
+        _resolve_placeholder_teams(conn, matches, teams)
         _enrich_results_from_secondary_sources(conn, matches, run["as_of_utc"])
         _write_canonical_rows(
             conn=conn,
@@ -213,6 +214,40 @@ def _build_canonical_matches(
     if len(matches) != 104:
         raise RuntimeError(f"Se esperaban 104 partidos canónicos, encontrados {len(matches)}.")
     return matches
+
+
+def _resolve_placeholder_teams(
+    conn: sqlite3.Connection,
+    matches: list[dict[str, Any]],
+    teams: list[dict[str, Any]],
+) -> None:
+    teams_by_name = {t["display_name"]: t for t in teams}
+    for m in matches:
+        if m["team_a_canonical_id"] and m["team_b_canonical_id"]:
+            continue
+        row = conn.execute(
+            """
+            SELECT team_a_name, team_b_name FROM matches
+            WHERE match_number = ?
+              AND team_a_name IS NOT NULL AND team_b_name IS NOT NULL
+              AND team_a_name NOT LIKE '%Match %' AND team_b_name NOT LIKE '%Match %'
+            LIMIT 1
+            """,
+            (m["match_number"],),
+        ).fetchone()
+        if not row:
+            continue
+        for side, col_name, col_canon, col_src, col_fifa in [
+            ("a", "team_a_name", "team_a_canonical_id", "team_a_primary_source_id", "team_a_fifa_code"),
+            ("b", "team_b_name", "team_b_canonical_id", "team_b_primary_source_id", "team_b_fifa_code"),
+        ]:
+            name = row[f"team_{side}_name"]
+            team = teams_by_name.get(name) or teams_by_name.get(_normalize_team_name(name))
+            if team:
+                m[col_name] = team["display_name"]
+                m[col_canon] = team["canonical_team_id"]
+                m[col_src] = team["primary_source_team_id"]
+                m[col_fifa] = team["fifa_code"]
 
 
 def _write_canonical_rows(

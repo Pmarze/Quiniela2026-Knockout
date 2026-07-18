@@ -94,11 +94,13 @@ def generate_dashboard(
         scoring_profiles = _discover_scoring_profiles(
             project_root, scoring_config_path, predictions_path,
         )
+        ko_tags      = _load_knockout_resolution_tags(conn)
         payload      = _build_unified_payload(
             state, matches, group_tables, predictions, backtest, friends,
             scoring_profiles=scoring_profiles,
             recent_friendlies=recent_friendlies,
             friendly_coverage=friendly_coverage,
+            knockout_tags=ko_tags,
             public_mode=public_mode,
             private_access_hash=private_access_hash,
         )
@@ -137,6 +139,37 @@ def _load_matches(conn: sqlite3.Connection) -> list[dict[str, Any]]:
         """
     ).fetchall()
     return [dict(row) for row in rows]
+
+
+def _load_knockout_resolution_tags(conn: sqlite3.Connection) -> dict[int, str]:
+    """Return {match_number: 'ET'|'PEN'} for knockout matches decided in extra time or penalties."""
+    rows = conn.execute(
+        """
+        SELECT match_number, payload_json
+        FROM matches
+        WHERE source_name = 'worldcup26_ir'
+          AND finished = 1
+          AND stage NOT IN ('group')
+          AND payload_json IS NOT NULL
+        """
+    ).fetchall()
+    import re
+    tags: dict[int, str] = {}
+    for row in rows:
+        pj = json.loads(row["payload_json"]) if row["payload_json"] else {}
+        hp = pj.get("home_penalty_score", "null")
+        ap = pj.get("away_penalty_score", "null")
+        if hp != "null" and ap != "null":
+            tags[row["match_number"]] = "PEN"
+            continue
+        for key in ("home_scorers", "away_scorers"):
+            scorers = pj.get(key, "null")
+            if scorers and scorers != "null":
+                times = re.findall(r"(\d+)'", scorers)
+                if any(int(t) > 90 for t in times):
+                    tags[row["match_number"]] = "ET"
+                    break
+    return tags
 
 
 def _load_group_tables(conn: sqlite3.Connection) -> list[dict[str, Any]]:
@@ -560,11 +593,13 @@ def _build_unified_payload(
     scoring_profiles: dict[str, Any] | None = None,
     recent_friendlies: dict[str, dict[str, Any]] | None = None,
     friendly_coverage: dict[str, Any] | None = None,
+    knockout_tags: dict[int, str] | None = None,
     public_mode: bool = True,
     private_access_hash: str | None = None,
 ) -> dict[str, Any]:
     pred_matches = predictions_overrides.get("matches", {})
     recent_friendlies = recent_friendlies or {}
+    knockout_tags = knockout_tags or {}
 
     # ── Sección 1: Grupos ──────────────────────────────────────────────────────
     groups_map: dict[str, dict[str, Any]] = {}
@@ -664,6 +699,7 @@ def _build_unified_payload(
                 "prob":  qprob,
             },
             "frozen": bool(overrides.get("frozen_pick", False)),
+            "ko_tag": knockout_tags.get(match.get("match_number") or 0, ""),
             "knockout": overrides.get("knockout_resolution"),
             "et_dual_pick": overrides.get("et_dual_pick"),
             "models": models_out,
